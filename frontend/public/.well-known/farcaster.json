@@ -18,7 +18,7 @@
     "tags": ["storage", "encryption", "certification", "base", "onchain"],
     "heroImageUrl": "https://basevault.store/og-image.png",
     "tagline": "Your files. Your keys.",
-    "ogTitle": "BaseVault On-Chain File Storage",
+    "ogTitle": "BaseVault File Storage",
     "ogDescription": "Store files directly on Base chain. Encrypt private files. Certify documents with on-chain proof.",
     "ogImageUrl": "https://basevault.store/og-image.png",
     "requiredChains": ["eip155:8453"],
