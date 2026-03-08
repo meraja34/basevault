@@ -1360,3 +1360,178 @@ textarea {
 .faq-item summary:hover {
   color: #6C9CFF;
 }
+
+/* ===== MiniApp Mode ===== */
+.miniapp-mode {
+  --max-width: 100%;
+}
+
+.miniapp-mode .main-content {
+  padding: 0.75rem 0.75rem 5rem;
+  max-width: 100%;
+}
+
+.miniapp-mode .page-title {
+  font-size: 1.2rem;
+  margin-bottom: 0.25rem;
+}
+
+.miniapp-mode .page-desc {
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.miniapp-mode .page {
+  max-width: 100%;
+}
+
+/* MiniApp Header - slim bar */
+.miniapp-header {
+  background: rgba(10, 10, 26, 0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.miniapp-header-inner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.5rem 0.75rem;
+}
+
+.miniapp-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* Bottom Tabs */
+.bottom-tabs {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  background: rgba(10, 10, 26, 0.97);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border);
+  z-index: 100;
+  padding: 0.35rem 0;
+  padding-bottom: max(0.35rem, env(safe-area-inset-bottom));
+}
+
+.bottom-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 0.4rem 0;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.65rem;
+  font-weight: 600;
+  transition: color 0.15s;
+}
+
+.bottom-tab svg {
+  opacity: 0.5;
+  transition: opacity 0.15s;
+}
+
+.bottom-tab-active {
+  color: var(--primary);
+}
+
+.bottom-tab-active svg {
+  opacity: 1;
+  stroke: var(--primary);
+}
+
+/* MiniApp compact overrides */
+.miniapp-mode .dropzone {
+  padding: 1.5rem 1rem;
+}
+
+.miniapp-mode .hero {
+  padding: 1rem 0;
+}
+
+.miniapp-mode .hero-title {
+  font-size: 1.4rem;
+}
+
+.miniapp-mode .hero-desc {
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.miniapp-mode .hero-stats {
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.miniapp-mode .stat-value {
+  font-size: 1.3rem;
+}
+
+.miniapp-mode .features {
+  padding: 1rem 0;
+}
+
+.miniapp-mode .features-grid {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+.miniapp-mode .feature-card {
+  padding: 0.75rem;
+}
+
+.miniapp-mode .feature-card h3 {
+  font-size: 0.85rem;
+}
+
+.miniapp-mode .feature-card p {
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.miniapp-mode .section-title {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+}
+
+.miniapp-mode .upload-preview {
+  padding: 0.75rem;
+}
+
+.miniapp-mode .connect-prompt {
+  padding: 1.5rem 1rem;
+}
+
+.miniapp-mode .file-grid {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+.miniapp-mode .file-card-preview {
+  height: 80px;
+}
+
+.miniapp-mode .btn-lg {
+  padding: 0.65rem 1.25rem;
+  font-size: 0.9rem;
+}
+
+.miniapp-mode .visibility-toggle {
+  gap: 0.35rem;
+}
+
+.miniapp-mode .toggle-btn {
+  padding: 0.5rem 0.5rem;
+  font-size: 0.8rem;
+}
