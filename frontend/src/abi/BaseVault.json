@@ -1,0 +1,811 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [
+      {
+        "name": "_certificationFee",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "certificationCount",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "certificationFee",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "certifications",
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "fileId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "certifiedBy",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "fileHash",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "certifiedAt",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "fileName",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "certifyDocument",
+    "inputs": [
+      {
+        "name": "_fileId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "payable"
+  },
+  {
+    "type": "function",
+    "name": "createFile",
+    "inputs": [
+      {
+        "name": "_fileHash",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "_fileName",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "_fileType",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "_fileSize",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "_chunkCount",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "_isPublic",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "createFileWithData",
+    "inputs": [
+      {
+        "name": "_fileHash",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "_fileName",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "_fileType",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "_fileSize",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "_isPublic",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "_chunks",
+        "type": "bytes[]",
+        "internalType": "bytes[]"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "fileCount",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "fileData",
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "files",
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "id",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "uploader",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "fileHash",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "fileName",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "fileType",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "fileSize",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "uploadedAt",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "certified",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "chunkCount",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "isPublic",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getChunk",
+    "inputs": [
+      {
+        "name": "_fileId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "_chunkIndex",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getFile",
+    "inputs": [
+      {
+        "name": "_id",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct BaseVault.FileRecord",
+        "components": [
+          {
+            "name": "id",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "uploader",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "fileHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "fileName",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "fileType",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "fileSize",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "uploadedAt",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "certified",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "chunkCount",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "isPublic",
+            "type": "bool",
+            "internalType": "bool"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getFiles",
+    "inputs": [
+      {
+        "name": "_offset",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "_limit",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple[]",
+        "internalType": "struct BaseVault.FileRecord[]",
+        "components": [
+          {
+            "name": "id",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "uploader",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "fileHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "fileName",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "fileType",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "fileSize",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "uploadedAt",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "certified",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "chunkCount",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "isPublic",
+            "type": "bool",
+            "internalType": "bool"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getUserCertificationIds",
+    "inputs": [
+      {
+        "name": "_user",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256[]",
+        "internalType": "uint256[]"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getUserFileIds",
+    "inputs": [
+      {
+        "name": "_user",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256[]",
+        "internalType": "uint256[]"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "hashToFileId",
+    "inputs": [
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "owner",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "setCertificationFee",
+    "inputs": [
+      {
+        "name": "_newFee",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "setFileVisibility",
+    "inputs": [
+      {
+        "name": "_fileId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "_isPublic",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "uploadChunk",
+    "inputs": [
+      {
+        "name": "_fileId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "_chunkIndex",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "_data",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "userCertifications",
+    "inputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "userFiles",
+    "inputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "verifyDocument",
+    "inputs": [
+      {
+        "name": "_fileHash",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "exists",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "fileId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "uploader",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "uploadedAt",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "certified",
+        "type": "bool",
+        "internalType": "bool"
+      },
+      {
+        "name": "fileName",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "withdraw",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "event",
+    "name": "CertificationFeeUpdated",
+    "inputs": [
+      {
+        "name": "newFee",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "FileCertified",
+    "inputs": [
+      {
+        "name": "fileId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "certId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "certifiedBy",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "fileHash",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "FileDataStored",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "chunkIndex",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "data",
+        "type": "bytes",
+        "indexed": false,
+        "internalType": "bytes"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "FileUploaded",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "uploader",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "fileHash",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "fileName",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "fileType",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "fileSize",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "isPublic",
+        "type": "bool",
+        "indexed": false,
+        "internalType": "bool"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "FileVisibilityChanged",
+    "inputs": [
+      {
+        "name": "id",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "isPublic",
+        "type": "bool",
+        "indexed": false,
+        "internalType": "bool"
+      }
+    ],
+    "anonymous": false
+  }
+]
