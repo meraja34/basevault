@@ -1201,11 +1201,12 @@ textarea {
   flex-shrink: 0;
 }
 
-/* ===== Responsive ===== */
+/* ===== Responsive - Mobile ===== */
 @media (max-width: 768px) {
   .header-inner {
     gap: 0.5rem;
-    padding: 0 1rem;
+    padding: 0 0.75rem;
+    height: 48px;
   }
 
   .nav {
@@ -1219,81 +1220,459 @@ textarea {
   }
 
   .nav-link {
-    font-size: 0.8rem;
-    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+    padding: 0.3rem 0.5rem;
   }
 
   .logo-text {
     display: none;
   }
 
+  .logo-img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .main-content {
+    padding: 0.75rem;
+  }
+
+  .page {
+    max-width: 100%;
+  }
+
+  .page-title {
+    font-size: 1.15rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .page-desc {
+    font-size: 0.8rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Hero compact */
+  .hero {
+    padding: 1.5rem 0 1rem;
+  }
+
+  .hero-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
   .hero-title {
-    font-size: 2rem;
+    font-size: 1.35rem;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-desc {
+    font-size: 0.8rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
   }
 
   .hero-stats {
-    gap: 1.5rem;
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
   }
 
   .stat-value {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
   }
 
   .hero-actions {
     flex-direction: column;
     align-items: center;
+    gap: 0.5rem;
+  }
+
+  .hero-actions .btn-lg {
+    padding: 0.6rem 1.5rem;
+    font-size: 0.85rem;
+    width: 100%;
+  }
+
+  /* Features compact */
+  .features {
+    padding: 1rem 0;
   }
 
   .features-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .stack-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
   }
 
-  .tool-selector {
-    grid-template-columns: 1fr;
+  .feature-card {
+    padding: 0.75rem;
   }
 
-  .file-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .feature-icon svg {
+    width: 22px;
+    height: 22px;
   }
 
-  .page-title {
-    font-size: 1.5rem;
+  .feature-icon {
+    margin-bottom: 0.5rem;
   }
 
-  .main-content {
+  .feature-card h3 {
+    font-size: 0.8rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .feature-card p {
+    font-size: 0.7rem;
+    line-height: 1.4;
+  }
+
+  /* Upload compact */
+  .dropzone {
     padding: 1.5rem 1rem;
+  }
+
+  .dropzone-icon svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .dropzone-label {
+    font-size: 0.85rem;
+  }
+
+  .dropzone-hint {
+    font-size: 0.75rem;
+  }
+
+  .upload-preview {
+    padding: 0.75rem;
+    margin-top: 0.75rem;
+  }
+
+  .preview-info h3 {
+    font-size: 0.9rem;
+  }
+
+  .preview-info p {
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .cost-estimate {
+    font-size: 0.75rem;
+  }
+
+  .visibility-toggle {
+    gap: 0.35rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .toggle-btn {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .toggle-icon {
+    font-size: 0.9rem;
+  }
+
+  .toggle-desc {
+    font-size: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .password-section label {
+    font-size: 0.8rem;
+  }
+
+  .password-hint {
+    font-size: 0.7rem;
+  }
+
+  .btn-lg {
+    padding: 0.6rem 1.25rem;
+    font-size: 0.85rem;
+  }
+
+  .upload-progress {
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+  }
+
+  .upload-progress p {
+    font-size: 0.8rem;
+  }
+
+  .progress-sub {
+    font-size: 0.7rem;
+  }
+
+  .spinner {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* Success compact */
+  .upload-success {
+    padding: 0.75rem 0;
+  }
+
+  .success-icon svg {
+    width: 36px;
+    height: 36px;
+  }
+
+  .upload-success h3 {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .success-details {
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
   }
 
   .detail-row {
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.15rem;
+    padding: 0.35rem 0;
   }
 
   .detail-label {
     min-width: auto;
+    font-size: 0.75rem;
+  }
+
+  .detail-value {
+    font-size: 0.75rem;
+  }
+
+  /* File grid compact */
+  .file-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .file-card-preview {
+    height: 80px;
+  }
+
+  .file-icon {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .certified-badge {
+    font-size: 0.5rem;
+    padding: 0.1rem 0.3rem;
+    top: 4px;
+    right: 4px;
+  }
+
+  .private-badge {
+    font-size: 0.55rem;
+    padding: 0.15rem 0.35rem;
+    top: 4px;
+    left: 4px;
+  }
+
+  .file-card-info {
+    padding: 0.5rem;
+  }
+
+  .file-card-name {
+    font-size: 0.72rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .file-card-meta {
+    font-size: 0.6rem;
+    margin-bottom: 0.15rem;
+  }
+
+  .file-card-address {
+    font-size: 0.55rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .file-card-actions {
+    gap: 0.25rem;
+    margin-top: 0.25rem;
+  }
+
+  .file-card-actions .btn-sm {
+    font-size: 0.6rem;
+    padding: 0.2rem 0.4rem;
+  }
+
+  .private-overlay {
+    font-size: 0.7rem;
+    gap: 0.25rem;
+  }
+
+  .private-overlay svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  /* Verify compact */
+  .verify-tabs {
+    gap: 0.35rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .tab {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .verify-result {
+    padding: 0.75rem;
+    margin-top: 0.75rem;
+  }
+
+  .verify-status h3 {
+    font-size: 0.95rem;
+  }
+
+  .verify-details {
+    padding: 0.75rem;
+  }
+
+  /* Connect prompt compact */
+  .connect-prompt {
+    padding: 1.5rem 1rem;
+  }
+
+  .connect-prompt p {
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Footer compact */
+  .footer {
+    padding: 1rem;
+    font-size: 0.75rem;
+  }
+
+  .footer-sub {
+    font-size: 0.65rem;
+  }
+
+  /* Stack grid */
+  .stack-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+
+  .stack-item {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .stack-name {
+    font-size: 0.85rem;
+  }
+
+  .stack-desc {
+    font-size: 0.7rem;
+  }
+
+  .tool-selector {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  /* FAQ compact */
+  .faq-section {
+    margin-top: 1.5rem;
+    padding: 0;
+  }
+
+  .faq-item summary {
+    padding: 0.75rem 0;
+    font-size: 0.85rem;
+  }
+
+  .faq-item p {
+    padding-bottom: 0.75rem;
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+
+  .faq-item summary::after {
+    font-size: 1.1rem;
+  }
+
+  /* Decrypt section compact */
+  .decrypt-section {
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .decrypt-section label {
+    font-size: 0.7rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .decrypt-input-row input {
+    padding: 0.35rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  /* Pagination compact */
+  .pagination {
+    margin-top: 1rem;
+    gap: 0.5rem;
+  }
+
+  .page-info {
+    font-size: 0.75rem;
+  }
+
+  .pagination .btn {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  /* Empty state compact */
+  .empty-state {
+    padding: 2rem 1rem;
   }
 }
 
 @media (max-width: 480px) {
   .hero-title {
-    font-size: 1.6rem;
-  }
-
-  .hero-desc {
-    font-size: 1rem;
+    font-size: 1.15rem;
   }
 
   .hero-stats {
-    flex-direction: column;
-    gap: 1rem;
+    flex-direction: row;
+    gap: 0.75rem;
+  }
+
+  .stat-value {
+    font-size: 1.1rem;
   }
 
   .verify-tabs {
-    flex-direction: column;
+    flex-direction: row;
+  }
+
+  .tab {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.75rem;
   }
 }
 
@@ -1360,22 +1739,23 @@ textarea {
 }
 
 .miniapp-mode .main-content {
-  padding: 0.75rem 0.75rem 5rem;
+  padding: 0.5rem 0.5rem 4.5rem;
   max-width: 100%;
-}
-
-.miniapp-mode .page-title {
-  font-size: 1.2rem;
-  margin-bottom: 0.25rem;
-}
-
-.miniapp-mode .page-desc {
-  font-size: 0.85rem;
-  margin-bottom: 1rem;
 }
 
 .miniapp-mode .page {
   max-width: 100%;
+}
+
+.miniapp-mode .page-title {
+  font-size: 1rem;
+  margin-bottom: 0.15rem;
+}
+
+.miniapp-mode .page-desc {
+  font-size: 0.75rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
 }
 
 /* MiniApp Header - slim bar */
@@ -1391,12 +1771,12 @@ textarea {
 .miniapp-header-inner {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 0.5rem 0.75rem;
+  gap: 6px;
+  padding: 0.35rem 0.5rem;
 }
 
 .miniapp-title {
-  font-size: 1rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--text);
 }
@@ -1412,8 +1792,8 @@ textarea {
   backdrop-filter: blur(12px);
   border-top: 1px solid var(--border);
   z-index: 100;
-  padding: 0.35rem 0;
-  padding-bottom: max(0.35rem, env(safe-area-inset-bottom));
+  padding: 0.2rem 0;
+  padding-bottom: max(0.2rem, env(safe-area-inset-bottom));
 }
 
 .bottom-tab {
@@ -1421,16 +1801,18 @@ textarea {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
-  padding: 0.4rem 0;
+  gap: 1px;
+  padding: 0.3rem 0;
   color: var(--text-muted);
   text-decoration: none;
-  font-size: 0.65rem;
+  font-size: 0.58rem;
   font-weight: 600;
   transition: color 0.15s;
 }
 
 .bottom-tab svg {
+  width: 18px;
+  height: 18px;
   opacity: 0.5;
   transition: opacity 0.15s;
 }
@@ -1446,85 +1828,273 @@ textarea {
 
 /* MiniApp compact overrides */
 .miniapp-mode .dropzone {
-  padding: 1.5rem 1rem;
+  padding: 1rem 0.75rem;
 }
 
-.miniapp-mode .hero {
-  padding: 1rem 0;
+.miniapp-mode .dropzone-icon svg {
+  width: 28px;
+  height: 28px;
 }
 
-.miniapp-mode .hero-title {
-  font-size: 1.4rem;
+.miniapp-mode .dropzone-label {
+  font-size: 0.8rem;
 }
 
-.miniapp-mode .hero-desc {
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
-}
-
-.miniapp-mode .hero-stats {
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.miniapp-mode .stat-value {
-  font-size: 1.3rem;
-}
-
-.miniapp-mode .features {
-  padding: 1rem 0;
-}
-
-.miniapp-mode .features-grid {
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.5rem;
-}
-
-.miniapp-mode .feature-card {
-  padding: 0.75rem;
-}
-
-.miniapp-mode .feature-card h3 {
-  font-size: 0.85rem;
-}
-
-.miniapp-mode .feature-card p {
-  font-size: 0.75rem;
-  line-height: 1.4;
-}
-
-.miniapp-mode .section-title {
-  font-size: 1.1rem;
-  margin-bottom: 0.75rem;
+.miniapp-mode .dropzone-hint {
+  font-size: 0.65rem;
 }
 
 .miniapp-mode .upload-preview {
-  padding: 0.75rem;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.miniapp-mode .preview-info h3 {
+  font-size: 0.85rem;
+}
+
+.miniapp-mode .preview-info p {
+  font-size: 0.75rem;
+  margin-bottom: 0.35rem;
+}
+
+.miniapp-mode .cost-estimate {
+  font-size: 0.7rem;
+}
+
+.miniapp-mode .visibility-toggle {
+  gap: 0.25rem;
+  margin-bottom: 0.35rem;
+}
+
+.miniapp-mode .toggle-btn {
+  padding: 0.4rem 0.35rem;
+  font-size: 0.75rem;
+}
+
+.miniapp-mode .toggle-icon {
+  font-size: 0.8rem;
+}
+
+.miniapp-mode .toggle-desc {
+  font-size: 0.7rem;
+  margin-bottom: 0.35rem;
+}
+
+.miniapp-mode .password-section label {
+  font-size: 0.75rem;
+}
+
+.miniapp-mode .password-hint {
+  font-size: 0.65rem;
+}
+
+.miniapp-mode .btn-lg {
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  width: 100%;
+}
+
+.miniapp-mode .upload-progress {
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+.miniapp-mode .upload-progress p {
+  font-size: 0.75rem;
+}
+
+.miniapp-mode .progress-sub {
+  font-size: 0.65rem;
+}
+
+.miniapp-mode .spinner {
+  width: 20px;
+  height: 20px;
+}
+
+.miniapp-mode .upload-success {
+  padding: 0.5rem 0;
+}
+
+.miniapp-mode .success-icon svg {
+  width: 32px;
+  height: 32px;
+}
+
+.miniapp-mode .upload-success h3 {
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.miniapp-mode .success-details {
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.miniapp-mode .detail-row {
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.25rem 0;
+}
+
+.miniapp-mode .detail-label {
+  font-size: 0.65rem;
+  min-width: auto;
+}
+
+.miniapp-mode .detail-value {
+  font-size: 0.7rem;
 }
 
 .miniapp-mode .connect-prompt {
-  padding: 1.5rem 1rem;
+  padding: 1.25rem 0.75rem;
+}
+
+.miniapp-mode .connect-prompt p {
+  font-size: 0.8rem;
+  margin-bottom: 0.5rem;
 }
 
 .miniapp-mode .file-grid {
   grid-template-columns: repeat(2, 1fr);
-  gap: 0.5rem;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
 }
 
 .miniapp-mode .file-card-preview {
-  height: 80px;
+  height: 64px;
 }
 
-.miniapp-mode .btn-lg {
-  padding: 0.65rem 1.25rem;
-  font-size: 0.9rem;
+.miniapp-mode .file-icon {
+  font-size: 0.7rem;
+  padding: 0.3rem 0.6rem;
 }
 
-.miniapp-mode .visibility-toggle {
+.miniapp-mode .certified-badge {
+  font-size: 0.45rem;
+  padding: 0.1rem 0.25rem;
+  top: 3px;
+  right: 3px;
+}
+
+.miniapp-mode .private-badge {
+  font-size: 0.5rem;
+  padding: 0.1rem 0.3rem;
+  top: 3px;
+  left: 3px;
+}
+
+.miniapp-mode .private-overlay {
+  font-size: 0.65rem;
+  gap: 0.15rem;
+}
+
+.miniapp-mode .private-overlay svg {
+  width: 18px;
+  height: 18px;
+}
+
+.miniapp-mode .file-card-info {
+  padding: 0.35rem;
+}
+
+.miniapp-mode .file-card-name {
+  font-size: 0.65rem;
+  margin-bottom: 0.1rem;
+}
+
+.miniapp-mode .file-card-meta {
+  font-size: 0.55rem;
+  margin-bottom: 0.1rem;
+}
+
+.miniapp-mode .file-card-address {
+  font-size: 0.5rem;
+  margin-bottom: 0.2rem;
+}
+
+.miniapp-mode .file-card-actions {
+  gap: 0.2rem;
+  margin-top: 0.15rem;
+}
+
+.miniapp-mode .file-card-actions .btn-sm {
+  font-size: 0.55rem;
+  padding: 0.15rem 0.3rem;
+}
+
+.miniapp-mode .verify-tabs {
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.miniapp-mode .tab {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.75rem;
+}
+
+.miniapp-mode .verify-result {
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.miniapp-mode .verify-status h3 {
+  font-size: 0.85rem;
+}
+
+.miniapp-mode .verify-details {
+  padding: 0.5rem;
+}
+
+.miniapp-mode .section-title {
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+.miniapp-mode .pagination {
+  margin-top: 0.75rem;
   gap: 0.35rem;
 }
 
-.miniapp-mode .toggle-btn {
-  padding: 0.5rem 0.5rem;
+.miniapp-mode .page-info {
+  font-size: 0.7rem;
+}
+
+.miniapp-mode .pagination .btn {
+  padding: 0.25rem 0.6rem;
+  font-size: 0.75rem;
+}
+
+.miniapp-mode .empty-state {
+  padding: 1.5rem 0.75rem;
+}
+
+.miniapp-mode input,
+.miniapp-mode .input-full {
+  padding: 0.5rem 0.75rem;
   font-size: 0.8rem;
+}
+
+.miniapp-mode .decrypt-section {
+  padding: 0.35rem;
+  margin-top: 0.35rem;
+}
+
+.miniapp-mode .decrypt-section label {
+  font-size: 0.65rem;
+}
+
+.miniapp-mode .decrypt-input-row input {
+  padding: 0.3rem 0.5rem;
+  font-size: 0.7rem;
+}
+
+.miniapp-mode .key-warning {
+  padding: 0.5rem;
+  font-size: 0.7rem;
+}
+
+.miniapp-mode .footer {
+  display: none;
 }
