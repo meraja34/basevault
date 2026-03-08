@@ -100,52 +100,57 @@ export default function Home() {
         <div className="faq-list">
           <details className="faq-item">
             <summary>What is BaseVault?</summary>
-            <p>BaseVault is an on-chain file storage and document certification platform built on Base (Ethereum Layer 2). You can upload any file and it gets stored directly on the blockchain. No servers, no cloud storage, your files live on-chain permanently.</p>
+            <p>BaseVault is a fully on-chain file storage and document certification platform built on Base (Ethereum Layer 2). You upload any file and the actual file data gets stored directly inside the smart contract on Base blockchain. No external storage, no servers, no middlemen. Your files live permanently on-chain.</p>
           </details>
 
           <details className="faq-item">
-            <summary>How is this different from Google Drive or Dropbox?</summary>
-            <p>Google Drive and Dropbox store your files on their servers. They can delete your files, get hacked, or shut down. BaseVault stores your files directly on the blockchain. Nobody can delete, modify, or censor your data. It stays on-chain forever.</p>
+            <summary>How is BaseVault different from IPFS, Arweave, or Filecoin?</summary>
+            <p>IPFS stores your file on a peer-to-peer network and gives you a hash. But if nobody pins your file, it disappears. Services like Pinata keep it pinned, but that means trusting a company with your data. Arweave and Filecoin use their own separate blockchains. BaseVault is different because your actual file data goes directly into a smart contract on Base. There is no separate network, no pinning, no external dependency. Every byte of your file lives on the same chain where your wallet exists. Truly on-chain, not just a hash on-chain pointing somewhere else.</p>
           </details>
 
           <details className="faq-item">
-            <summary>What does "on-chain" mean?</summary>
-            <p>On-chain means your file data is stored directly inside the blockchain (Base network). Every node on the network has a copy of your data. There is no separate server or storage service involved. The blockchain itself is the storage.</p>
+            <summary>Why is password-protected storage important?</summary>
+            <p>On IPFS or Arweave, everything you upload is public. Anyone with the hash can see your file. BaseVault lets you upload private files that are encrypted with AES-256 before going on-chain. The encryption uses two factors: your wallet signature and a password you choose. Even though the encrypted data sits on a public blockchain, nobody can read it without both your wallet and your password. This makes BaseVault the first on-chain storage where you can keep files truly private.</p>
           </details>
 
           <details className="faq-item">
-            <summary>How does private file encryption work?</summary>
-            <p>When you upload a private file, it gets encrypted with AES-256 before going on-chain. The encryption key is created from two things: your wallet signature and a password you choose. Both are needed to decrypt. Even though the encrypted data is on-chain and visible, nobody can read it without your wallet and password.</p>
+            <summary>What does "fully on-chain" actually mean?</summary>
+            <p>Most projects that say "on-chain storage" only store a hash or a link on-chain. The actual file lives on IPFS, a server, or some other network. BaseVault stores the actual file bytes inside the smart contract using calldata on Base. Every node on the Base network has your data. No external service can take it down or lose it.</p>
           </details>
 
           <details className="faq-item">
             <summary>What is document certification?</summary>
-            <p>Certification creates a tamper-proof, timestamped record on the blockchain proving that your document existed at a specific time. This can be used for legal proof, intellectual property, contracts, or any document where you need to prove authenticity and timing.</p>
+            <p>Certification creates a tamper-proof, timestamped record on the blockchain proving that a specific document existed at a specific time. This is useful for legal proof, intellectual property claims, contracts, academic records, or any document where you need to prove when it was created and that it has not been changed.</p>
+          </details>
+
+          <details className="faq-item">
+            <summary>How does private file encryption work?</summary>
+            <p>When you choose "Private" upload, your file is encrypted client-side using AES-256-CTR before any data goes on-chain. The encryption key is derived from two things: a signature from your wallet and a password you set. To decrypt later, you need to connect the same wallet and enter the same password. Nobody else can decrypt, not even BaseVault.</p>
           </details>
 
           <details className="faq-item">
             <summary>How much does it cost?</summary>
-            <p>You pay a small fee per chunk (24 KB each) when uploading. The total cost depends on your file size. Before uploading, the app shows you the exact fee and number of chunks. You also pay standard Base network gas fees for each transaction, which are very low on Base L2.</p>
+            <p>You pay a small fee per chunk (24 KB each) when uploading. The app shows you the exact cost before you confirm. Gas fees on Base L2 are very low compared to Ethereum mainnet. For small to medium files, BaseVault is significantly cheaper than Arweave or Filecoin, and unlike IPFS pinning, you pay once and your file stays forever.</p>
           </details>
 
           <details className="faq-item">
-            <summary>What file types can I upload?</summary>
-            <p>Any file type. Images, PDFs, documents, spreadsheets, text files, audio, video, code. There are no restrictions on file type. Maximum file size is 50 MB.</p>
+            <summary>What file types and sizes are supported?</summary>
+            <p>Any file type works. Images, PDFs, documents, code, audio, video, anything. Maximum file size is 50 MB. Files are split into 24 KB chunks and stored across multiple transactions.</p>
           </details>
 
           <details className="faq-item">
-            <summary>Can I delete a file after uploading?</summary>
-            <p>No. Once a file is stored on-chain, it is permanent. This is by design. Blockchain storage is immutable, meaning nobody (not even BaseVault) can modify or delete your data. Think carefully before uploading.</p>
-          </details>
-
-          <details className="faq-item">
-            <summary>What wallet do I need?</summary>
-            <p>You can use MetaMask, Coinbase Wallet, Rainbow, or any wallet that supports Base network. Coinbase Smart Wallet is recommended as it supports batch transactions, making large file uploads faster with a single approval.</p>
+            <summary>Can files be deleted or modified?</summary>
+            <p>No. Once a file is stored on-chain, it is permanent and immutable. Nobody can modify or delete it, not even BaseVault. This is a feature, not a limitation. Your data is censorship-resistant and permanent by design.</p>
           </details>
 
           <details className="faq-item">
             <summary>How does file verification work?</summary>
-            <p>Every file gets a unique SHA-256 hash when uploaded. This hash is stored on-chain. Anyone can verify a document by uploading it on the Verify page. If the hash matches a file on BaseVault, it confirms the document is authentic and shows when it was uploaded.</p>
+            <p>Every file uploaded gets a SHA-256 hash stored on-chain. Anyone can verify a document by uploading it on the Verify page. If the hash matches, it proves the file is authentic, shows who uploaded it, and when. No account needed to verify.</p>
+          </details>
+
+          <details className="faq-item">
+            <summary>What wallet do I need?</summary>
+            <p>Coinbase Smart Wallet is recommended because it supports batch transactions, so large files upload with fewer approvals. MetaMask, Rainbow, and any WalletConnect-compatible wallet also work. Inside Farcaster or Base App, your wallet connects automatically.</p>
           </details>
         </div>
       </section>
