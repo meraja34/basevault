@@ -8,8 +8,8 @@ import {
 import { createConfig, http } from 'wagmi';
 import { base, baseSepolia } from 'wagmi/chains';
 
-// Enable Coinbase Smart Wallet (Base Smart Wallet)
-coinbaseWallet.preference = 'all'; // 'all' = smart wallet + EOA, 'smartWalletOnly' = only smart wallet
+// Coinbase Smart Wallet only - enables batch transactions (single approval for all chunks)
+coinbaseWallet.preference = 'smartWalletOnly';
 
 const connectors = connectorsForWallets(
   [

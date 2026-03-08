@@ -50,6 +50,38 @@ export function decryptFile(data: ArrayBuffer, keyHex: string): ArrayBuffer {
   return decrypted.buffer as ArrayBuffer;
 }
 
+// Parse Web3 errors into user-friendly messages
+export function friendlyError(err: any): string {
+  const msg = (err?.shortMessage || err?.message || '').toLowerCase();
+
+  if (msg.includes('user rejected') || msg.includes('user denied') || msg.includes('rejected the request')) {
+    return 'Transaction cancelled.';
+  }
+  if (msg.includes('insufficient funds') || msg.includes('insufficient balance')) {
+    return 'Not enough ETH in your wallet.';
+  }
+  if (msg.includes('already certified')) {
+    return 'This file is already certified.';
+  }
+  if (msg.includes('not uploader')) {
+    return 'Only the file uploader can do this.';
+  }
+  if (msg.includes('insufficient fee')) {
+    return 'Fee amount too low.';
+  }
+  if (msg.includes('invalid file')) {
+    return 'File not found on-chain.';
+  }
+  if (msg.includes('network') || msg.includes('disconnected') || msg.includes('timeout')) {
+    return 'Network error. Check your connection and try again.';
+  }
+  if (msg.includes('nonce')) {
+    return 'Transaction conflict. Wait a moment and try again.';
+  }
+
+  return 'Something went wrong. Try again.';
+}
+
 // Fallback copy for HTTP (clipboard API needs HTTPS)
 export function copyText(text: string): boolean {
   if (navigator.clipboard && window.isSecureContext) {

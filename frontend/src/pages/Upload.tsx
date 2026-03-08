@@ -5,7 +5,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import toast from 'react-hot-toast';
 import FileDropzone from '../components/FileDropzone';
 import { computeFileHash, fileToChunks, formatFileSize } from '../utils/ipfs';
-import { deriveKeyFromSignature, encryptFile, copyText } from '../utils/crypto';
+import { deriveKeyFromSignature, encryptFile, copyText, friendlyError } from '../utils/crypto';
 import { CONTRACT_ADDRESS, CHUNK_SIZE } from '../constants';
 import abi from '../abi/BaseVault.json';
 
@@ -228,7 +228,7 @@ export default function Upload() {
       toast.success(isPublic ? 'File stored on-chain!' : 'File encrypted & stored on-chain!');
     } catch (err: any) {
       console.error(err);
-      toast.error(err.shortMessage || err.message || 'Upload failed');
+      toast.error(friendlyError(err));
       setStatus('idle');
       setProgress('');
       setChunkProgress({ current: 0, total: 0 });

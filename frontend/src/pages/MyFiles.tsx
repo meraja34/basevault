@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { CONTRACT_ADDRESS } from '../constants';
 import abi from '../abi/BaseVault.json';
 import FileCard from '../components/FileCard';
+import { friendlyError } from '../utils/crypto';
 
 export default function MyFiles() {
   const { address, isConnected } = useAccount();
@@ -46,7 +47,7 @@ export default function MyFiles() {
         refetchFiles();
       }
     } catch (err: any) {
-      toast.error(err.shortMessage || err.message || 'Certification failed');
+      toast.error(friendlyError(err));
     }
     setCertifyingId(null);
   };
@@ -66,7 +67,7 @@ export default function MyFiles() {
         refetchFiles();
       }
     } catch (err: any) {
-      toast.error(err.shortMessage || err.message || 'Failed to change visibility');
+      toast.error(friendlyError(err));
     }
   };
 
