@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import '@rainbow-me/rainbowkit/styles.css';
 import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
@@ -15,6 +16,15 @@ import MyFiles from './pages/MyFiles';
 const queryClient = new QueryClient();
 
 export default function App() {
+  // Signal to MiniApp host (Base App / Farcaster) that app is ready
+  useEffect(() => {
+    import('@farcaster/miniapp-sdk').then(({ sdk }) => {
+      sdk.actions.ready();
+    }).catch(() => {
+      // Not running inside a MiniApp host - ignore
+    });
+  }, []);
+
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>

@@ -1,0 +1,24 @@
+{
+  "accountAssociation": {
+    "header": "",
+    "payload": "",
+    "signature": ""
+  },
+  "frame": {
+    "version": "1",
+    "name": "BaseVault",
+    "subtitle": "On-Chain File Storage",
+    "description": "Store files directly on Base chain. Encrypt private files with wallet + password. Certify documents with on-chain proof. 100% on-chain, no servers.",
+    "iconUrl": "https://basevault.store/icon.png",
+    "homeUrl": "https://basevault.store",
+    "splashImageUrl": "https://basevault.store/icon.png",
+    "splashBackgroundColor": "#0a0a1a",
+    "primaryCategory": "utility",
+    "tags": ["storage", "files", "encryption", "certification", "base", "onchain"],
+    "heroImageUrl": "https://basevault.store/og-image.png",
+    "tagline": "Your files. Your keys. Your proof.",
+    "ogTitle": "BaseVault - On-Chain File Storage on Base",
+    "ogDescription": "Store files directly on Base chain. Encrypt private files. Certify documents with on-chain proof.",
+    "ogImageUrl": "https://basevault.store/og-image.png"
+  }
+}
