@@ -38,8 +38,8 @@ export default function Home() {
             <span className="stat-label">Certifications</span>
           </div>
           <div className="stat">
-            <span className="stat-value">1 tx</span>
-            <span className="stat-label">Single Approval</span>
+            <span className="stat-value">500 MB</span>
+            <span className="stat-label">Max File Size</span>
           </div>
         </div>
         <div className="hero-actions">
@@ -90,32 +90,11 @@ export default function Home() {
               </svg>
             </div>
             <h3>Any File Type</h3>
-            <p>Images, PDFs, documents, text files, anything up to 500KB. All stored permanently on Base chain with no restrictions.</p>
+            <p>Images, PDFs, documents, text files, anything up to 500 MB. All stored permanently on Base chain with no restrictions.</p>
           </div>
         </div>
       </section>
 
-      <section className="tech-stack">
-        <h2 className="section-title">Fully On-Chain Stack</h2>
-        <div className="stack-grid">
-          <div className="stack-item">
-            <span className="stack-name">Base L2</span>
-            <span className="stack-desc">Smart Contract & Storage</span>
-          </div>
-          <div className="stack-item">
-            <span className="stack-name">AES-256</span>
-            <span className="stack-desc">File Encryption</span>
-          </div>
-          <div className="stack-item">
-            <span className="stack-name">Solidity</span>
-            <span className="stack-desc">On-Chain Logic</span>
-          </div>
-          <div className="stack-item">
-            <span className="stack-name">React</span>
-            <span className="stack-desc">Frontend DApp</span>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }

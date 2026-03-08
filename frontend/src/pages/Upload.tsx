@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAccount, useWriteContract, usePublicClient, useSignMessage } from 'wagmi';
+import { useAccount, useWriteContract, usePublicClient, useSignMessage, useReadContract } from 'wagmi';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import toast from 'react-hot-toast';
 import FileDropzone from '../components/FileDropzone';
@@ -16,8 +16,9 @@ export default function Upload() {
   const [file, setFile] = useState<File | null>(null);
   const [isPublic, setIsPublic] = useState(true);
   const [password, setPassword] = useState('');
-  const [status, setStatus] = useState<'idle' | 'hashing' | 'signing' | 'encrypting' | 'uploading' | 'done'>('idle');
+  const [status, setStatus] = useState<'idle' | 'hashing' | 'signing' | 'encrypting' | 'creating' | 'uploading' | 'done'>('idle');
   const [progress, setProgress] = useState('');
+  const [chunkProgress, setChunkProgress] = useState({ current: 0, total: 0 });
   const [fileId, setFileId] = useState<number>(0);
   const [fileHash, setFileHash] = useState('');
   const [txHash, setTxHash] = useState('');
@@ -25,10 +26,17 @@ export default function Upload() {
   const { writeContractAsync } = useWriteContract();
   const { signMessageAsync } = useSignMessage();
 
+  const { data: feePerChunk } = useReadContract({
+    address: CONTRACT_ADDRESS,
+    abi,
+    functionName: 'feePerChunk',
+  });
+
   const handleFilesSelected = (files: File[]) => {
     setFile(files[0]);
     setStatus('idle');
     setProgress('');
+    setChunkProgress({ current: 0, total: 0 });
   };
 
   const handleUpload = async () => {
@@ -60,28 +68,75 @@ export default function Upload() {
       }
 
       const chunks = fileToChunks(buffer);
+      const chunkFee = feePerChunk as bigint;
+      const totalFee = chunkFee * BigInt(chunks.length);
 
-      // Step 3: Single transaction - create file + upload all data
-      setStatus('uploading');
-      setProgress(`Uploading file (${chunks.length} chunks) in one transaction...`);
+      if (chunks.length === 1) {
+        // Single chunk: one transaction
+        setStatus('uploading');
+        setProgress('Uploading file in one transaction...');
 
-      const uploadHash = await writeContractAsync({
-        address: CONTRACT_ADDRESS,
-        abi,
-        functionName: 'createFileWithData',
-        args: [hash as `0x${string}`, file.name, file.type, BigInt(file.size), isPublic, chunks],
-      });
+        const uploadHash = await writeContractAsync({
+          address: CONTRACT_ADDRESS,
+          abi,
+          functionName: 'createFileWithData',
+          args: [hash as `0x${string}`, file.name, file.type, BigInt(file.size), isPublic, chunks],
+          value: totalFee,
+        });
 
-      setProgress('Waiting for confirmation...');
-      const receipt = await publicClient.waitForTransactionReceipt({ hash: uploadHash });
-      setTxHash(uploadHash);
+        setProgress('Waiting for confirmation...');
+        const receipt = await publicClient.waitForTransactionReceipt({ hash: uploadHash });
+        setTxHash(uploadHash);
 
-      // Get file ID from event
-      const fileUploadedLog = receipt.logs.find(log =>
-        log.address.toLowerCase() === CONTRACT_ADDRESS.toLowerCase() && log.topics.length >= 2
-      );
-      const newFileId = fileUploadedLog ? parseInt(fileUploadedLog.topics[1] as string, 16) : 0;
-      setFileId(newFileId);
+        const fileUploadedLog = receipt.logs.find(log =>
+          log.address.toLowerCase() === CONTRACT_ADDRESS.toLowerCase() && log.topics.length >= 2
+        );
+        const newFileId = fileUploadedLog ? parseInt(fileUploadedLog.topics[1] as string, 16) : 0;
+        setFileId(newFileId);
+      } else {
+        // Multi-chunk: createFile (pays all fees) + uploadChunks (free)
+        setStatus('creating');
+        setProgress(`Creating file record (${chunks.length} chunks)...`);
+
+        const createHash = await writeContractAsync({
+          address: CONTRACT_ADDRESS,
+          abi,
+          functionName: 'createFile',
+          args: [hash as `0x${string}`, file.name, file.type, BigInt(file.size), BigInt(chunks.length), isPublic],
+          value: totalFee,
+        });
+
+        setProgress('Waiting for file record confirmation...');
+        const receipt = await publicClient.waitForTransactionReceipt({ hash: createHash });
+        setTxHash(createHash);
+
+        const fileUploadedLog = receipt.logs.find(log =>
+          log.address.toLowerCase() === CONTRACT_ADDRESS.toLowerCase() && log.topics.length >= 2
+        );
+        const newFileId = fileUploadedLog ? parseInt(fileUploadedLog.topics[1] as string, 16) : 0;
+        setFileId(newFileId);
+
+        toast.success('File record created! Uploading data chunks...');
+
+        // Upload chunks one by one (free - fee already paid)
+        setStatus('uploading');
+        setChunkProgress({ current: 0, total: chunks.length });
+
+        for (let i = 0; i < chunks.length; i++) {
+          setProgress(`Uploading chunk ${i + 1} of ${chunks.length}...`);
+          setChunkProgress({ current: i + 1, total: chunks.length });
+
+          const chunkHash = await writeContractAsync({
+            address: CONTRACT_ADDRESS,
+            abi,
+            functionName: 'uploadChunk',
+            args: [BigInt(newFileId), BigInt(i), chunks[i]],
+          });
+
+          await publicClient.waitForTransactionReceipt({ hash: chunkHash });
+          setTxHash(chunkHash);
+        }
+      }
 
       setStatus('done');
       setProgress('');
@@ -91,21 +146,15 @@ export default function Upload() {
       toast.error(err.shortMessage || err.message || 'Upload failed');
       setStatus('idle');
       setProgress('');
+      setChunkProgress({ current: 0, total: 0 });
     }
   };
 
   const estimateCost = (size: number) => {
     const dataSize = isPublic ? size : size + 16;
-    const chunks = Math.ceil(dataSize / CHUNK_SIZE);
-    // Calldata: ~16 gas per byte, Storage: ~20000 gas per 32-byte slot
-    const calldataGas = dataSize * 16;
-    const storageSlots = Math.ceil(dataSize / 32);
-    const storageGas = storageSlots * 20000;
-    const overheadGas = 200000;
-    const totalGas = calldataGas + storageGas + overheadGas;
-    // Base L2 gas is cheap, ~0.001 gwei effective
-    const costEth = (totalGas * 0.01) / 1e9;
-    return { chunks, totalGas, costEth };
+    const numChunks = Math.ceil(dataSize / CHUNK_SIZE);
+    const fee = feePerChunk ? Number(feePerChunk) * numChunks : 0;
+    return { chunks: numChunks, feeEth: fee / 1e18 };
   };
 
   const handleCopy = (text: string, label: string) => {
@@ -141,7 +190,7 @@ export default function Upload() {
                 <p>{file.type} - {formatFileSize(file.size)}</p>
                 {cost && (
                   <p className="cost-estimate">
-                    {cost.chunks} chunk{cost.chunks > 1 ? 's' : ''} | ~{cost.totalGas.toLocaleString()} gas | ~{cost.costEth.toFixed(6)} ETH | 1 transaction
+                    {cost.chunks} chunk{cost.chunks > 1 ? 's' : ''} | {cost.chunks === 1 ? '1 transaction' : `${cost.chunks + 1} transactions`} | Fee: {cost.feeEth > 0 ? `${cost.feeEth} ETH` : '...'}
                   </p>
                 )}
               </div>
@@ -192,16 +241,35 @@ export default function Upload() {
                 </>
               )}
 
-              {(status === 'hashing' || status === 'signing' || status === 'encrypting' || status === 'uploading') && (
+              {(status === 'hashing' || status === 'signing' || status === 'encrypting' || status === 'creating' || status === 'uploading') && (
                 <div className="upload-progress">
                   <div className="spinner" />
                   <div>
                     <p>{progress}</p>
+                    {chunkProgress.total > 0 && (
+                      <>
+                        <div className="progress-bar">
+                          <div
+                            className="progress-fill"
+                            style={{ width: `${(chunkProgress.current / chunkProgress.total) * 100}%` }}
+                          />
+                        </div>
+                        <p className="progress-sub">
+                          {chunkProgress.current}/{chunkProgress.total} chunks uploaded
+                        </p>
+                      </>
+                    )}
                     {status === 'signing' && (
                       <p className="progress-sub">Sign the message in your wallet to create your encryption key</p>
                     )}
-                    {status === 'uploading' && (
-                      <p className="progress-sub">Approve one transaction in your wallet. All data goes in one tx.</p>
+                    {status === 'creating' && (
+                      <p className="progress-sub">Confirm transaction in your wallet...</p>
+                    )}
+                    {status === 'uploading' && chunkProgress.total === 0 && (
+                      <p className="progress-sub">Confirm transaction in your wallet</p>
+                    )}
+                    {status === 'uploading' && chunkProgress.total > 0 && (
+                      <p className="progress-sub">Confirm each chunk transaction in your wallet</p>
                     )}
                   </div>
                 </div>
@@ -256,6 +324,7 @@ export default function Upload() {
                       setFileHash('');
                       setTxHash('');
                       setPassword('');
+                      setChunkProgress({ current: 0, total: 0 });
                     }}
                   >
                     Upload Another

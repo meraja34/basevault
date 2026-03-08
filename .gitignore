@@ -4,6 +4,7 @@ frontend/build/
 frontend/dist/
 contracts/out/
 contracts/cache/
+contracts/lib/
 .env
 *.log
 .DS_Store

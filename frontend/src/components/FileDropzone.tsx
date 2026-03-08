@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { MAX_FILE_SIZE } from '../constants';
-import { formatFileSize } from '../utils/ipfs';
 
 interface FileDropzoneProps {
   onFilesSelected: (files: File[]) => void;
@@ -48,7 +47,7 @@ export default function FileDropzone({
           )}
         </div>
         <p className="dropzone-label">{isDragActive ? 'Drop it here!' : label}</p>
-        <p className="dropzone-hint">Any file type. Max size: {formatFileSize(MAX_FILE_SIZE)}</p>
+        <p className="dropzone-hint">Any file type. Max size: 500 MB</p>
       </div>
     </div>
   );
