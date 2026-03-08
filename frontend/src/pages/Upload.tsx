@@ -193,10 +193,13 @@ export default function Upload() {
         const batchSuccess = await tryBatchUpload(chunks, newFileId);
 
         if (!batchSuccess) {
-          // Fallback: sequential uploads
+          // Fallback: approve all chunks rapidly, then wait for confirmations
+          const txHashes: `0x${string}`[] = [];
+
+          // Step 1: Get all approvals (no waiting for receipts between)
           for (let i = 0; i < chunks.length; i++) {
-            setProgress(`Uploading chunk ${i + 1} of ${chunks.length}...`);
-            setChunkProgress({ current: i + 1, total: chunks.length });
+            setProgress(`Approve chunk ${i + 1} of ${chunks.length} in wallet...`);
+            setChunkProgress({ current: i, total: chunks.length });
 
             const chunkHash = await writeContractAsync({
               address: CONTRACT_ADDRESS,
@@ -205,9 +208,18 @@ export default function Upload() {
               args: [BigInt(newFileId), BigInt(i), chunks[i]],
             });
 
-            await publicClient.waitForTransactionReceipt({ hash: chunkHash });
-            setTxHash(chunkHash);
+            txHashes.push(chunkHash);
           }
+
+          // Step 2: Wait for all confirmations in parallel
+          setProgress(`All ${chunks.length} chunks approved! Waiting for on-chain confirmations...`);
+          await Promise.all(
+            txHashes.map(async (hash) => {
+              await publicClient.waitForTransactionReceipt({ hash });
+              setChunkProgress(prev => ({ ...prev, current: prev.current + 1 }));
+            })
+          );
+          setTxHash(txHashes[txHashes.length - 1]);
         }
       }
 
@@ -356,7 +368,7 @@ export default function Upload() {
                       <p className="progress-sub">Confirm transaction in your wallet</p>
                     )}
                     {status === 'uploading' && chunkProgress.total > 0 && (
-                      <p className="progress-sub">Chunk uploads are free (fee already paid). Using Coinbase Smart Wallet? All chunks upload in one approval.</p>
+                      <p className="progress-sub">Chunk uploads are free (fee already paid). Approve each chunk quickly, confirmations happen in parallel.</p>
                     )}
                   </div>
                 </div>
