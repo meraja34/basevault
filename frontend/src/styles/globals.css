@@ -165,6 +165,36 @@ code {
   margin-top: 0.25rem;
 }
 
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+.footer-link:hover {
+  color: var(--primary);
+}
+
+.footer-link svg {
+  opacity: 0.7;
+  transition: opacity var(--transition);
+}
+
+.footer-link:hover svg {
+  opacity: 1;
+}
+
 /* ===== Page ===== */
 .page {
   max-width: 900px;

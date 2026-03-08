@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BaseVault - On-Chain File Storage on Base</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a0a1a;
+      color: #e0e0f0;
+      line-height: 1.7;
+      padding: 2rem 1rem;
+    }
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 2rem;
+    }
+    .logo img { width: 48px; height: 48px; }
+    .logo h1 { font-size: 1.8rem; font-weight: 700; }
+    .logo span { color: #0052FF; }
+    .date-bar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      color: #8888aa;
+      font-size: 0.85rem;
+      margin-bottom: 1.5rem;
+      padding: 0.6rem 1rem;
+      background: #12122a;
+      border: 1px solid #2a2a4a;
+      border-radius: 8px;
+    }
+    .date-bar svg { flex-shrink: 0; opacity: 0.6; }
+    .date-bar .separator { color: #2a2a4a; }
+    .tagline {
+      font-size: 1.1rem;
+      color: #8888aa;
+      margin-bottom: 2.5rem;
+      border-left: 3px solid #0052FF;
+      padding-left: 1rem;
+    }
+    h2 {
+      font-size: 1.3rem;
+      color: #fff;
+      margin: 2rem 0 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    h2 .icon { font-size: 1.4rem; }
+    .steps {
+      list-style: none;
+      counter-reset: step;
+    }
+    .steps li {
+      counter-increment: step;
+      padding: 0.6rem 0 0.6rem 2.5rem;
+      position: relative;
+      color: #c0c0d8;
+    }
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      width: 28px;
+      height: 28px;
+      background: #0052FF;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      top: 0.55rem;
+    }
+    .compare {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+    .compare-item {
+      background: #12122a;
+      border: 1px solid #2a2a4a;
+      border-radius: 10px;
+      padding: 1rem 1.2rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .compare-item.bad { border-left: 3px solid #ff5252; }
+    .compare-item.good { border-left: 3px solid #00c853; }
+    .compare-item .label {
+      font-weight: 600;
+      min-width: 80px;
+      color: #fff;
+    }
+    .compare-item .desc { color: #8888aa; }
+    .features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+      margin-top: 0.5rem;
+    }
+    .feature {
+      background: #12122a;
+      border: 1px solid #2a2a4a;
+      border-radius: 10px;
+      padding: 0.8rem 1rem;
+      font-size: 0.92rem;
+      color: #c0c0d8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .feature .check { color: #00c853; font-size: 1.1rem; }
+    .audience {
+      list-style: none;
+      margin-top: 0.5rem;
+    }
+    .audience li {
+      padding: 0.4rem 0;
+      color: #c0c0d8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .audience li::before {
+      content: "\2192";
+      color: #0052FF;
+      font-weight: 700;
+    }
+    .links {
+      margin-top: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0.9rem 1.5rem;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      text-align: center;
+      justify-content: center;
+      transition: 0.2s ease;
+    }
+    .link-btn.primary {
+      background: #0052FF;
+      color: #fff;
+    }
+    .link-btn.primary:hover { background: #0066ff; }
+    .link-btn.outline {
+      background: transparent;
+      color: #0052FF;
+      border: 1px solid #0052FF;
+    }
+    .link-btn.outline:hover { background: #0052FF20; }
+    .built-by {
+      margin-top: 2.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #2a2a4a;
+      text-align: center;
+      color: #8888aa;
+      font-size: 0.9rem;
+    }
+    .built-by a { color: #0052FF; text-decoration: none; }
+    .built-by a:hover { text-decoration: underline; }
+    .copy-box {
+      margin-top: 2rem;
+      background: #12122a;
+      border: 1px solid #2a2a4a;
+      border-radius: 10px;
+      padding: 1.5rem;
+    }
+    .copy-box h3 {
+      color: #fff;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+    .cast {
+      background: #0a0a1a;
+      border: 1px solid #2a2a4a;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+    .cast-label {
+      color: #0052FF;
+      font-weight: 700;
+      font-size: 0.8rem;
+      margin-bottom: 0.5rem;
+    }
+    .cast pre {
+      white-space: pre-wrap;
+      color: #c0c0d8;
+      font-family: inherit;
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: #0052FF;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 0.3rem 0.7rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .copy-btn:hover { background: #0066ff; }
+    .copy-btn.copied { background: #00c853; }
+    @media (max-width: 600px) {
+      .features { grid-template-columns: 1fr; }
+      .compare-item .label { min-width: 60px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <img src="/icon.svg" alt="BaseVault">
+      <h1>Base<span>Vault</span></h1>
+    </div>
+
+    <div class="date-bar">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      8 March 2026
+      <span class="separator">|</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      10:47 PM
+    </div>
+
+    <p class="tagline">Your files deserve better than "trust me bro" storage. Here's what BaseVault does differently.</p>
+
+    <h2><span class="icon">&#128190;</span> What is BaseVault?</h2>
+    <p style="color:#c0c0d8;">A platform where your actual file bytes are stored inside a smart contract on Base. Not a hash. Not a link. The real file, on-chain, forever.</p>
+
+    <h2><span class="icon">&#9889;</span> How it works</h2>
+    <ol class="steps">
+      <li>Connect your wallet (Coinbase Smart Wallet recommended)</li>
+      <li>Pick a file (up to 50 MB, any type)</li>
+      <li>Choose Public or Private (encrypted with wallet + password)</li>
+      <li>File gets split into 24 KB chunks</li>
+      <li>All chunks stored on-chain in one batch transaction</li>
+      <li>Done. Your file lives on Base forever</li>
+    </ol>
+
+    <h2><span class="icon">&#128308;</span> Why not IPFS / Arweave / Filecoin?</h2>
+    <div class="compare">
+      <div class="compare-item bad">
+        <span class="label">IPFS</span>
+        <span class="desc">Files disappear if nobody pins them. You trust Pinata, not the chain.</span>
+      </div>
+      <div class="compare-item bad">
+        <span class="label">Arweave</span>
+        <span class="desc">Separate chain, separate wallet, separate ecosystem.</span>
+      </div>
+      <div class="compare-item bad">
+        <span class="label">Filecoin</span>
+        <span class="desc">Same problem, different chain.</span>
+      </div>
+      <div class="compare-item good">
+        <span class="label">BaseVault</span>
+        <span class="desc">Actual bytes on Base. Same chain as your wallet. No external dependency.</span>
+      </div>
+    </div>
+
+    <h2><span class="icon">&#9989;</span> What makes it different</h2>
+    <div class="features">
+      <div class="feature"><span class="check">&#10003;</span> Truly on-chain storage, not just a hash</div>
+      <div class="feature"><span class="check">&#10003;</span> AES-256 encrypted private files</div>
+      <div class="feature"><span class="check">&#10003;</span> SHA-256 document certification</div>
+      <div class="feature"><span class="check">&#10003;</span> Batch uploads via Smart Wallet</div>
+      <div class="feature"><span class="check">&#10003;</span> Farcaster MiniApp with auto-connect</div>
+      <div class="feature"><span class="check">&#10003;</span> Permissionless, no signup needed</div>
+      <div class="feature"><span class="check">&#10003;</span> Permanent and immutable storage</div>
+      <div class="feature"><span class="check">&#10003;</span> Any file type up to 50 MB</div>
+    </div>
+
+    <h2><span class="icon">&#127919;</span> Who is it for?</h2>
+    <ul class="audience">
+      <li>Anyone who wants censorship-resistant file storage</li>
+      <li>Legal proof and document certification</li>
+      <li>Private file storage on a public blockchain</li>
+      <li>Developers who need verifiable on-chain data</li>
+    </ul>
+
+    <div class="links">
+      <a href="https://basevault.store" class="link-btn primary" target="_blank">Try BaseVault</a>
+      <a href="https://basescan.org/address/0x4B46B971f1fBDF6f6D45b703b2f2D042D06CFed3" class="link-btn outline" target="_blank">View Smart Contract on Basescan</a>
+    </div>
+
+    <div class="built-by">
+      Built by <a href="https://farcaster.xyz/alphacaster.eth" target="_blank">@alphacaster.base.eth</a>
+    </div>
+
+    <!-- Copy-paste casts for Farcaster thread -->
+    <div class="copy-box">
+      <h3>Farcaster Thread (Copy-Paste)</h3>
+
+      <div class="cast">
+        <div class="cast-label">Cast 1 - Intro</div>
+        <button class="copy-btn" onclick="copyText(this)">Copy</button>
+        <pre>Introducing BaseVault - Fully On-Chain File Storage on Base
+
+Your files deserve better than "trust me bro" storage.
+
+BaseVault stores your actual file bytes inside a smart contract on Base. Not a hash. Not a link. The real file, on-chain, forever.
+
+How it works:
+1. Connect wallet
+2. Pick any file (up to 50 MB)
+3. Choose Public or Private
+4. File splits into 24 KB chunks
+5. All chunks stored on-chain in one batch tx
+6. Done. Your file lives on Base forever
+
+https://basevault.store</pre>
+      </div>
+
+      <div class="cast">
+        <div class="cast-label">Cast 2 - Comparison</div>
+        <button class="copy-btn" onclick="copyText(this)">Copy</button>
+        <pre>Why not IPFS / Arweave / Filecoin?
+
+IPFS: Files disappear if nobody pins them. You trust Pinata, not the chain.
+
+Arweave: Separate chain, separate wallet, separate ecosystem.
+
+Filecoin: Same problem, different chain.
+
+BaseVault: Actual bytes on Base. Same chain as your wallet. No external dependency. No pinning. No trust assumptions.
+
+Your file is on the blockchain. Period.</pre>
+      </div>
+
+      <div class="cast">
+        <div class="cast-label">Cast 3 - Features</div>
+        <button class="copy-btn" onclick="copyText(this)">Copy</button>
+        <pre>What makes BaseVault different:
+
+- Truly on-chain storage, not just a hash pointing somewhere else
+- Private files with AES-256 encryption (wallet + password)
+- Document certification with SHA-256 proof and timestamp
+- Batch uploads via Coinbase Smart Wallet
+- Works as a Farcaster MiniApp
+- No signup, no KYC, just connect and upload
+- Permanent and immutable, nobody can delete your files</pre>
+      </div>
+
+      <div class="cast">
+        <div class="cast-label">Cast 4 - CTA</div>
+        <button class="copy-btn" onclick="copyText(this)">Copy</button>
+        <pre>BaseVault is live on Base mainnet.
+
+Try it: https://basevault.store
+MiniApp: https://farcaster.xyz/miniapps/basevault.store
+Contract: https://basescan.org/address/0x4B46B971f1fBDF6f6D45b703b2f2D042D06CFed3
+
+Built solo. Shipping fast. Your files. Your keys. Your proof.</pre>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function copyText(btn) {
+      const pre = btn.parentElement.querySelector('pre');
+      navigator.clipboard.writeText(pre.textContent).then(() => {
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>

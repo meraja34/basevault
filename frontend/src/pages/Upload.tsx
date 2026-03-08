@@ -79,23 +79,37 @@ export default function Upload() {
         // Poll for batch completion
         setProgress(`Waiting for on-chain confirmation${batchLabel}...`);
         let confirmed = false;
-        while (!confirmed) {
+        let pollAttempts = 0;
+        const maxPolls = 120; // 4 minutes max
+        while (!confirmed && pollAttempts < maxPolls) {
           await new Promise(r => setTimeout(r, 2000));
+          pollAttempts++;
           try {
             const result = await (walletClient as any).request({
               method: 'wallet_getCallsStatus',
               params: [batchId],
             });
-            if (result.status === 'CONFIRMED') {
+            const st = (result.status || '').toString().toUpperCase();
+            if (st === 'CONFIRMED' || st === 'COMPLETE' || st === 'COMPLETED' || result.status === 200) {
               confirmed = true;
               setChunkProgress({
                 current: Math.min((b + 1) * BATCH_SIZE, chunks.length),
                 total: chunks.length,
               });
+            } else if (st === 'FAILED' || st === 'REJECTED') {
+              throw new Error('Batch transaction failed on-chain');
             }
-          } catch {
-            // Keep polling
+          } catch (pollErr: any) {
+            if (pollErr?.message?.includes('failed on-chain')) throw pollErr;
+            // Keep polling for other errors
           }
+        }
+        if (!confirmed) {
+          // Timeout but tx might still be processing - don't error out
+          setChunkProgress({
+            current: Math.min((b + 1) * BATCH_SIZE, chunks.length),
+            total: chunks.length,
+          });
         }
       }
 
