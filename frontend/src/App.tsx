@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import '@rainbow-me/rainbowkit/styles.css';
 import { RainbowKitProvider, darkTheme, ConnectButton } from '@rainbow-me/rainbowkit';
-import { WagmiProvider } from 'wagmi';
+import { WagmiProvider, useConnect, useAccount } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { config } from './config';
+import { config, farcasterConnectorId } from './config';
 import { useMiniApp } from './hooks/useMiniApp';
 import Header from './components/Header';
 import BottomTabs from './components/BottomTabs';
@@ -19,15 +19,23 @@ const queryClient = new QueryClient();
 
 function AppContent() {
   const isMiniApp = useMiniApp();
+  const { connect, connectors } = useConnect();
+  const { isConnected } = useAccount();
 
-  // Signal to MiniApp host (Base App / Farcaster) that app is ready
+  // Signal to MiniApp host and auto-connect wallet
   useEffect(() => {
     import('@farcaster/miniapp-sdk').then(({ sdk }) => {
       sdk.actions.ready();
-    }).catch(() => {
-      // Not running inside a MiniApp host - ignore
-    });
-  }, []);
+
+      // Auto-connect if inside MiniApp and not already connected
+      if (isMiniApp && !isConnected) {
+        const fc = connectors.find(c => c.id === farcasterConnectorId);
+        if (fc) {
+          connect({ connector: fc });
+        }
+      }
+    }).catch(() => {});
+  }, [isMiniApp, isConnected]);
 
   return (
     <BrowserRouter>
