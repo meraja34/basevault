@@ -47,7 +47,7 @@ export default function FileDropzone({
           )}
         </div>
         <p className="dropzone-label">{isDragActive ? 'Drop it here!' : label}</p>
-        <p className="dropzone-hint">Any file type. Max size: 500 MB</p>
+        <p className="dropzone-hint">Any file type. Max size: 50 MB</p>
       </div>
     </div>
   );

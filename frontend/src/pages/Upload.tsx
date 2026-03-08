@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useAccount, useWriteContract, usePublicClient, useSignMessage, useReadContract } from 'wagmi';
+import { useAccount, useWriteContract, usePublicClient, useSignMessage, useReadContract, useWalletClient } from 'wagmi';
+import { encodeFunctionData } from 'viem';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import toast from 'react-hot-toast';
 import FileDropzone from '../components/FileDropzone';
@@ -9,10 +10,12 @@ import { CONTRACT_ADDRESS, CHUNK_SIZE } from '../constants';
 import abi from '../abi/BaseVault.json';
 
 const SIGN_MESSAGE = 'BaseVault: Authorize encryption key for private files';
+const BATCH_SIZE = 50; // Max calls per batch for wallet_sendCalls
 
 export default function Upload() {
-  const { isConnected } = useAccount();
+  const { address, isConnected } = useAccount();
   const publicClient = usePublicClient();
+  const { data: walletClient } = useWalletClient();
   const [file, setFile] = useState<File | null>(null);
   const [isPublic, setIsPublic] = useState(true);
   const [password, setPassword] = useState('');
@@ -37,6 +40,69 @@ export default function Upload() {
     setStatus('idle');
     setProgress('');
     setChunkProgress({ current: 0, total: 0 });
+  };
+
+  // Try batch upload using EIP-5792 wallet_sendCalls (Coinbase Smart Wallet etc.)
+  const tryBatchUpload = async (chunks: `0x${string}`[], newFileId: number): Promise<boolean> => {
+    if (!walletClient || !address) return false;
+
+    try {
+      const calls = chunks.map((chunk, i) => ({
+        to: CONTRACT_ADDRESS as `0x${string}`,
+        data: encodeFunctionData({
+          abi,
+          functionName: 'uploadChunk',
+          args: [BigInt(newFileId), BigInt(i), chunk],
+        }),
+        value: '0x0' as const,
+      }));
+
+      // Send in batches if too many calls
+      const totalBatches = Math.ceil(calls.length / BATCH_SIZE);
+
+      for (let b = 0; b < totalBatches; b++) {
+        const batchCalls = calls.slice(b * BATCH_SIZE, (b + 1) * BATCH_SIZE);
+        const batchLabel = totalBatches > 1 ? ` (batch ${b + 1}/${totalBatches})` : '';
+        setProgress(`Uploading ${batchCalls.length} chunks${batchLabel}... Approve once in your wallet.`);
+
+        const batchId = await (walletClient as any).request({
+          method: 'wallet_sendCalls',
+          params: [{
+            version: '1.0',
+            from: address,
+            calls: batchCalls,
+            chainId: `0x${(8453).toString(16)}`,
+          }],
+        });
+
+        // Poll for batch completion
+        setProgress(`Waiting for on-chain confirmation${batchLabel}...`);
+        let confirmed = false;
+        while (!confirmed) {
+          await new Promise(r => setTimeout(r, 2000));
+          try {
+            const result = await (walletClient as any).request({
+              method: 'wallet_getCallsStatus',
+              params: [batchId],
+            });
+            if (result.status === 'CONFIRMED') {
+              confirmed = true;
+              setChunkProgress({
+                current: Math.min((b + 1) * BATCH_SIZE, chunks.length),
+                total: chunks.length,
+              });
+            }
+          } catch {
+            // Keep polling
+          }
+        }
+      }
+
+      return true;
+    } catch (err) {
+      console.log('wallet_sendCalls not supported, falling back to sequential:', err);
+      return false;
+    }
   };
 
   const handleUpload = async () => {
@@ -96,7 +162,7 @@ export default function Upload() {
       } else {
         // Multi-chunk: createFile (pays all fees) + uploadChunks (free)
         setStatus('creating');
-        setProgress(`Creating file record (${chunks.length} chunks)...`);
+        setProgress(`Creating file record (${chunks.length} chunks, fee: ${Number(totalFee) / 1e18} ETH)...`);
 
         const createHash = await writeContractAsync({
           address: CONTRACT_ADDRESS,
@@ -118,23 +184,29 @@ export default function Upload() {
 
         toast.success('File record created! Uploading data chunks...');
 
-        // Upload chunks one by one (free - fee already paid)
+        // Upload chunks
         setStatus('uploading');
         setChunkProgress({ current: 0, total: chunks.length });
 
-        for (let i = 0; i < chunks.length; i++) {
-          setProgress(`Uploading chunk ${i + 1} of ${chunks.length}...`);
-          setChunkProgress({ current: i + 1, total: chunks.length });
+        // Try batch upload first (EIP-5792 - single approval)
+        const batchSuccess = await tryBatchUpload(chunks, newFileId);
 
-          const chunkHash = await writeContractAsync({
-            address: CONTRACT_ADDRESS,
-            abi,
-            functionName: 'uploadChunk',
-            args: [BigInt(newFileId), BigInt(i), chunks[i]],
-          });
+        if (!batchSuccess) {
+          // Fallback: sequential uploads
+          for (let i = 0; i < chunks.length; i++) {
+            setProgress(`Uploading chunk ${i + 1} of ${chunks.length}...`);
+            setChunkProgress({ current: i + 1, total: chunks.length });
 
-          await publicClient.waitForTransactionReceipt({ hash: chunkHash });
-          setTxHash(chunkHash);
+            const chunkHash = await writeContractAsync({
+              address: CONTRACT_ADDRESS,
+              abi,
+              functionName: 'uploadChunk',
+              args: [BigInt(newFileId), BigInt(i), chunks[i]],
+            });
+
+            await publicClient.waitForTransactionReceipt({ hash: chunkHash });
+            setTxHash(chunkHash);
+          }
         }
       }
 
@@ -171,7 +243,7 @@ export default function Upload() {
     <div className="page">
       <h1 className="page-title">Upload Files On-Chain</h1>
       <p className="page-desc">
-        Files are stored directly on Base chain. No IPFS, no servers, fully on-chain and permanent.
+        Files are stored directly on Base chain. No servers, fully on-chain and permanent.
       </p>
 
       {!isConnected ? (
@@ -190,7 +262,7 @@ export default function Upload() {
                 <p>{file.type} - {formatFileSize(file.size)}</p>
                 {cost && (
                   <p className="cost-estimate">
-                    {cost.chunks} chunk{cost.chunks > 1 ? 's' : ''} | {cost.chunks === 1 ? '1 transaction' : `${cost.chunks + 1} transactions`} | Fee: {cost.feeEth > 0 ? `${cost.feeEth} ETH` : '...'}
+                    {cost.chunks} chunk{cost.chunks > 1 ? 's' : ''} | Fee: {cost.feeEth > 0 ? `${cost.feeEth} ETH` : '...'} + gas
                   </p>
                 )}
               </div>
@@ -263,13 +335,13 @@ export default function Upload() {
                       <p className="progress-sub">Sign the message in your wallet to create your encryption key</p>
                     )}
                     {status === 'creating' && (
-                      <p className="progress-sub">Confirm transaction in your wallet...</p>
+                      <p className="progress-sub">Confirm transaction in your wallet. Fee is paid upfront for all chunks.</p>
                     )}
                     {status === 'uploading' && chunkProgress.total === 0 && (
                       <p className="progress-sub">Confirm transaction in your wallet</p>
                     )}
                     {status === 'uploading' && chunkProgress.total > 0 && (
-                      <p className="progress-sub">Confirm each chunk transaction in your wallet</p>
+                      <p className="progress-sub">Chunk uploads are free (fee already paid). Using Coinbase Smart Wallet? All chunks upload in one approval.</p>
                     )}
                   </div>
                 </div>

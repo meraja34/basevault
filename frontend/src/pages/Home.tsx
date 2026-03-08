@@ -26,7 +26,7 @@ export default function Home() {
         </h1>
         <p className="hero-desc">
           Upload any file directly on Base chain. Encrypt private files with wallet + password.
-          Certify documents with on-chain proof. No IPFS, no servers, 100% on-chain.
+          Certify documents with on-chain proof. No servers, 100% on-chain.
         </p>
         <div className="hero-stats">
           <div className="stat">
@@ -38,7 +38,7 @@ export default function Home() {
             <span className="stat-label">Certifications</span>
           </div>
           <div className="stat">
-            <span className="stat-value">500 MB</span>
+            <span className="stat-value">50 MB</span>
             <span className="stat-label">Max File Size</span>
           </div>
         </div>
@@ -60,7 +60,7 @@ export default function Home() {
               </svg>
             </div>
             <h3>Upload On-Chain</h3>
-            <p>Files are stored directly on Base chain in one transaction. No IPFS, no third-party, fully on-chain and permanent.</p>
+            <p>Files are stored directly on Base chain. No third-party, fully on-chain and permanent. Your data lives on the blockchain forever.</p>
           </div>
           <div className="feature-card">
             <div className="feature-icon">
@@ -90,8 +90,63 @@ export default function Home() {
               </svg>
             </div>
             <h3>Any File Type</h3>
-            <p>Images, PDFs, documents, text files, anything up to 500 MB. All stored permanently on Base chain with no restrictions.</p>
+            <p>Images, PDFs, documents, text files, anything up to 50 MB. All stored permanently on Base chain with no restrictions.</p>
           </div>
+        </div>
+      </section>
+
+      <section className="faq-section">
+        <h2 className="section-title">Frequently Asked Questions</h2>
+        <div className="faq-list">
+          <details className="faq-item">
+            <summary>What is BaseVault?</summary>
+            <p>BaseVault is an on-chain file storage and document certification platform built on Base (Ethereum Layer 2). You can upload any file and it gets stored directly on the blockchain. No servers, no cloud storage, your files live on-chain permanently.</p>
+          </details>
+
+          <details className="faq-item">
+            <summary>How is this different from Google Drive or Dropbox?</summary>
+            <p>Google Drive and Dropbox store your files on their servers. They can delete your files, get hacked, or shut down. BaseVault stores your files directly on the blockchain. Nobody can delete, modify, or censor your data. It stays on-chain forever.</p>
+          </details>
+
+          <details className="faq-item">
+            <summary>What does "on-chain" mean?</summary>
+            <p>On-chain means your file data is stored directly inside the blockchain (Base network). Every node on the network has a copy of your data. There is no separate server or storage service involved. The blockchain itself is the storage.</p>
+          </details>
+
+          <details className="faq-item">
+            <summary>How does private file encryption work?</summary>
+            <p>When you upload a private file, it gets encrypted with AES-256 before going on-chain. The encryption key is created from two things: your wallet signature and a password you choose. Both are needed to decrypt. Even though the encrypted data is on-chain and visible, nobody can read it without your wallet and password.</p>
+          </details>
+
+          <details className="faq-item">
+            <summary>What is document certification?</summary>
+            <p>Certification creates a tamper-proof, timestamped record on the blockchain proving that your document existed at a specific time. This can be used for legal proof, intellectual property, contracts, or any document where you need to prove authenticity and timing.</p>
+          </details>
+
+          <details className="faq-item">
+            <summary>How much does it cost?</summary>
+            <p>You pay a small fee per chunk (24 KB each) when uploading. The total cost depends on your file size. Before uploading, the app shows you the exact fee and number of chunks. You also pay standard Base network gas fees for each transaction, which are very low on Base L2.</p>
+          </details>
+
+          <details className="faq-item">
+            <summary>What file types can I upload?</summary>
+            <p>Any file type. Images, PDFs, documents, spreadsheets, text files, audio, video, code. There are no restrictions on file type. Maximum file size is 50 MB.</p>
+          </details>
+
+          <details className="faq-item">
+            <summary>Can I delete a file after uploading?</summary>
+            <p>No. Once a file is stored on-chain, it is permanent. This is by design. Blockchain storage is immutable, meaning nobody (not even BaseVault) can modify or delete your data. Think carefully before uploading.</p>
+          </details>
+
+          <details className="faq-item">
+            <summary>What wallet do I need?</summary>
+            <p>You can use MetaMask, Coinbase Wallet, Rainbow, or any wallet that supports Base network. Coinbase Smart Wallet is recommended as it supports batch transactions, making large file uploads faster with a single approval.</p>
+          </details>
+
+          <details className="faq-item">
+            <summary>How does file verification work?</summary>
+            <p>Every file gets a unique SHA-256 hash when uploaded. This hash is stored on-chain. Anyone can verify a document by uploading it on the Verify page. If the hash matches a file on BaseVault, it confirms the document is authentic and shows when it was uploaded.</p>
+          </details>
         </div>
       </section>
 
