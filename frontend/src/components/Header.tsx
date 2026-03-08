@@ -16,7 +16,7 @@ export default function Header() {
     <header className="header">
       <div className="header-inner">
         <Link to="/" className="logo">
-          <div className="logo-icon">BV</div>
+          <img src="/icon.svg" alt="BaseVault" className="logo-img" />
           <span className="logo-text">BaseVault</span>
         </Link>
         <nav className="nav">

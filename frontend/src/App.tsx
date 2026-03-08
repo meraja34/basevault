@@ -36,7 +36,7 @@ function AppContent() {
         {isMiniApp && (
           <header className="miniapp-header">
             <div className="miniapp-header-inner">
-              <div className="logo-icon" style={{ width: 28, height: 28, fontSize: 11 }}>BV</div>
+              <img src="/icon.svg" alt="BaseVault" className="logo-img" style={{ width: 28, height: 28 }} />
               <span className="miniapp-title">BaseVault</span>
               <div style={{ marginLeft: 'auto' }}>
                 <ConnectButton showBalance={false} chainStatus="none" accountStatus="avatar" label="Connect" />
