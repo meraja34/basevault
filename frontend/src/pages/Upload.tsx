@@ -25,6 +25,7 @@ export default function Upload() {
   const [fileId, setFileId] = useState<number>(0);
   const [fileHash, setFileHash] = useState('');
   const [txHash, setTxHash] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const { writeContractAsync } = useWriteContract();
   const { signMessageAsync } = useSignMessage();
@@ -289,13 +290,27 @@ export default function Upload() {
                   {!isPublic && (
                     <div className="password-section">
                       <label>Encryption Password</label>
-                      <input
-                        type="password"
-                        placeholder="Enter a strong password..."
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="input-full"
-                      />
+                      <div className="password-input-wrapper">
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          placeholder="Enter a strong password..."
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className="input-full"
+                          autoComplete="off"
+                          autoCorrect="off"
+                          autoCapitalize="off"
+                          spellCheck={false}
+                          inputMode="text"
+                        />
+                        <button
+                          type="button"
+                          className="password-toggle-btn"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? 'Hide' : 'Show'}
+                        </button>
+                      </div>
                       <p className="password-hint">
                         Your file is encrypted using Wallet Signature + Password. Both are needed to decrypt. Remember this password.
                       </p>

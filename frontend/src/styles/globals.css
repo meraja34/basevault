@@ -1099,6 +1099,32 @@ textarea {
   margin-bottom: 0.25rem;
 }
 
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-wrapper .input-full {
+  padding-right: 4rem;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  font-family: inherit;
+}
+
+.password-toggle-btn:hover {
+  color: var(--text);
+}
+
 .password-hint {
   font-size: 0.8rem;
   color: var(--text-muted);

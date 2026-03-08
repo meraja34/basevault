@@ -192,10 +192,14 @@ export default function FileCard({
             <label>Enter your password:</label>
             <div className="decrypt-input-row">
               <input
-                type="password"
+                type="text"
                 placeholder="Password..."
                 value={decryptPassword}
                 onChange={(e) => setDecryptPassword(e.target.value)}
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck={false}
               />
               <button className="btn btn-sm btn-primary" onClick={handleDecrypt} disabled={loading || !decryptPassword}>
                 {loading ? '...' : 'Decrypt'}
