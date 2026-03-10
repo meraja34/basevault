@@ -1,0 +1,33 @@
+{
+  "accountAssociation": {
+    "header": "eyJmaWQiOjE2Nzk1LCJ0eXBlIjoiYXV0aCIsImtleSI6IjB4MzA3NTQ0MWY2QTVFMzE1NjNCN0NmOEVBQjhDOTRkZDBGOERiNzRiMSJ9",
+    "payload": "eyJkb21haW4iOiJhcHAuYmFzZXZhdWx0LnN0b3JlIn0",
+    "signature": "UTxdU2D+95A0ylg7Jew9KR0vNcojtmCfxwuURm28mNRIA6SDdMEIlfRChAsTV4rDgb2AzJ0FJ4LLSnQsgb3fthw="
+  },
+  "frame": {
+    "version": "1",
+    "name": "BaseVault",
+    "iconUrl": "https://app.basevault.store/icon.png",
+    "homeUrl": "https://app.basevault.store",
+    "imageUrl": "https://app.basevault.store/og-image.png",
+    "splashImageUrl": "https://app.basevault.store/icon.png",
+    "splashBackgroundColor": "#0a0a1a",
+    "subtitle": "On-Chain Document Storage",
+    "description": "Store files directly on Base chain. Encrypt private files with your wallet and a password. Certify documents with on-chain proof.",
+    "primaryCategory": "utility",
+    "tags": ["storage", "encryption", "certification", "base", "onchain"],
+    "heroImageUrl": "https://app.basevault.store/og-image.png",
+    "tagline": "Your files. Your keys.",
+    "ogTitle": "BaseVault File Storage",
+    "ogDescription": "Store files directly on Base chain. Encrypt private files. Certify documents with on-chain proof.",
+    "ogImageUrl": "https://app.basevault.store/og-image.png",
+    "requiredChains": ["eip155:8453"],
+    "requiredCapabilities": [
+      "actions.ready",
+      "actions.openUrl",
+      "actions.close",
+      "wallet.getEthereumProvider"
+    ],
+    "noindex": false
+  }
+}

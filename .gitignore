@@ -2,6 +2,8 @@ node_modules/
 frontend/node_modules/
 frontend/build/
 frontend/dist/
+certifier-app/node_modules/
+certifier-app/build/
 contracts/out/
 contracts/cache/
 contracts/lib/

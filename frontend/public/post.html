@@ -21,7 +21,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
     }
     .logo img { width: 48px; height: 48px; }
     .logo h1 { font-size: 1.8rem; font-weight: 700; }
@@ -241,10 +241,10 @@
 
     <div class="date-bar">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      8 March 2026
+      10 March 2026
       <span class="separator">|</span>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      10:47 PM
+      12:00 AM
     </div>
 
     <p class="tagline">Your files deserve better than "trust me bro" storage. Here's what BaseVault does differently.</p>
@@ -305,6 +305,7 @@
     <div class="links">
       <a href="https://basevault.store" class="link-btn primary" target="_blank">Try BaseVault</a>
       <a href="https://basescan.org/address/0x4B46B971f1fBDF6f6D45b703b2f2D042D06CFed3" class="link-btn outline" target="_blank">View Smart Contract on Basescan</a>
+      <a href="https://github.com/meraja34/basevault" class="link-btn outline" target="_blank">GitHub (Open Source)</a>
     </div>
 
     <div class="built-by">
@@ -318,63 +319,76 @@
       <div class="cast">
         <div class="cast-label">Cast 1 - Intro</div>
         <button class="copy-btn" onclick="copyText(this)">Copy</button>
-        <pre>Introducing BaseVault - Fully On-Chain File Storage on Base
+        <pre>I vibe coded a fully on-chain file storage platform on Base.
 
-Your files deserve better than "trust me bro" storage.
+Introducing BaseVault
 
-BaseVault stores your actual file bytes inside a smart contract on Base. Not a hash. Not a link. The real file, on-chain, forever.
+Not IPFS. Not Arweave. Your actual file bytes stored inside a smart contract.
 
-How it works:
-1. Connect wallet
-2. Pick any file (up to 50 MB)
-3. Choose Public or Private
-4. File splits into 24 KB chunks
-5. All chunks stored on-chain in one batch tx
-6. Done. Your file lives on Base forever
+Upload any file up to 50 MB. Choose public or private. Private files are encrypted with AES-256 using your wallet signature and a password. Nobody can read them without both.
+
+Smart contract verified on Basescan. Code is open source.
 
 https://basevault.store</pre>
       </div>
 
       <div class="cast">
-        <div class="cast-label">Cast 2 - Comparison</div>
+        <div class="cast-label">Cast 2 - How it works</div>
         <button class="copy-btn" onclick="copyText(this)">Copy</button>
-        <pre>Why not IPFS / Arweave / Filecoin?
+        <pre>How BaseVault works:
 
-IPFS: Files disappear if nobody pins them. You trust Pinata, not the chain.
+1. Connect wallet (Coinbase Smart Wallet for batch tx)
+2. Pick any file, any type, up to 50 MB
+3. Choose Public or Private
+4. Private = AES-256 encrypted with wallet sig + password
+5. File splits into 24 KB chunks
+6. All chunks stored on-chain in one batch transaction
+7. Your file lives on Base forever
 
-Arweave: Separate chain, separate wallet, separate ecosystem.
-
-Filecoin: Same problem, different chain.
-
-BaseVault: Actual bytes on Base. Same chain as your wallet. No external dependency. No pinning. No trust assumptions.
-
-Your file is on the blockchain. Period.</pre>
+No servers. No pinning. No external storage. Every byte is in the smart contract.</pre>
       </div>
 
       <div class="cast">
-        <div class="cast-label">Cast 3 - Features</div>
+        <div class="cast-label">Cast 3 - Why not IPFS</div>
         <button class="copy-btn" onclick="copyText(this)">Copy</button>
-        <pre>What makes BaseVault different:
+        <pre>Everyone says "onchain" but stores data off-chain.
 
-- Truly on-chain storage, not just a hash pointing somewhere else
-- Private files with AES-256 encryption (wallet + password)
-- Document certification with SHA-256 proof and timestamp
-- Batch uploads via Coinbase Smart Wallet
-- Works as a Farcaster MiniApp
-- No signup, no KYC, just connect and upload
-- Permanent and immutable, nobody can delete your files</pre>
+IPFS: Your file disappears if nobody pins it. You're trusting Pinata, not the blockchain.
+
+Arweave: Separate chain. Separate wallet. Separate ecosystem.
+
+Filecoin: Same story, different chain.
+
+BaseVault: Actual file bytes inside a smart contract on Base. Same chain where your wallet lives. No external dependency. No middlemen.
+
+We actually did what everyone else only claims to do.</pre>
       </div>
 
       <div class="cast">
-        <div class="cast-label">Cast 4 - CTA</div>
+        <div class="cast-label">Cast 4 - Privacy</div>
         <button class="copy-btn" onclick="copyText(this)">Copy</button>
-        <pre>BaseVault is live on Base mainnet.
+        <pre>On IPFS or Arweave, everything is public. Anyone with the hash can see your file.
+
+BaseVault lets you upload private files on a public blockchain.
+
+How: Your file is encrypted client-side with AES-256 before going on-chain. The key comes from two things, your wallet signature and a password you choose.
+
+Even though the data sits on a public blockchain, nobody can read it without your wallet AND your password. Two-factor encrypted on-chain storage. First of its kind.</pre>
+      </div>
+
+      <div class="cast">
+        <div class="cast-label">Cast 5 - Open Source + Links</div>
+        <button class="copy-btn" onclick="copyText(this)">Copy</button>
+        <pre>BaseVault is live, verified, and open source.
 
 Try it: https://basevault.store
-MiniApp: https://farcaster.xyz/miniapps/basevault.store
 Contract: https://basescan.org/address/0x4B46B971f1fBDF6f6D45b703b2f2D042D06CFed3
+GitHub: https://github.com/meraja34/basevault
+MiniApp: Open BaseVault inside Farcaster
 
-Built solo. Shipping fast. Your files. Your keys. Your proof.</pre>
+Built solo. Contract audited. No VC money. Just shipping.
+
+Your files. Your keys. Your proof.</pre>
       </div>
     </div>
   </div>
