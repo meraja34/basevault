@@ -1827,6 +1827,195 @@ textarea {
   color: #6C9CFF;
 }
 
+/* ===== File Viewer Modal ===== */
+.file-viewer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.file-viewer-content {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  max-width: 90vw;
+  max-height: 90vh;
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.file-viewer-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 1.75rem;
+  cursor: pointer;
+  z-index: 1;
+  line-height: 1;
+  padding: 0.25rem;
+  transition: color var(--transition);
+}
+
+.file-viewer-close:hover {
+  color: var(--text);
+}
+
+.file-viewer-filename {
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-viewer-body {
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.file-viewer-body img {
+  max-width: 85vw;
+  max-height: 80vh;
+  object-fit: contain;
+  display: block;
+}
+
+.file-viewer-body iframe {
+  width: 85vw;
+  height: 80vh;
+  max-width: 900px;
+  border: none;
+}
+
+.file-viewer-body pre {
+  padding: 1rem;
+  font-size: 0.85rem;
+  color: var(--text);
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-width: 85vw;
+  max-height: 80vh;
+  overflow: auto;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  line-height: 1.6;
+}
+
+.file-viewer-pdf {
+  width: 85vw;
+  height: 80vh;
+  max-width: 900px;
+  border: none;
+  display: block;
+}
+
+.file-viewer-video {
+  max-width: 85vw;
+  max-height: 80vh;
+  display: block;
+}
+
+.file-viewer-audio {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.file-viewer-audio-icon {
+  font-size: 3rem;
+  color: var(--primary);
+}
+
+.file-viewer-audio audio {
+  width: 300px;
+  max-width: 80vw;
+}
+
+.file-viewer-fallback {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-dim);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.file-viewer-fallback-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .file-viewer-overlay {
+    padding: 0;
+  }
+
+  .file-viewer-content {
+    max-width: 100vw;
+    max-height: 100vh;
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+    border: none;
+  }
+
+  .file-viewer-body img {
+    max-width: 100vw;
+    max-height: calc(100vh - 50px);
+  }
+
+  .file-viewer-pdf {
+    width: 100vw;
+    height: calc(100vh - 50px);
+    max-width: 100vw;
+  }
+
+  .file-viewer-body iframe {
+    width: 100vw;
+    height: calc(100vh - 50px);
+  }
+
+  .file-viewer-video {
+    max-width: 100vw;
+    max-height: calc(100vh - 50px);
+  }
+
+  .file-viewer-body pre {
+    max-width: 100vw;
+    max-height: calc(100vh - 50px);
+    font-size: 0.78rem;
+  }
+}
+
 /* ===== MiniApp Mode ===== */
 .miniapp-mode {
   --max-width: 100%;
@@ -2191,4 +2380,57 @@ textarea {
 
 .miniapp-mode .footer {
   display: none;
+}
+
+/* MiniApp File Viewer */
+.miniapp-mode .file-viewer-overlay {
+  padding: 0;
+}
+
+.miniapp-mode .file-viewer-content {
+  max-width: 100vw;
+  max-height: 100vh;
+  width: 100vw;
+  height: 100vh;
+  border-radius: 0;
+  border: none;
+}
+
+.miniapp-mode .file-viewer-filename {
+  font-size: 0.75rem;
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
+}
+
+.miniapp-mode .file-viewer-close {
+  font-size: 1.5rem;
+  top: 0.25rem;
+  right: 0.5rem;
+}
+
+.miniapp-mode .file-viewer-body img {
+  max-width: 100vw;
+  max-height: calc(100vh - 44px);
+}
+
+.miniapp-mode .file-viewer-pdf {
+  width: 100vw;
+  height: calc(100vh - 44px);
+  max-width: 100vw;
+}
+
+.miniapp-mode .file-viewer-body iframe {
+  width: 100vw;
+  height: calc(100vh - 44px);
+}
+
+.miniapp-mode .file-viewer-video {
+  max-width: 100vw;
+  max-height: calc(100vh - 44px);
+}
+
+.miniapp-mode .file-viewer-body pre {
+  max-width: 100vw;
+  max-height: calc(100vh - 44px);
+  font-size: 0.7rem;
+  padding: 0.5rem;
 }

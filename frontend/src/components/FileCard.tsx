@@ -8,6 +8,87 @@ import abi from '../abi/BaseVault.json';
 
 const SIGN_MESSAGE = 'BaseVault: Authorize encryption key for private files';
 
+function FileViewer({ url, fileName, fileType, onClose }: { url: string; fileName: string; fileType: string; onClose: () => void }) {
+  const isImage = fileType.startsWith('image/');
+  const isPdf = fileType === 'application/pdf';
+  const isText = fileType.startsWith('text/') || fileType === 'application/json' || fileType === 'application/xml';
+  const isVideo = fileType.startsWith('video/');
+  const isAudio = fileType.startsWith('audio/');
+
+  const [textContent, setTextContent] = useState<string>('');
+
+  useEffect(() => {
+    if (isText) {
+      fetch(url).then(r => r.text()).then(setTextContent).catch(() => setTextContent('Failed to load file content.'));
+    }
+  }, [url, isText]);
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
+  }, [onClose]);
+
+  const openInNewTab = () => {
+    window.open(url, '_blank');
+  };
+
+  const renderContent = () => {
+    if (isImage) {
+      return <img src={url} alt={fileName} />;
+    }
+    if (isPdf) {
+      return (
+        <object data={url} type="application/pdf" className="file-viewer-pdf">
+          <div className="file-viewer-fallback">
+            <p>PDF preview not supported on this device.</p>
+            <div className="file-viewer-fallback-actions">
+              <button className="btn btn-sm btn-primary" onClick={openInNewTab}>Open in New Tab</button>
+              <a href={url} download={fileName} className="btn btn-sm">Download</a>
+            </div>
+          </div>
+        </object>
+      );
+    }
+    if (isVideo) {
+      return <video src={url} controls autoPlay className="file-viewer-video" />;
+    }
+    if (isAudio) {
+      return (
+        <div className="file-viewer-audio">
+          <div className="file-viewer-audio-icon">&#9835;</div>
+          <p>{fileName}</p>
+          <audio src={url} controls autoPlay />
+        </div>
+      );
+    }
+    if (isText) {
+      return <pre>{textContent}</pre>;
+    }
+    return (
+      <div className="file-viewer-fallback">
+        <p>Preview not available for this file type.</p>
+        <div className="file-viewer-fallback-actions">
+          <button className="btn btn-sm btn-primary" onClick={openInNewTab}>Open in New Tab</button>
+          <a href={url} download={fileName} className="btn btn-sm">Download</a>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="file-viewer-overlay" onClick={onClose}>
+      <div className="file-viewer-content" onClick={e => e.stopPropagation()}>
+        <button className="file-viewer-close" onClick={onClose}>&times;</button>
+        <div className="file-viewer-filename" title={fileName}>{fileName}</div>
+        <div className="file-viewer-body">
+          {renderContent()}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 interface FileCardProps {
   id: number;
   fileName: string;
@@ -46,8 +127,37 @@ export default function FileCard({
   const [loading, setLoading] = useState(false);
   const [showDecrypt, setShowDecrypt] = useState(false);
   const [decryptPassword, setDecryptPassword] = useState('');
+  const [showViewer, setShowViewer] = useState(false);
+  const [viewerUrl, setViewerUrl] = useState<string>('');
   const publicClient = usePublicClient();
   const { signMessageAsync } = useSignMessage();
+
+  const handleView = async () => {
+    // If we already have a viewer URL cached, reuse it
+    if (viewerUrl) {
+      setShowViewer(true);
+      return;
+    }
+    // If we have a preview URL (public image or decrypted), use it
+    if (previewUrl) {
+      setViewerUrl(previewUrl);
+      setShowViewer(true);
+      return;
+    }
+    // Load chunks for public files
+    if (!isPublic || !publicClient || chunkCount === 0) return;
+    setLoading(true);
+    try {
+      const chunks = await loadChunks();
+      const url = chunksToBlob(chunks, fileType);
+      setViewerUrl(url);
+      setShowViewer(true);
+    } catch (err) {
+      console.error('View failed:', err);
+      toast.error('Failed to load file');
+    }
+    setLoading(false);
+  };
 
   const loadChunks = async (): Promise<string[]> => {
     if (!publicClient) return [];
@@ -100,21 +210,16 @@ export default function FileCard({
       const bytes = reassembleChunks(chunks);
       const decrypted = decryptFile(bytes.buffer as ArrayBuffer, key);
 
+      const blob = new Blob([new Uint8Array(decrypted)], { type: fileType });
+      const url = URL.createObjectURL(blob);
+      setViewerUrl(url);
+      setShowDecrypt(false);
+
       if (isImage) {
-        const blob = new Blob([new Uint8Array(decrypted)], { type: fileType });
-        const url = URL.createObjectURL(blob);
         setPreviewUrl(url);
-        setShowDecrypt(false);
         toast.success('Decrypted!');
       } else {
-        const blob = new Blob([new Uint8Array(decrypted)], { type: fileType });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = fileName;
-        a.click();
-        URL.revokeObjectURL(url);
-        toast.success('Decrypted & downloaded!');
+        toast.success('Decrypted! Tap View to open.');
       }
     } catch (err: any) {
       console.error('Decrypt failed:', err);
@@ -209,6 +314,11 @@ export default function FileCard({
         )}
 
         <div className="file-card-actions">
+          {(isPublic || viewerUrl) && (
+            <button className="btn btn-sm btn-primary" onClick={handleView} disabled={loading}>
+              {loading ? '...' : 'View'}
+            </button>
+          )}
           {isPublic && isImage && !previewUrl && (
             <button className="btn btn-sm" onClick={loadPreview} disabled={loading}>
               {loading ? '...' : 'Preview'}
@@ -236,6 +346,10 @@ export default function FileCard({
           )}
         </div>
       </div>
+
+      {showViewer && viewerUrl && (
+        <FileViewer url={viewerUrl} fileName={fileName} fileType={fileType} onClose={() => setShowViewer(false)} />
+      )}
     </div>
   );
 }
