@@ -6,4 +6,7 @@ via_ir = true
 optimizer = true
 optimizer_runs = 200
 
+[etherscan]
+base = { key = "GXUXNI7AF1ZJMDB1RFRR28HBI53DNXDQIX", url = "https://api.basescan.org/api" }
+
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options

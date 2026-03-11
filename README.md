@@ -28,7 +28,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Storage-0x4B46...Fed3-0052FF?style=flat-square&logo=ethereum&logoColor=white" alt="Storage Contract" />
   <img src="https://img.shields.io/badge/Certifier-0x2FDb...0E3-0052FF?style=flat-square&logo=ethereum&logoColor=white" alt="Certifier Contract" />
-  <img src="https://img.shields.io/badge/Verified-Sourcify_Exact_Match-00c853?style=flat-square" alt="Verified" />
+  <img src="https://img.shields.io/badge/Verified-BaseScan_%2B_Sourcify-00c853?style=flat-square" alt="Verified" />
 </p>
 
 ---
@@ -215,7 +215,7 @@ The recovery tool is a separate static HTML file with inline CSS/JS. Zero build 
 
 ### BaseVault V6 (File Storage)
 
-<a href="https://basescan.org/address/0x4B46B971f1fBDF6f6D45b703b2f2D042D06CFed3"><img src="https://img.shields.io/badge/BaseScan-0x4B46...Fed3-0052FF?style=flat-square&logo=ethereum" alt="BaseScan" /></a> <img src="https://img.shields.io/badge/Verified-Sourcify-00c853?style=flat-square" alt="Verified" />
+<a href="https://basescan.org/address/0x4B46B971f1fBDF6f6D45b703b2f2D042D06CFed3"><img src="https://img.shields.io/badge/BaseScan-0x4B46...Fed3-0052FF?style=flat-square&logo=ethereum" alt="BaseScan" /></a> <img src="https://img.shields.io/badge/Verified-BaseScan-00c853?style=flat-square" alt="Verified" />
 
 | Function | Description |
 |:---------|:------------|
@@ -231,7 +231,7 @@ The recovery tool is a separate static HTML file with inline CSS/JS. Zero build 
 
 ### BaseVaultCertifier V7 (Institutional Certification)
 
-<a href="https://basescan.org/address/0x2FDbfc75B8844Af376Be20b41c6C1ed70aA1c2E3"><img src="https://img.shields.io/badge/BaseScan-0x2FDb...0E3-0052FF?style=flat-square&logo=ethereum" alt="BaseScan" /></a> <img src="https://img.shields.io/badge/Verified-Sourcify-00c853?style=flat-square" alt="Verified" />
+<a href="https://basescan.org/address/0x2FDbfc75B8844Af376Be20b41c6C1ed70aA1c2E3"><img src="https://img.shields.io/badge/BaseScan-0x2FDb...0E3-0052FF?style=flat-square&logo=ethereum" alt="BaseScan" /></a> <img src="https://img.shields.io/badge/Verified-BaseScan-00c853?style=flat-square" alt="Verified" />
 
 | Function | Description |
 |:---------|:------------|
@@ -248,7 +248,7 @@ The recovery tool is a separate static HTML file with inline CSS/JS. Zero build 
 | `verifyCertifications()` | Get all certs for a file hash |
 | `getHashCertIds()` | Get cert IDs for a file hash |
 
-> All fees are currently set to **zero**. Users only pay Base network gas (~$0.001 per tx).
+> Minimal protocol fees apply. Users also pay Base network gas (~$0.001 per tx).
 
 ---
 
@@ -405,7 +405,7 @@ Manifest: `/.well-known/farcaster.json` | FID: **16795**
 | Area | Detail |
 |:-----|:-------|
 | **Client-side encryption** | All AES-256-CTR encryption/decryption happens in the browser. Keys, passwords, and plaintext never leave the device. |
-| **Contract verification** | Both contracts verified on BaseScan + Sourcify (exact match). |
+| **Contract verification** | Both contracts verified on BaseScan. Source code publicly auditable. |
 | **Test coverage** | 60 comprehensive security tests covering access control, edge cases, and attack vectors. |
 | **No admin file access** | Contract owner can adjust fees and withdraw collected fees. No backdoor to read, modify, or delete user files. |
 | **Two-factor decryption** | Wallet signature + password both required. Single-factor compromise is insufficient. |
