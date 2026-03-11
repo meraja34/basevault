@@ -116,7 +116,7 @@ function LandingPage() {
   const { data: instCount } = useReadContract({ address: CERTIFIER_ADDRESS, abi: certifierAbi, functionName: 'institutionCount', query: { enabled: CERTIFIER_LIVE } });
   const { data: certCount } = useReadContract({ address: CERTIFIER_ADDRESS, abi: certifierAbi, functionName: 'certCount', query: { enabled: CERTIFIER_LIVE } });
 
-  const s1 = useReveal(), s2 = useReveal(), s3 = useReveal(), s4 = useReveal(), s5 = useReveal(), s6 = useReveal(), s7 = useReveal();
+  const s1 = useReveal(), s2 = useReveal(), s3 = useReveal(), s4 = useReveal(), s5 = useReveal(), s6 = useReveal(), s7 = useReveal(), s8 = useReveal();
 
   return (
     <div className="lp">
@@ -344,6 +344,55 @@ function LandingPage() {
                 <tr><td>Server Dependency</td><td className="lp-compare-highlight">None</td><td>Pinning service needed</td><td>None</td><td>Full dependency</td></tr>
               </tbody>
             </table>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== DATA RECOVERY ===== */}
+      <section className="lp-sec" ref={s8.ref}>
+        <div className={s8.cls}>
+          <h2 className="lp-sec-h2">Your Data is Always Recoverable</h2>
+          <p className="lp-sec-sub">Even if this website disappears, your files live on the blockchain forever. Here's how to get them back.</p>
+          <div className="lp-cards-3">
+            <div className="lp-card">
+              <h3>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{verticalAlign:'middle',marginRight:8}}>
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Save Recovery Tool Now
+              </h3>
+              <p>Download our standalone recovery page and keep it on your computer. It's a single HTML file that works offline, just open it in any browser.</p>
+              <a href="/recover.html" download="basevault-recover.html" className="lp-recovery-btn">Download Recovery Tool</a>
+            </div>
+            <div className="lp-card">
+              <h3>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{verticalAlign:'middle',marginRight:8}}>
+                  <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+                </svg>
+                How It Works
+              </h3>
+              <p>The recovery tool reads directly from the Base blockchain using public RPC. Enter any wallet address to see files, download public files, or connect your wallet to decrypt private files.</p>
+            </div>
+            <div className="lp-card">
+              <h3>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{verticalAlign:'middle',marginRight:8}}>
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                What You Need
+              </h3>
+              <p><strong>Public files:</strong> Just the wallet address. <strong>Private files:</strong> Your wallet (MetaMask) + the encryption password you used during upload. No server, no API key, no account needed.</p>
+            </div>
+          </div>
+          <div className="lp-recovery-contracts">
+            <p>Smart contracts are public and verified on BaseScan:</p>
+            <div className="lp-recovery-addrs">
+              <a href="https://basescan.org/address/0x4B46B971f1fBDF6f6D45b703b2f2D042D06CFed3" target="_blank" rel="noopener noreferrer">
+                Storage: 0x4B46...Fed3
+              </a>
+              <a href="https://basescan.org/address/0x2FDbfc75B8844Af376Be20b41c6C1ed70aA1c2E3" target="_blank" rel="noopener noreferrer">
+                Certifier: 0x2FDb...0E3
+              </a>
+            </div>
           </div>
         </div>
       </section>

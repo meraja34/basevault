@@ -77,6 +77,9 @@ export default function BottomTabs() {
                 {link.label}
               </Link>
             ))}
+            <a href="/recover.html" className="more-sheet-link" onClick={() => setShowMore(false)}>
+              Recovery Tool
+            </a>
           </div>
         </div>
       )}

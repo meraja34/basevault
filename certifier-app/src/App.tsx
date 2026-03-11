@@ -160,6 +160,7 @@ function AppContent() {
                 <a href={`https://basescan.org/address/${CERTIFIER_ADDRESS}`} target="_blank" rel="noopener noreferrer" className="footer-link">BaseScan (Certifier)</a>
                 <a href="https://github.com/meraja34/basevault" target="_blank" rel="noopener noreferrer" className="footer-link">GitHub</a>
                 <Link to="/stats" className="footer-link">Network Stats</Link>
+                <a href="/recover.html" className="footer-link">Recovery Tool</a>
               </div>
 
               <div className="footer-col">

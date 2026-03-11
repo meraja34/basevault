@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BaseVault Recovery Tool</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0f;--card:#12121a;--border:#1e1e2e;--blue:#3b82f6;--green:#22c55e;--red:#ef4444;--yellow:#eab308;--text:#e2e8f0;--muted:#64748b;--hover:#1a1a2e}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+a{color:var(--blue);text-decoration:none}
+button{cursor:pointer;border:none;font-family:inherit;font-size:14px}
+input{font-family:inherit;font-size:14px}
+
+.container{max-width:960px;margin:0 auto;padding:20px}
+
+/* Header */
+.header{text-align:center;padding:40px 0 30px;border-bottom:1px solid var(--border);margin-bottom:30px}
+.header h1{font-size:28px;font-weight:700;margin-bottom:8px;background:linear-gradient(135deg,var(--blue),#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.header p{color:var(--muted);font-size:14px;max-width:500px;margin:0 auto}
+.header .badge{display:inline-block;background:#1e293b;color:var(--green);font-size:11px;padding:3px 10px;border-radius:20px;margin-top:10px;border:1px solid #1e3a2a}
+
+/* Tabs */
+.tabs{display:flex;gap:4px;margin-bottom:24px;background:var(--card);border-radius:10px;padding:4px;border:1px solid var(--border)}
+.tab{flex:1;padding:10px;text-align:center;border-radius:8px;background:transparent;color:var(--muted);font-weight:500;transition:.2s}
+.tab:hover{color:var(--text);background:var(--hover)}
+.tab.active{background:var(--blue);color:#fff}
+
+/* Panels */
+.panel{display:none}
+.panel.active{display:block}
+
+/* Input bar */
+.input-bar{display:flex;gap:10px;margin-bottom:24px}
+.input-bar input{flex:1;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);outline:none;transition:.2s}
+.input-bar input:focus{border-color:var(--blue)}
+.input-bar input::placeholder{color:var(--muted)}
+.btn{padding:12px 20px;border-radius:10px;font-weight:600;transition:.2s}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{background:#2563eb}
+.btn-secondary{background:var(--card);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--hover)}
+.btn-sm{padding:8px 14px;font-size:13px;border-radius:8px}
+
+/* Status */
+.status{padding:14px 18px;border-radius:10px;margin-bottom:20px;font-size:14px;display:none;border:1px solid}
+.status.error{display:block;background:#1a0a0a;border-color:#3d1515;color:#fca5a5}
+.status.success{display:block;background:#0a1a0a;border-color:#153d15;color:#86efac}
+.status.info{display:block;background:#0a0a1a;border-color:#15153d;color:#93c5fd}
+.status.loading{display:block;background:#1a1a0a;border-color:#3d3d15;color:#fde68a}
+
+/* File list */
+.file-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;transition:.2s}
+.file-card:hover{border-color:#2a2a3e}
+.file-row{display:flex;align-items:center;gap:14px}
+.file-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.file-icon.public{background:#0a1a2a;color:var(--blue)}
+.file-icon.private{background:#1a0a2a;color:#a855f7}
+.file-info{flex:1;min-width:0}
+.file-name{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-meta{color:var(--muted);font-size:13px;margin-top:2px}
+.file-meta span{margin-right:14px}
+.file-actions{display:flex;gap:8px;flex-shrink:0}
+.badge-public{color:var(--green);font-size:11px;background:#0a1a0a;padding:2px 8px;border-radius:6px}
+.badge-private{color:#a855f7;font-size:11px;background:#1a0a1a;padding:2px 8px;border-radius:6px}
+.badge-certified{color:var(--yellow);font-size:11px;background:#1a1a0a;padding:2px 8px;border-radius:6px}
+
+/* Decrypt modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;max-width:420px;width:90%}
+.modal h3{margin-bottom:16px;font-size:18px}
+.modal input{width:100%;padding:12px 16px;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text);margin-bottom:14px;outline:none}
+.modal input:focus{border-color:var(--blue)}
+.modal .btn-row{display:flex;gap:10px;justify-content:flex-end}
+
+/* Cert cards */
+.cert-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px}
+.cert-header{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.cert-type-icon{font-size:24px}
+.cert-title{font-weight:600;font-size:15px}
+.cert-detail{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-bottom:1px solid var(--border)}
+.cert-detail:last-child{border-bottom:none}
+.cert-detail .label{color:var(--muted)}
+.cert-valid{color:var(--green)}
+.cert-invalid{color:var(--red)}
+.cert-revoked{color:var(--red)}
+
+/* Verify section */
+.drop-zone{border:2px dashed var(--border);border-radius:16px;padding:60px 20px;text-align:center;transition:.2s;margin-bottom:20px}
+.drop-zone.dragover{border-color:var(--blue);background:rgba(59,130,246,.05)}
+.drop-zone p{color:var(--muted);font-size:15px;margin-bottom:8px}
+.drop-zone .or{color:var(--muted);font-size:13px;margin:12px 0}
+.hash-input{display:flex;gap:10px;margin-bottom:20px}
+.hash-input input{flex:1;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);outline:none;font-family:monospace;font-size:13px}
+
+/* Progress */
+.progress-bar{width:100%;height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:8px}
+.progress-fill{height:100%;background:var(--blue);border-radius:3px;transition:width .3s}
+
+/* Empty state */
+.empty{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty .icon{font-size:48px;margin-bottom:16px;opacity:.5}
+.empty p{font-size:15px}
+
+/* Footer */
+.footer{text-align:center;padding:30px 0;margin-top:40px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+.footer a{color:var(--blue)}
+
+/* Responsive */
+@media(max-width:640px){
+  .container{padding:12px}
+  .header h1{font-size:22px}
+  .tabs{flex-wrap:wrap}
+  .tab{font-size:13px;padding:8px}
+  .input-bar{flex-direction:column}
+  .file-row{flex-direction:column;align-items:flex-start;gap:10px}
+  .file-actions{width:100%}
+  .file-actions .btn{flex:1}
+  .hash-input{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>BaseVault Recovery Tool</h1>
+    <p>Recover your files and certificates directly from Base blockchain. No server needed.</p>
+    <div class="badge">Fully On-Chain | Works Offline</div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('files')">Files</button>
+    <button class="tab" onclick="switchTab('certs')">Certificates</button>
+    <button class="tab" onclick="switchTab('verify')">Verify</button>
+  </div>
+
+  <!-- FILES PANEL -->
+  <div id="panel-files" class="panel active">
+    <div class="input-bar">
+      <input type="text" id="wallet-input" placeholder="Enter wallet address (0x...)" />
+      <button class="btn btn-primary" onclick="loadFiles()">Load Files</button>
+      <button class="btn btn-secondary" onclick="connectWallet()">Connect Wallet</button>
+    </div>
+    <div id="files-status" class="status"></div>
+    <div id="files-list"></div>
+  </div>
+
+  <!-- CERTS PANEL -->
+  <div id="panel-certs" class="panel">
+    <div class="input-bar">
+      <input type="text" id="cert-wallet-input" placeholder="Enter wallet address to view received certificates" />
+      <button class="btn btn-primary" onclick="loadCerts()">Load Certs</button>
+      <button class="btn btn-secondary" onclick="connectWalletCerts()">Connect Wallet</button>
+    </div>
+    <div id="certs-status" class="status"></div>
+    <div id="certs-list"></div>
+  </div>
+
+  <!-- VERIFY PANEL -->
+  <div id="panel-verify" class="panel">
+    <div class="drop-zone" id="drop-zone">
+      <p>Drag & drop a file here to verify</p>
+      <div class="or">or</div>
+      <button class="btn btn-secondary btn-sm" onclick="document.getElementById('file-pick').click()">Choose File</button>
+      <input type="file" id="file-pick" style="display:none" onchange="verifyFile(this.files[0])" />
+    </div>
+    <div class="hash-input">
+      <input type="text" id="hash-input" placeholder="Or enter file hash (0x...)" />
+      <button class="btn btn-primary" onclick="verifyByHash()">Verify</button>
+    </div>
+    <div id="verify-status" class="status"></div>
+    <div id="verify-results"></div>
+  </div>
+
+  <!-- Decrypt Modal -->
+  <div class="modal-overlay" id="decrypt-modal">
+    <div class="modal">
+      <h3>Decrypt Private File</h3>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:14px">Enter the password you used when uploading. Your wallet will sign a message to derive the decryption key.</p>
+      <input type="password" id="decrypt-password" placeholder="Encryption password" />
+      <div class="btn-row">
+        <button class="btn btn-secondary btn-sm" onclick="closeDecryptModal()">Cancel</button>
+        <button class="btn btn-primary btn-sm" id="decrypt-confirm-btn" onclick="confirmDecrypt()">Decrypt & Download</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>BaseVault Recovery Tool &mdash; Data lives on <a href="https://basescan.org/address/0x4B46B971f1fBDF6f6D45b703b2f2D042D06CFed3" target="_blank">Base blockchain</a> forever.</p>
+    <p style="margin-top:6px">Contract: 0x4B46...Fed3 | Certifier: 0x2FDb...0E3</p>
+  </div>
+</div>
+
+<!-- ethers.js v6 from CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js"></script>
+
+<script>
+// ============================================================
+// CONFIG
+// ============================================================
+const RPC_URL = 'https://mainnet.base.org';
+const BASEVAULT_ADDR = '0x4B46B971f1fBDF6f6D45b703b2f2D042D06CFed3';
+const CERTIFIER_ADDR = '0x2FDbfc75B8844Af376Be20b41c6C1ed70aA1c2E3';
+const SIGN_MESSAGE = 'BaseVault: Authorize encryption key for private files';
+
+const CERT_TYPES = ['Generic','Degree','Transcript','Course Completion','Badge','License','Contract','NDA','Audit','IP Proof','Medical Record','Lab Report','Research Paper'];
+const CERT_ICONS = ['📄','🎓','📋','✅','🏅','📜','📝','🔒','🔍','💡','🏥','🧪','📰'];
+const INST_STATUS = ['Pending','Active','Suspended'];
+
+// ============================================================
+// ABIs (only the view functions we need)
+// ============================================================
+const VAULT_ABI = [
+  'function getUserFileIds(address _user) view returns (uint256[])',
+  'function getFile(uint256 _id) view returns (tuple(uint256 id, address uploader, bytes32 fileHash, string fileName, string fileType, uint256 fileSize, uint256 uploadedAt, bool certified, uint256 chunkCount, bool isPublic))',
+  'function getChunk(uint256 _fileId, uint256 _chunkIndex) view returns (bytes)',
+  'function getUserCertificationIds(address _user) view returns (uint256[])',
+  'function certifications(uint256) view returns (uint256 fileId, address certifiedBy, bytes32 fileHash, uint256 certifiedAt, string fileName)',
+  'function verifyDocument(bytes32 _fileHash) view returns (bool exists, uint256 fileId, address uploader, uint256 uploadedAt, bool certified, string fileName)',
+  'function hashToFileId(bytes32) view returns (uint256)'
+];
+
+const CERTIFIER_ABI = [
+  'function getRecipientCerts(address _recipient) view returns (uint256[])',
+  'function getCert(uint256 _certId) view returns (tuple(uint256 fileId, uint256 institutionId, bytes32 fileHash, address recipient, uint8 certType, uint64 issuedAt, uint64 expiresAt, bool revoked, string recipientName, string metadata))',
+  'function getInstitution(uint256 _instId) view returns (tuple(address admin, uint8 status, string name, string metadataURI, uint16 certTypesMask, uint256 certCount))',
+  'function isCertValid(uint256 _certId) view returns (bool)',
+  'function verifyCertifications(bytes32 _fileHash) view returns (tuple(uint256 fileId, uint256 institutionId, bytes32 fileHash, address recipient, uint8 certType, uint64 issuedAt, uint64 expiresAt, bool revoked, string recipientName, string metadata)[])',
+  'function getHashCertIds(bytes32 _fileHash) view returns (uint256[])'
+];
+
+// ============================================================
+// PROVIDERS & CONTRACTS
+// ============================================================
+const provider = new ethers.JsonRpcProvider(RPC_URL);
+const vault = new ethers.Contract(BASEVAULT_ADDR, VAULT_ABI, provider);
+const certifier = new ethers.Contract(CERTIFIER_ADDR, CERTIFIER_ABI, provider);
+
+let connectedSigner = null;
+let decryptingFileId = null;
+
+// ============================================================
+// TAB SWITCHING
+// ============================================================
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    const panels = ['files','certs','verify'];
+    t.classList.toggle('active', panels[i] === name);
+  });
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+}
+
+// ============================================================
+// STATUS HELPERS
+// ============================================================
+function setStatus(id, type, msg) {
+  const el = document.getElementById(id);
+  el.className = 'status ' + type;
+  el.textContent = msg;
+}
+function clearStatus(id) {
+  const el = document.getElementById(id);
+  el.className = 'status';
+  el.textContent = '';
+}
+
+function formatSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+  return (bytes/(1024*1024)).toFixed(2) + ' MB';
+}
+
+function formatDate(ts) {
+  if (!ts || ts === 0n) return 'N/A';
+  return new Date(Number(ts) * 1000).toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' });
+}
+
+function shortAddr(a) {
+  return a.slice(0,6) + '...' + a.slice(-4);
+}
+
+// ============================================================
+// WALLET CONNECT
+// ============================================================
+async function connectWallet() {
+  if (!window.ethereum) { setStatus('files-status','error','No wallet detected. Install MetaMask.'); return; }
+  try {
+    const bp = new ethers.BrowserProvider(window.ethereum);
+    await bp.send('eth_requestAccounts', []);
+    connectedSigner = await bp.getSigner();
+    const addr = await connectedSigner.getAddress();
+    document.getElementById('wallet-input').value = addr;
+    setStatus('files-status','success','Connected: ' + shortAddr(addr));
+    loadFiles();
+  } catch(e) { setStatus('files-status','error','Connection failed: ' + e.message); }
+}
+
+async function connectWalletCerts() {
+  if (!window.ethereum) { setStatus('certs-status','error','No wallet detected. Install MetaMask.'); return; }
+  try {
+    const bp = new ethers.BrowserProvider(window.ethereum);
+    await bp.send('eth_requestAccounts', []);
+    connectedSigner = await bp.getSigner();
+    const addr = await connectedSigner.getAddress();
+    document.getElementById('cert-wallet-input').value = addr;
+    setStatus('certs-status','success','Connected: ' + shortAddr(addr));
+    loadCerts();
+  } catch(e) { setStatus('certs-status','error','Connection failed: ' + e.message); }
+}
+
+// ============================================================
+// LOAD FILES
+// ============================================================
+async function loadFiles() {
+  const addr = document.getElementById('wallet-input').value.trim();
+  if (!ethers.isAddress(addr)) { setStatus('files-status','error','Invalid address.'); return; }
+
+  setStatus('files-status','loading','Loading files from blockchain...');
+  const listEl = document.getElementById('files-list');
+  listEl.innerHTML = '';
+
+  try {
+    const ids = await vault.getUserFileIds(addr);
+    if (ids.length === 0) {
+      clearStatus('files-status');
+      listEl.innerHTML = '<div class="empty"><div class="icon">📂</div><p>No files found for this address.</p></div>';
+      return;
+    }
+
+    setStatus('files-status','loading','Loading ' + ids.length + ' files...');
+
+    const files = [];
+    for (const id of ids) {
+      try {
+        const f = await vault.getFile(id);
+        files.push(f);
+      } catch(e) { console.warn('Failed to load file', id.toString(), e); }
+    }
+
+    clearStatus('files-status');
+
+    if (files.length === 0) {
+      listEl.innerHTML = '<div class="empty"><div class="icon">📂</div><p>Could not load file data.</p></div>';
+      return;
+    }
+
+    setStatus('files-status','success','Found ' + files.length + ' files on-chain.');
+
+    for (const f of files) {
+      const isPublic = f.isPublic;
+      const card = document.createElement('div');
+      card.className = 'file-card';
+      card.innerHTML = `
+        <div class="file-row">
+          <div class="file-icon ${isPublic ? 'public' : 'private'}">${isPublic ? '📄' : '🔐'}</div>
+          <div class="file-info">
+            <div class="file-name">${escHtml(f.fileName)}</div>
+            <div class="file-meta">
+              <span>${formatSize(Number(f.fileSize))}</span>
+              <span>${escHtml(f.fileType)}</span>
+              <span>${formatDate(f.uploadedAt)}</span>
+              <span>${Number(f.chunkCount)} chunks</span>
+              <span class="${isPublic ? 'badge-public' : 'badge-private'}">${isPublic ? 'Public' : 'Private'}</span>
+              ${f.certified ? '<span class="badge-certified">Certified</span>' : ''}
+            </div>
+          </div>
+          <div class="file-actions">
+            ${isPublic
+              ? `<button class="btn btn-primary btn-sm" onclick="downloadPublic(${f.id},${Number(f.chunkCount)},'${escAttr(f.fileName)}','${escAttr(f.fileType)}',this)">Download</button>`
+              : `<button class="btn btn-primary btn-sm" onclick="openDecryptModal(${f.id},${Number(f.chunkCount)},'${escAttr(f.fileName)}','${escAttr(f.fileType)}')">Decrypt</button>`
+            }
+          </div>
+        </div>
+        <div id="progress-${f.id}" style="display:none">
+          <div class="progress-bar"><div class="progress-fill" id="fill-${f.id}" style="width:0%"></div></div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px" id="progress-text-${f.id}"></div>
+        </div>
+      `;
+      listEl.appendChild(card);
+    }
+  } catch(e) {
+    setStatus('files-status','error','Error: ' + e.message);
+  }
+}
+
+function escHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+function escAttr(s) { return s.replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
+
+// ============================================================
+// DOWNLOAD PUBLIC FILE
+// ============================================================
+async function downloadPublic(fileId, chunkCount, fileName, fileType, btn) {
+  btn.disabled = true;
+  btn.textContent = 'Loading...';
+  const progEl = document.getElementById('progress-' + fileId);
+  const fillEl = document.getElementById('fill-' + fileId);
+  const textEl = document.getElementById('progress-text-' + fileId);
+  progEl.style.display = 'block';
+
+  try {
+    const chunks = [];
+    for (let i = 0; i < chunkCount; i++) {
+      const data = await vault.getChunk(BigInt(fileId), BigInt(i));
+      chunks.push(data);
+      const pct = Math.round(((i+1)/chunkCount)*100);
+      fillEl.style.width = pct + '%';
+      textEl.textContent = 'Chunk ' + (i+1) + '/' + chunkCount + ' (' + pct + '%)';
+    }
+
+    const bytes = reassembleChunks(chunks);
+    downloadBlob(new Blob([bytes], { type: fileType }), fileName);
+    btn.textContent = 'Done!';
+    textEl.textContent = 'Download complete!';
+  } catch(e) {
+    btn.textContent = 'Error';
+    textEl.textContent = 'Error: ' + e.message;
+    console.error(e);
+  }
+  setTimeout(() => { btn.disabled = false; btn.textContent = 'Download'; progEl.style.display = 'none'; }, 3000);
+}
+
+// ============================================================
+// DECRYPT PRIVATE FILE
+// ============================================================
+function openDecryptModal(fileId, chunkCount, fileName, fileType) {
+  decryptingFileId = { fileId, chunkCount, fileName, fileType };
+  document.getElementById('decrypt-password').value = '';
+  document.getElementById('decrypt-modal').classList.add('show');
+}
+
+function closeDecryptModal() {
+  document.getElementById('decrypt-modal').classList.remove('show');
+  decryptingFileId = null;
+}
+
+async function confirmDecrypt() {
+  if (!decryptingFileId) return;
+  const password = document.getElementById('decrypt-password').value;
+  if (!password) { alert('Enter your password.'); return; }
+
+  if (!connectedSigner) {
+    if (!window.ethereum) { alert('No wallet detected. Install MetaMask.'); return; }
+    try {
+      const bp = new ethers.BrowserProvider(window.ethereum);
+      await bp.send('eth_requestAccounts', []);
+      connectedSigner = await bp.getSigner();
+    } catch(e) { alert('Wallet connection failed: ' + e.message); return; }
+  }
+
+  const confirmBtn = document.getElementById('decrypt-confirm-btn');
+  confirmBtn.disabled = true;
+  confirmBtn.textContent = 'Signing...';
+
+  try {
+    const signature = await connectedSigner.signMessage(SIGN_MESSAGE);
+    const key = deriveKey(signature, password);
+
+    closeDecryptModal();
+
+    const { fileId, chunkCount, fileName, fileType } = decryptingFileId;
+    const progEl = document.getElementById('progress-' + fileId);
+    const fillEl = document.getElementById('fill-' + fileId);
+    const textEl = document.getElementById('progress-text-' + fileId);
+    progEl.style.display = 'block';
+    textEl.textContent = 'Fetching chunks...';
+
+    const chunks = [];
+    for (let i = 0; i < chunkCount; i++) {
+      const data = await vault.getChunk(BigInt(fileId), BigInt(i));
+      chunks.push(data);
+      const pct = Math.round(((i+1)/chunkCount)*100);
+      fillEl.style.width = pct + '%';
+      textEl.textContent = 'Chunk ' + (i+1) + '/' + chunkCount + ' (' + pct + '%)';
+    }
+
+    textEl.textContent = 'Decrypting...';
+    const assembled = reassembleChunks(chunks);
+    const decrypted = await decryptData(assembled.buffer, key);
+
+    downloadBlob(new Blob([new Uint8Array(decrypted)], { type: fileType }), fileName);
+    textEl.textContent = 'Decrypted and downloaded!';
+    setTimeout(() => { progEl.style.display = 'none'; }, 3000);
+
+  } catch(e) {
+    alert('Decryption failed: ' + e.message + '\nWrong wallet or password?');
+    console.error(e);
+  }
+
+  confirmBtn.disabled = false;
+  confirmBtn.textContent = 'Decrypt & Download';
+}
+
+// ============================================================
+// CHUNK REASSEMBLY
+// ============================================================
+function reassembleChunks(chunks) {
+  const hexStr = chunks.map(c => c.startsWith('0x') ? c.slice(2) : c).join('');
+  const bytes = new Uint8Array(hexStr.length / 2);
+  for (let i = 0; i < hexStr.length; i += 2) {
+    bytes[i/2] = parseInt(hexStr.substring(i, i+2), 16);
+  }
+  return bytes;
+}
+
+// ============================================================
+// CRYPTO: AES-256-CTR
+// Uses ethers.js sha256 (always available) + Web Crypto AES
+// with pure-JS AES-CTR fallback for file:// protocol
+// ============================================================
+
+// Key derivation: matches js-sha256's sha256(sig + pass)
+// ethers.sha256(toUtf8Bytes(str)) produces identical hash, just with 0x prefix
+function deriveKey(signature, password) {
+  // ethers.sha256 takes BytesLike, returns 0x-prefixed hex (same hash as js-sha256)
+  return ethers.sha256(ethers.toUtf8Bytes(signature + password));
+}
+
+function hexToBytes(hex) {
+  hex = hex.startsWith('0x') ? hex.slice(2) : hex;
+  const bytes = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < hex.length; i += 2) {
+    bytes[i/2] = parseInt(hex.substring(i, i+2), 16);
+  }
+  return bytes;
+}
+
+// ---- Pure JS AES-256-CTR (fallback for file:// where Web Crypto is unavailable) ----
+const SBOX = [0x63,0x7c,0x77,0x7b,0xf2,0x6b,0x6f,0xc5,0x30,0x01,0x67,0x2b,0xfe,0xd7,0xab,0x76,
+0xca,0x82,0xc9,0x7d,0xfa,0x59,0x47,0xf0,0xad,0xd4,0xa2,0xaf,0x9c,0xa4,0x72,0xc0,
+0xb7,0xfd,0x93,0x26,0x36,0x3f,0xf7,0xcc,0x34,0xa5,0xe5,0xf1,0x71,0xd8,0x31,0x15,
+0x04,0xc7,0x23,0xc3,0x18,0x96,0x05,0x9a,0x07,0x12,0x80,0xe2,0xeb,0x27,0xb2,0x75,
+0x09,0x83,0x2c,0x1a,0x1b,0x6e,0x5a,0xa0,0x52,0x3b,0xd6,0xb3,0x29,0xe3,0x2f,0x84,
+0x53,0xd1,0x00,0xed,0x20,0xfc,0xb1,0x5b,0x6a,0xcb,0xbe,0x39,0x4a,0x4c,0x58,0xcf,
+0xd0,0xef,0xaa,0xfb,0x43,0x4d,0x33,0x85,0x45,0xf9,0x02,0x7f,0x50,0x3c,0x9f,0xa8,
+0x51,0xa3,0x40,0x8f,0x92,0x9d,0x38,0xf5,0xbc,0xb6,0xda,0x21,0x10,0xff,0xf3,0xd2,
+0xcd,0x0c,0x13,0xec,0x5f,0x97,0x44,0x17,0xc4,0xa7,0x7e,0x3d,0x64,0x5d,0x19,0x73,
+0x60,0x81,0x4f,0xdc,0x22,0x2a,0x90,0x88,0x46,0xee,0xb8,0x14,0xde,0x5e,0x0b,0xdb,
+0xe0,0x32,0x3a,0x0a,0x49,0x06,0x24,0x5c,0xc2,0xd3,0xac,0x62,0x91,0x95,0xe4,0x79,
+0xe7,0xc8,0x37,0x6d,0x8d,0xd5,0x4e,0xa9,0x6c,0x56,0xf4,0xea,0x65,0x7a,0xae,0x08,
+0xba,0x78,0x25,0x2e,0x1c,0xa6,0xb4,0xc6,0xe8,0xdd,0x74,0x1f,0x4b,0xbd,0x8b,0x8a,
+0x70,0x3e,0xb5,0x66,0x48,0x03,0xf6,0x0e,0x61,0x35,0x57,0xb9,0x86,0xc1,0x1d,0x9e,
+0xe1,0xf8,0x98,0x11,0x69,0xd9,0x8e,0x94,0x9b,0x1e,0x87,0xe9,0xce,0x55,0x28,0xdf,
+0x8c,0xa1,0x89,0x0d,0xbf,0xe6,0x42,0x68,0x41,0x99,0x2d,0x0f,0xb0,0x54,0xbb,0x16];
+
+const RCON = [0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80,0x1b,0x36];
+
+function aesKeyExpansion(key) {
+  const Nk = 8, Nr = 14, Nb = 4;
+  const W = new Uint8Array(4 * Nb * (Nr + 1));
+  W.set(key);
+  for (let i = Nk; i < Nb * (Nr + 1); i++) {
+    let t = W.slice((i-1)*4, i*4);
+    if (i % Nk === 0) {
+      t = new Uint8Array([SBOX[t[1]]^RCON[i/Nk-1], SBOX[t[2]], SBOX[t[3]], SBOX[t[0]]]);
+    } else if (i % Nk === 4) {
+      t = new Uint8Array([SBOX[t[0]], SBOX[t[1]], SBOX[t[2]], SBOX[t[3]]]);
+    }
+    for (let j = 0; j < 4; j++) W[i*4+j] = W[(i-Nk)*4+j] ^ t[j];
+  }
+  return W;
+}
+
+function gmul(a, b) {
+  let p = 0;
+  for (let i = 0; i < 8; i++) {
+    if (b & 1) p ^= a;
+    const hi = a & 0x80;
+    a = (a << 1) & 0xff;
+    if (hi) a ^= 0x1b;
+    b >>= 1;
+  }
+  return p;
+}
+
+function aesEncryptBlock(block, expandedKey) {
+  const Nr = 14, s = new Uint8Array(block);
+  // AddRoundKey 0
+  for (let i = 0; i < 16; i++) s[i] ^= expandedKey[i];
+  for (let round = 1; round <= Nr; round++) {
+    // SubBytes
+    for (let i = 0; i < 16; i++) s[i] = SBOX[s[i]];
+    // ShiftRows
+    let t;
+    t=s[1]; s[1]=s[5]; s[5]=s[9]; s[9]=s[13]; s[13]=t;
+    t=s[2]; s[2]=s[10]; s[10]=t; t=s[6]; s[6]=s[14]; s[14]=t;
+    t=s[15]; s[15]=s[11]; s[11]=s[7]; s[7]=s[3]; s[3]=t;
+    // MixColumns (skip on last round)
+    if (round < Nr) {
+      for (let c = 0; c < 4; c++) {
+        const i = c*4;
+        const a0=s[i],a1=s[i+1],a2=s[i+2],a3=s[i+3];
+        s[i]  =gmul(a0,2)^gmul(a1,3)^a2^a3;
+        s[i+1]=a0^gmul(a1,2)^gmul(a2,3)^a3;
+        s[i+2]=a0^a1^gmul(a2,2)^gmul(a3,3);
+        s[i+3]=gmul(a0,3)^a1^a2^gmul(a3,2);
+      }
+    }
+    // AddRoundKey
+    const rk = round * 16;
+    for (let i = 0; i < 16; i++) s[i] ^= expandedKey[rk+i];
+  }
+  return s;
+}
+
+function incrementCounter(ctr) {
+  for (let i = 15; i >= 0; i--) {
+    if (ctr[i] === 255) { ctr[i] = 0; } else { ctr[i]++; break; }
+  }
+}
+
+function aesCtrDecrypt(data, keyBytes, iv) {
+  const expandedKey = aesKeyExpansion(keyBytes);
+  const counter = new Uint8Array(iv);
+  const out = new Uint8Array(data.length);
+  for (let off = 0; off < data.length; off += 16) {
+    const keystream = aesEncryptBlock(counter, expandedKey);
+    const end = Math.min(16, data.length - off);
+    for (let i = 0; i < end; i++) out[off+i] = data[off+i] ^ keystream[i];
+    incrementCounter(counter);
+  }
+  return out;
+}
+
+// AES-256-CTR decrypt: tries Web Crypto first, falls back to pure JS
+async function decryptData(dataBuffer, keyHex) {
+  const keyBytes = hexToBytes(keyHex);
+  const dataBytes = new Uint8Array(dataBuffer);
+  const iv = dataBytes.slice(0, 16);
+  const encrypted = dataBytes.slice(16);
+
+  // Try Web Crypto API first (available on HTTPS/localhost)
+  if (crypto.subtle) {
+    try {
+      const cryptoKey = await crypto.subtle.importKey(
+        'raw', keyBytes, { name: 'AES-CTR' }, false, ['decrypt']
+      );
+      return await crypto.subtle.decrypt(
+        { name: 'AES-CTR', counter: iv, length: 128 },
+        cryptoKey, encrypted
+      );
+    } catch(e) {
+      console.warn('Web Crypto failed, using JS fallback:', e);
+    }
+  }
+
+  // Fallback: pure JS AES-256-CTR (works on file:// protocol)
+  return aesCtrDecrypt(encrypted, keyBytes, iv).buffer;
+}
+
+// ============================================================
+// DOWNLOAD HELPER
+// ============================================================
+function downloadBlob(blob, name) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// ============================================================
+// LOAD CERTIFICATES
+// ============================================================
+async function loadCerts() {
+  const addr = document.getElementById('cert-wallet-input').value.trim();
+  if (!ethers.isAddress(addr)) { setStatus('certs-status','error','Invalid address.'); return; }
+
+  setStatus('certs-status','loading','Loading certificates from blockchain...');
+  const listEl = document.getElementById('certs-list');
+  listEl.innerHTML = '';
+
+  try {
+    const certIds = await certifier.getRecipientCerts(addr);
+    if (certIds.length === 0) {
+      clearStatus('certs-status');
+      listEl.innerHTML = '<div class="empty"><div class="icon">🎓</div><p>No certificates found for this address.</p></div>';
+      return;
+    }
+
+    setStatus('certs-status','loading','Loading ' + certIds.length + ' certificates...');
+    const certs = [];
+
+    for (const id of certIds) {
+      try {
+        const cert = await certifier.getCert(id);
+        const valid = await certifier.isCertValid(id);
+        let instName = 'Unknown';
+        try {
+          const inst = await certifier.getInstitution(cert.institutionId);
+          instName = inst.name;
+        } catch(e) {}
+        certs.push({ id, cert, valid, instName });
+      } catch(e) { console.warn('Failed to load cert', id.toString(), e); }
+    }
+
+    clearStatus('certs-status');
+    setStatus('certs-status','success','Found ' + certs.length + ' certificates.');
+
+    for (const { id, cert, valid, instName } of certs) {
+      const typeIdx = Number(cert.certType);
+      const icon = CERT_ICONS[typeIdx] || '📄';
+      const typeName = CERT_TYPES[typeIdx] || 'Unknown';
+      const card = document.createElement('div');
+      card.className = 'cert-card';
+      card.innerHTML = `
+        <div class="cert-header">
+          <span class="cert-type-icon">${icon}</span>
+          <div>
+            <div class="cert-title">${typeName} Certificate #${id.toString()}</div>
+            <div style="font-size:12px;color:var(--muted)">${cert.recipientName || 'No recipient name'}</div>
+          </div>
+          <div style="margin-left:auto">
+            ${cert.revoked
+              ? '<span class="cert-revoked">REVOKED</span>'
+              : valid
+                ? '<span class="cert-valid">VALID</span>'
+                : '<span class="cert-invalid">EXPIRED</span>'
+            }
+          </div>
+        </div>
+        <div class="cert-detail"><span class="label">Institution</span><span>${escHtml(instName)}</span></div>
+        <div class="cert-detail"><span class="label">Issued</span><span>${formatDate(cert.issuedAt)}</span></div>
+        <div class="cert-detail"><span class="label">Expires</span><span>${Number(cert.expiresAt) === 0 ? 'Never' : formatDate(cert.expiresAt)}</span></div>
+        <div class="cert-detail"><span class="label">File Hash</span><span style="font-family:monospace;font-size:12px">${cert.fileHash.slice(0,10)}...${cert.fileHash.slice(-8)}</span></div>
+        <div class="cert-detail"><span class="label">Recipient</span><span style="font-family:monospace;font-size:12px">${shortAddr(cert.recipient)}</span></div>
+        ${cert.metadata ? `<div class="cert-detail"><span class="label">Metadata</span><span>${escHtml(cert.metadata)}</span></div>` : ''}
+      `;
+      listEl.appendChild(card);
+    }
+  } catch(e) {
+    setStatus('certs-status','error','Error: ' + e.message);
+  }
+}
+
+// ============================================================
+// VERIFY DOCUMENT
+// ============================================================
+
+// Drag & drop
+const dropZone = document.getElementById('drop-zone');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  if (e.dataTransfer.files.length) verifyFile(e.dataTransfer.files[0]);
+});
+
+async function computeHash(buffer) {
+  // Try Web Crypto first
+  if (crypto.subtle) {
+    try {
+      const hash = await crypto.subtle.digest('SHA-256', buffer);
+      return '0x' + Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('');
+    } catch(e) {}
+  }
+  // Fallback: use ethers.sha256 (works everywhere)
+  return ethers.sha256(new Uint8Array(buffer));
+}
+
+async function verifyFile(file) {
+  if (!file) return;
+  setStatus('verify-status','loading','Hashing file: ' + file.name + '...');
+  try {
+    const buffer = await file.arrayBuffer();
+    const hash = await computeHash(buffer);
+    document.getElementById('hash-input').value = hash;
+    await doVerify(hash, file.name);
+  } catch(e) {
+    setStatus('verify-status','error','Error hashing file: ' + e.message);
+  }
+}
+
+async function verifyByHash() {
+  let hash = document.getElementById('hash-input').value.trim();
+  if (!hash) { setStatus('verify-status','error','Enter a file hash.'); return; }
+  if (!hash.startsWith('0x')) hash = '0x' + hash;
+  if (hash.length !== 66) { setStatus('verify-status','error','Hash must be 32 bytes (64 hex chars).'); return; }
+  await doVerify(hash);
+}
+
+async function doVerify(hash, fileName) {
+  setStatus('verify-status','loading','Verifying on blockchain...');
+  const resultsEl = document.getElementById('verify-results');
+  resultsEl.innerHTML = '';
+
+  try {
+    // Check BaseVault (built-in certifications)
+    const vaultResult = await vault.verifyDocument(hash);
+    let html = '';
+
+    if (vaultResult.exists) {
+      html += `
+        <div class="cert-card">
+          <div class="cert-header">
+            <span class="cert-type-icon">📄</span>
+            <div>
+              <div class="cert-title">File Found on BaseVault</div>
+              <div style="font-size:12px;color:var(--muted)">${escHtml(vaultResult.fileName)}</div>
+            </div>
+            <div style="margin-left:auto">
+              ${vaultResult.certified ? '<span class="cert-valid">CERTIFIED</span>' : '<span style="color:var(--muted)">Not Certified</span>'}
+            </div>
+          </div>
+          <div class="cert-detail"><span class="label">File ID</span><span>#${vaultResult.fileId.toString()}</span></div>
+          <div class="cert-detail"><span class="label">Uploader</span><span style="font-family:monospace;font-size:12px">${shortAddr(vaultResult.uploader)}</span></div>
+          <div class="cert-detail"><span class="label">Uploaded</span><span>${formatDate(vaultResult.uploadedAt)}</span></div>
+        </div>
+      `;
+    }
+
+    // Check Certifier contract
+    try {
+      const instCerts = await certifier.verifyCertifications(hash);
+      if (instCerts.length > 0) {
+        for (const cert of instCerts) {
+          const typeIdx = Number(cert.certType);
+          let instName = 'Unknown';
+          try {
+            const inst = await certifier.getInstitution(cert.institutionId);
+            instName = inst.name;
+          } catch(e) {}
+
+          html += `
+            <div class="cert-card">
+              <div class="cert-header">
+                <span class="cert-type-icon">${CERT_ICONS[typeIdx] || '📄'}</span>
+                <div>
+                  <div class="cert-title">${CERT_TYPES[typeIdx] || 'Certificate'} by ${escHtml(instName)}</div>
+                  <div style="font-size:12px;color:var(--muted)">${cert.recipientName || ''}</div>
+                </div>
+                <div style="margin-left:auto">
+                  ${cert.revoked ? '<span class="cert-revoked">REVOKED</span>' : '<span class="cert-valid">VALID</span>'}
+                </div>
+              </div>
+              <div class="cert-detail"><span class="label">Issued</span><span>${formatDate(cert.issuedAt)}</span></div>
+              <div class="cert-detail"><span class="label">Expires</span><span>${Number(cert.expiresAt) === 0 ? 'Never' : formatDate(cert.expiresAt)}</span></div>
+              <div class="cert-detail"><span class="label">Recipient</span><span style="font-family:monospace;font-size:12px">${shortAddr(cert.recipient)}</span></div>
+            </div>
+          `;
+        }
+      }
+    } catch(e) { console.warn('Certifier check failed:', e); }
+
+    if (html) {
+      setStatus('verify-status','success','Document verified on-chain!' + (fileName ? ' (' + fileName + ')' : ''));
+      resultsEl.innerHTML = html;
+    } else {
+      setStatus('verify-status','info','No records found for this hash on-chain.');
+      resultsEl.innerHTML = '<div class="empty"><div class="icon">🔍</div><p>This file has not been uploaded or certified on BaseVault.</p></div>';
+    }
+  } catch(e) {
+    setStatus('verify-status','error','Verification error: ' + e.message);
+  }
+}
+</script>
+</body>
+</html>

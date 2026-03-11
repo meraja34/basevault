@@ -3270,3 +3270,49 @@ textarea { resize: vertical; min-height: 100px; }
   .lp-cta { padding: 48px 16px; }
   .lp-cta h2 { font-size: 1.4rem; }
 }
+
+/* Recovery Section */
+.lp-recovery-btn {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 10px 22px;
+  background: #0052FF;
+  color: #fff;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.lp-recovery-btn:hover { background: #003ecb; }
+.lp-recovery-contracts {
+  text-align: center;
+  margin-top: 36px;
+  padding: 20px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+}
+.lp-recovery-contracts p {
+  color: #64748b;
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+}
+.lp-recovery-addrs {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.lp-recovery-addrs a {
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: #93c5fd;
+  text-decoration: none;
+  padding: 6px 14px;
+  background: rgba(0,82,255,0.08);
+  border-radius: 8px;
+  border: 1px solid rgba(0,82,255,0.15);
+  transition: background 0.2s;
+}
+.lp-recovery-addrs a:hover { background: rgba(0,82,255,0.18); }
