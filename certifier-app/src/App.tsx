@@ -22,7 +22,16 @@ import Profile from './pages/Profile.tsx';
 import Stats from './pages/Stats.tsx';
 import { BASEVAULT_ADDRESS, CERTIFIER_ADDRESS } from './constants.ts';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 30,
+      refetchOnMount: true,
+      refetchOnWindowFocus: true,
+      refetchInterval: 1000 * 60,
+    },
+  },
+});
 
 function usePageTitle(title: string) {
   useEffect(() => {
@@ -48,16 +57,43 @@ function AppContent() {
 
   // MiniApp: signal ready + auto-connect Farcaster wallet
   useEffect(() => {
-    import('@farcaster/miniapp-sdk').then(({ sdk }) => {
-      sdk.actions.ready();
+    let cancelled = false;
 
-      if (isMiniApp && !isConnected) {
+    (async () => {
+      try {
+        const { sdk } = await import('@farcaster/miniapp-sdk');
+
+        // Signal to Warpcast that the miniapp is loaded
+        await sdk.actions.ready();
+
+        if (cancelled || isConnected) return;
+
+        // Only auto-connect inside miniapp context
+        if (!isMiniApp) return;
+
+        // Small delay to let the SDK provider initialize
+        await new Promise(r => setTimeout(r, 500));
+        if (cancelled || isConnected) return;
+
         const fc = connectors.find(c => c.id === farcasterConnectorId);
         if (fc) {
-          connect({ connector: fc });
+          try {
+            connect({ connector: fc });
+          } catch (e) {
+            console.log('Farcaster auto-connect attempt failed, retrying...', e);
+            // Retry once after a longer delay
+            await new Promise(r => setTimeout(r, 1500));
+            if (!cancelled && !isConnected) {
+              connect({ connector: fc });
+            }
+          }
         }
+      } catch {
+        // Not in Farcaster context or SDK not available
       }
-    }).catch(() => {});
+    })();
+
+    return () => { cancelled = true; };
   }, [isMiniApp, isConnected]);
 
   return (

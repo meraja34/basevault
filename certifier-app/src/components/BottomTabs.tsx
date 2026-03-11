@@ -55,6 +55,9 @@ export default function BottomTabs() {
   const location = useLocation();
   const [showMore, setShowMore] = useState(false);
 
+  // Hide bottom tabs on landing page
+  if (location.pathname === '/') return null;
+
   return (
     <>
       {showMore && (

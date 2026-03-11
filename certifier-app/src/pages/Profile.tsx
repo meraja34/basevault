@@ -1,29 +1,85 @@
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useReadContract, useReadContracts } from 'wagmi';
+import { isAddress } from 'viem';
 import { CONTRACT_ADDRESS, CERTIFIER_ADDRESS, CERTIFIER_LIVE } from '../constants.ts';
 import { baseVaultAbi, certifierAbi } from '../abi/index.ts';
 import FileCard from '../components/FileCard.tsx';
 import CertCard from '../components/CertCard.tsx';
 import toast from 'react-hot-toast';
+import { isENSName, resolveENS } from '../utils/ens.ts';
 
 export default function Profile() {
   const { address } = useParams<{ address: string }>();
+  const [resolvedAddress, setResolvedAddress] = useState<`0x${string}` | null>(null);
+  const [ensName, setEnsName] = useState<string | null>(null);
+  const [resolving, setResolving] = useState(false);
+  const [error, setError] = useState('');
 
-  if (!address || !address.startsWith('0x') || address.length !== 42) {
+  useEffect(() => {
+    if (!address) return;
+
+    if (isAddress(address)) {
+      setResolvedAddress(address as `0x${string}`);
+      setEnsName(null);
+      return;
+    }
+
+    if (isENSName(address)) {
+      setResolving(true);
+      setError('');
+      resolveENS(address).then(addr => {
+        if (addr) {
+          setResolvedAddress(addr);
+          setEnsName(address);
+        } else {
+          setError(`Could not resolve "${address}"`);
+        }
+        setResolving(false);
+      });
+      return;
+    }
+
+    setError('Invalid address or ENS name');
+  }, [address]);
+
+  if (!address) {
     return (
       <div className="page">
         <div className="empty-state">
           <h2>Invalid Address</h2>
-          <p>Please provide a valid Ethereum address.</p>
+          <p>Please provide a valid Ethereum address or ENS name.</p>
         </div>
       </div>
     );
   }
 
-  return <ProfileContent address={address as `0x${string}`} />;
+  if (resolving) {
+    return (
+      <div className="page">
+        <div className="empty-state">
+          <div className="spinner" />
+          <p>Resolving {address}...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !resolvedAddress) {
+    return (
+      <div className="page">
+        <div className="empty-state">
+          <h2>Could Not Resolve</h2>
+          <p>{error || `"${address}" is not a valid address or ENS name.`}</p>
+        </div>
+      </div>
+    );
+  }
+
+  return <ProfileContent address={resolvedAddress} ensName={ensName} />;
 }
 
-function ProfileContent({ address }: { address: `0x${string}` }) {
+function ProfileContent({ address, ensName }: { address: `0x${string}`; ensName?: string | null }) {
   const short = `${address.slice(0, 6)}...${address.slice(-4)}`;
 
   // Get user's files
@@ -102,7 +158,7 @@ function ProfileContent({ address }: { address: `0x${string}` }) {
           </svg>
         </div>
         <div className="profile-info">
-          <h1 className="profile-address">{short}</h1>
+          <h1 className="profile-address">{ensName || short}</h1>
           <code className="profile-full-address">{address}</code>
         </div>
         <div className="profile-actions">

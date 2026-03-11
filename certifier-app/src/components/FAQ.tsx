@@ -7,19 +7,19 @@ const faqs = [
   },
   {
     q: 'How do I upload a file?',
-    a: 'Go to the Upload page, connect your wallet, drag and drop any file (up to 50MB). Choose Public (anyone can view) or Private (AES-256 encrypted with your wallet + password). Click Upload and approve the transaction. Your file is stored fully on-chain.',
+    a: `1. Go to the Upload page and connect your wallet\n2. Drag and drop any file (up to 50MB)\n3. Choose Public (anyone can view) or Private (AES-256 encrypted)\n4. Click Upload and approve the transaction\n5. Your file is stored fully on-chain`,
   },
   {
     q: 'How do I register my institution?',
-    a: 'Go to the Register page, connect your wallet (use a multisig like Safe for institutional control). Enter your institution name, select which certification types you want to issue (degrees, licenses, audits, etc.), and confirm. Registration is free, you only pay gas. Once registered, you can issue certifications from the Dashboard.',
+    a: `1. Go to the Register page\n2. Connect your wallet (use a multisig like Safe for institutional control)\n3. Enter your institution name\n4. Select which certification types you want to issue (degrees, licenses, audits, etc.)\n5. Confirm the transaction\n\nRegistration is free, you only pay gas. Once registered, you can issue certifications from the Dashboard.`,
   },
   {
     q: 'How do I issue a certification?',
-    a: 'After registering, go to the Dashboard. Enter the File ID (from an uploaded file) or a SHA-256 hash, the recipient wallet address, recipient name, select the certification type, and click Certify. The certificate is stored on-chain permanently. You can also set an expiry date or leave it unlimited.',
+    a: `1. Register your institution (one-time)\n2. Go to the Dashboard\n3. Enter the File ID or SHA-256 hash\n4. Enter the recipient wallet address and name\n5. Select the certification type\n6. Click Certify\n\nThe certificate is stored on-chain permanently. You can also set an expiry date or leave it unlimited.`,
   },
   {
     q: 'How does the full certification flow work?',
-    a: 'Step 1: A student/employee uploads their document on the Upload page (gets a File ID). Step 2: The institution registers on the Register page (one-time). Step 3: The institution goes to Dashboard, enters the File ID + student wallet address + cert type, and clicks Certify. Step 4: The student can see their certificate on My Certs page. Step 5: Anyone can verify it on the Verify page.',
+    a: `1. A student/employee uploads their document on the Upload page (gets a File ID)\n2. The institution registers on the Register page (one-time)\n3. The institution goes to Dashboard, enters the File ID + student wallet + cert type, clicks Certify\n4. The student can see their certificate on My Certs page\n5. Anyone can verify it on the Verify page`,
   },
   {
     q: 'Can I certify without uploading a file?',
@@ -31,7 +31,7 @@ const faqs = [
   },
   {
     q: 'How does password-protected storage work?',
-    a: 'Private files are encrypted client-side with AES-256-CTR before going on-chain. The encryption key comes from two factors: your wallet signature and a password you choose. Even though encrypted data sits on a public blockchain, nobody can read it without both your wallet and password.',
+    a: `Private files are encrypted client-side with AES-256-CTR before going on-chain. The encryption key comes from two factors:\n\n1. Your wallet signature (proves identity)\n2. A password you choose (extra protection)\n\nEven though encrypted data sits on a public blockchain, nobody can read it without both your wallet and password.`,
   },
   {
     q: 'Can files or certificates be deleted?',
@@ -39,7 +39,7 @@ const faqs = [
   },
   {
     q: 'How much does it cost?',
-    a: 'File uploads cost a small fee per 24KB chunk. Institutional registration and certification are completely free, you only pay Base network gas fees (usually less than $0.01 per transaction). All fees are shown before you confirm.',
+    a: 'All fees are currently set to zero. You only pay Base network gas fees, which are usually less than $0.01 per transaction. All costs are shown before you confirm.',
   },
   {
     q: 'What wallets are supported?',
@@ -47,15 +47,11 @@ const faqs = [
   },
   {
     q: 'How do I verify a document?',
-    a: 'Go to the Verify page. Either drop a file (it computes the SHA-256 hash automatically) or paste a hash manually. If the document is on BaseVault, you will see the uploader, upload date, and all institutional certifications. Anyone can verify, no wallet needed.',
-  },
-  {
-    q: 'Can I add team members to my institution?',
-    a: 'Yes. As the institution admin, you can add delegates from the Dashboard. Delegates can issue certifications on behalf of your institution but cannot change institution settings or add other delegates.',
+    a: `1. Go to the Verify page\n2. Drop a file (it computes the SHA-256 hash automatically) or paste a hash manually\n3. If the document is on BaseVault, you will see the uploader, upload date, and all institutional certifications\n\nAnyone can verify, no wallet needed.`,
   },
   {
     q: 'What certification types are supported?',
-    a: 'BaseVault supports 13 types: Generic, Degree, Transcript, Course Completion, Badge, License, Contract, NDA, Audit, IP Proof, Medical Record, Lab Report, and Research Paper. You choose which types your institution can issue during registration.',
+    a: `BaseVault supports 13 types:\n\n1. Generic Certificate\n2. Academic Degree\n3. Transcript\n4. Course Completion\n5. Badge\n6. Professional License\n7. Legal Contract\n8. NDA\n9. Financial Audit\n10. IP Proof\n11. Medical Record\n12. Lab Report\n13. Research Paper`,
   },
 ];
 
@@ -64,7 +60,8 @@ export default function FAQ() {
 
   return (
     <div className="faq-section">
-      <h2 className="section-title" style={{ textAlign: 'center' }}>Frequently Asked Questions</h2>
+      <h2 className="lp-sec-h2">Frequently Asked Questions</h2>
+      <p className="faq-subtitle">Everything you need to know about BaseVault</p>
       <div className="faq-list">
         {faqs.map((faq, i) => (
           <div key={i} className={`faq-item ${openIndex === i ? 'faq-item-open' : ''}`}>
@@ -83,7 +80,11 @@ export default function FAQ() {
               </svg>
             </button>
             <div className="faq-answer">
-              <p>{faq.a}</p>
+              <div className="faq-answer-content">
+                {faq.a.split('\n').map((line, j) => (
+                  line === '' ? <br key={j} /> : <p key={j}>{line}</p>
+                ))}
+              </div>
             </div>
           </div>
         ))}

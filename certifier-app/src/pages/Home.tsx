@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useReadContract } from 'wagmi';
 import { CERTIFIER_ADDRESS, CONTRACT_ADDRESS, CERTIFIER_LIVE } from '../constants.ts';
 import { certifierAbi, baseVaultAbi } from '../abi/index.ts';
@@ -31,14 +30,14 @@ function GridBackground() {
     let w = 0, h = 0;
 
     const resize = () => {
-      w = canvas.width = canvas.offsetWidth;
-      h = canvas.height = canvas.offsetHeight;
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
     };
     resize();
     window.addEventListener('resize', resize);
 
     const dots: { x: number; y: number; vx: number; vy: number; r: number }[] = [];
-    for (let i = 0; i < 40; i++) {
+    for (let i = 0; i < 60; i++) {
       dots.push({ x: Math.random() * w, y: Math.random() * h, vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4, r: Math.random() * 2 + 1 });
     }
 
@@ -122,9 +121,10 @@ function LandingPage() {
   return (
     <div className="lp">
 
+      <GridBackground />
+
       {/* ===== HERO ===== */}
       <section className="lp-hero">
-        <GridBackground />
         <div className="lp-hero-content">
           <p className="lp-hero-tag">Fully On-Chain Document Platform on Base</p>
           <h1 className="lp-hero-h1">
@@ -139,7 +139,7 @@ function LandingPage() {
               Try Our App
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
             </a>
-            <Link to="/verify" className="lp-btn-sec">Verify a Document</Link>
+            <a href="https://app.basevault.store/verify" className="lp-btn-sec">Verify a Document</a>
           </div>
         </div>
       </section>
@@ -397,7 +397,7 @@ function LandingPage() {
             Open App
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
           </a>
-          <Link to="/register" className="lp-btn-sec">Register Institution</Link>
+          <a href="https://app.basevault.store/register" className="lp-btn-sec">Register Institution</a>
         </div>
         <p className="lp-cta-note">Free to use. You only pay Base network gas fees.</p>
       </section>

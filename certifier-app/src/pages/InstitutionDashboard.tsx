@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useAccount, useReadContract, useReadContracts, useWriteContract, useWaitForTransactionReceipt, usePublicClient, useWalletClient } from 'wagmi';
-import { encodeFunctionData } from 'viem';
+import { useQueryClient } from '@tanstack/react-query';
+import { encodeFunctionData, isAddress } from 'viem';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import toast from 'react-hot-toast';
 import { CERTIFIER_ADDRESS, CONTRACT_ADDRESS, INSTITUTION_STATUS, CERT_TYPE_LABELS } from '../constants.ts';
@@ -11,6 +12,7 @@ import SearchFilter from '../components/SearchFilter.tsx';
 import FileDropzone from '../components/FileDropzone.tsx';
 import { computeFileHash, fileToChunks, formatFileSize } from '../utils/ipfs.ts';
 import { friendlyError } from '../utils/crypto.ts';
+import { isENSName, resolveENS } from '../utils/ens.ts';
 
 const filters = [
   { label: 'All', value: 'all' },
@@ -25,6 +27,7 @@ export default function InstitutionDashboard() {
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
   const { writeContractAsync } = useWriteContract();
+  const qc = useQueryClient();
 
   const [instId, setInstId] = useState<number | null>(null);
   const [fileIdOrHash, setFileIdOrHash] = useState('');
@@ -39,6 +42,11 @@ export default function InstitutionDashboard() {
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
 
+  // ENS resolution
+  const [resolvedAddress, setResolvedAddress] = useState<string | null>(null);
+  const [isResolvingENS, setIsResolvingENS] = useState(false);
+  const [ensError, setEnsError] = useState('');
+
   // Upload & Certify state
   const [certMode, setCertMode] = useState<'existing' | 'upload'>('existing');
   const [uploadFile, setUploadFile] = useState<File | null>(null);
@@ -47,6 +55,32 @@ export default function InstitutionDashboard() {
   const [uploadChunkProgress, setUploadChunkProgress] = useState({ current: 0, total: 0 });
   const [uploadedFileId, setUploadedFileId] = useState<number>(0);
   const [uploadedFileHash, setUploadedFileHash] = useState('');
+
+  // Auto-resolve ENS/Base names with debounce
+  useEffect(() => {
+    setResolvedAddress(null);
+    setEnsError('');
+
+    if (!recipient || !isENSName(recipient)) return;
+
+    const timeout = setTimeout(async () => {
+      setIsResolvingENS(true);
+      setEnsError('');
+      try {
+        const addr = await resolveENS(recipient);
+        if (addr) {
+          setResolvedAddress(addr);
+        } else {
+          setEnsError(`Could not resolve "${recipient}"`);
+        }
+      } catch {
+        setEnsError(`Failed to resolve "${recipient}"`);
+      }
+      setIsResolvingENS(false);
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  }, [recipient]);
 
   const { data: instCount } = useReadContract({
     address: CERTIFIER_ADDRESS,
@@ -322,12 +356,14 @@ export default function InstitutionDashboard() {
       setRecipientName('');
       setMetadata('');
       setExpiresAt('');
-      // Reset upload state too
       setUploadFile(null);
       setUploadStatus('idle');
       setUploadedFileId(0);
       setUploadedFileHash('');
       setUploadChunkProgress({ current: 0, total: 0 });
+      setResolvedAddress(null);
+      // Invalidate all cert-related queries so they refetch everywhere
+      qc.invalidateQueries();
     }
   }, [certifySuccess]);
 
@@ -335,10 +371,20 @@ export default function InstitutionDashboard() {
     if (!instId) return;
     if (!recipient) { toast.error('Recipient address required'); return; }
 
+    // Resolve final address: use ENS-resolved address if it's an ENS name
+    let finalAddress: `0x${string}`;
+    if (isENSName(recipient)) {
+      if (isResolvingENS) { toast.error('Still resolving ENS name, please wait...'); return; }
+      if (!resolvedAddress) { toast.error(`Could not resolve "${recipient}". Enter a valid ENS/Base name or 0x address.`); return; }
+      finalAddress = resolvedAddress as `0x${string}`;
+    } else {
+      if (!isAddress(recipient)) { toast.error('Invalid address. Enter a valid 0x address or ENS name (e.g. name.eth, name.base.eth)'); return; }
+      finalAddress = recipient as `0x${string}`;
+    }
+
     const fee = perCertFee as bigint || 0n;
     const expiry = expiresAt ? BigInt(Math.floor(new Date(expiresAt).getTime() / 1000)) : BigInt(0);
 
-    // Upload & Certify mode: use uploadedFileId
     if (certMode === 'upload') {
       if (!uploadedFileId || uploadStatus !== 'done') {
         toast.error('Upload the file first'); return;
@@ -347,13 +393,12 @@ export default function InstitutionDashboard() {
         address: CERTIFIER_ADDRESS,
         abi: certifierAbi,
         functionName: 'certify',
-        args: [BigInt(instId), BigInt(uploadedFileId), recipient as `0x${string}`, certType, expiry, recipientName, metadata],
+        args: [BigInt(instId), BigInt(uploadedFileId), finalAddress, certType, expiry, recipientName, metadata],
         value: fee,
       }, { onError: (err) => toast.error(err.message.slice(0, 100)) });
       return;
     }
 
-    // Existing mode: by hash or by file ID
     if (useHash) {
       if (!fileIdOrHash.startsWith('0x') || fileIdOrHash.length !== 66) {
         toast.error('Enter a valid 0x-prefixed SHA-256 hash'); return;
@@ -362,7 +407,7 @@ export default function InstitutionDashboard() {
         address: CERTIFIER_ADDRESS,
         abi: certifierAbi,
         functionName: 'certifyByHash',
-        args: [BigInt(instId), fileIdOrHash as `0x${string}`, recipient as `0x${string}`, certType, expiry, recipientName, metadata],
+        args: [BigInt(instId), fileIdOrHash as `0x${string}`, finalAddress, certType, expiry, recipientName, metadata],
         value: fee,
       }, { onError: (err) => toast.error(err.message.slice(0, 100)) });
     } else {
@@ -372,7 +417,7 @@ export default function InstitutionDashboard() {
         address: CERTIFIER_ADDRESS,
         abi: certifierAbi,
         functionName: 'certify',
-        args: [BigInt(instId), BigInt(fid), recipient as `0x${string}`, certType, expiry, recipientName, metadata],
+        args: [BigInt(instId), BigInt(fid), finalAddress, certType, expiry, recipientName, metadata],
         value: fee,
       }, { onError: (err) => toast.error(err.message.slice(0, 100)) });
     }
@@ -390,7 +435,7 @@ export default function InstitutionDashboard() {
       functionName: 'revokeCert',
       args: [BigInt(revokingId), revokeReason],
     }, {
-      onSuccess: () => { toast.success('Certificate revoked'); setRevokingId(null); setRevokeReason(''); },
+      onSuccess: () => { toast.success('Certificate revoked'); setRevokingId(null); setRevokeReason(''); qc.invalidateQueries(); },
       onError: (err) => toast.error(err.message.slice(0, 100)),
     });
   };
@@ -434,9 +479,14 @@ export default function InstitutionDashboard() {
   if (!isConnected) {
     return (
       <div className="page">
-        <h1 className="page-title">Institution Dashboard</h1>
-        <div className="connect-prompt">
-          <p>Connect your wallet to access your institution dashboard.</p>
+        <div className="dash-connect-card">
+          <div className="dash-connect-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="1.5">
+              <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a4 4 0 0 0-8 0v2"/><circle cx="12" cy="14" r="1.5"/>
+            </svg>
+          </div>
+          <h2>Institution Dashboard</h2>
+          <p>Connect your institution wallet to manage certifications, issue new certificates, and view your activity.</p>
           <ConnectButton />
         </div>
       </div>
@@ -446,66 +496,116 @@ export default function InstitutionDashboard() {
   if (!instId) {
     return (
       <div className="page">
-        <h1 className="page-title">Institution Dashboard</h1>
-        <div className="empty-state">
-          <p>No institution found for your wallet.</p>
-          <a href="/register" className="btn btn-primary">Register Institution</a>
+        <div className="dash-connect-card">
+          <div className="dash-connect-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" strokeWidth="1.5">
+              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          </div>
+          <h2>No Institution Found</h2>
+          <p>No registered institution is linked to this wallet address.</p>
+          <a href="/register" className="btn btn-primary">Register Your Institution</a>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="page">
+    <div className="page dash-page">
       {/* Institution Header */}
       {myInst && (
-        <div className="dashboard-header">
-          <div>
-            <h1 className="page-title">{myInst.name}</h1>
-            <div className="dashboard-meta">
-              <span className={`status-badge status-${myInst.status}`}>
-                {INSTITUTION_STATUS[myInst.status]}
-              </span>
-              <span>ID: #{instId}</span>
-              <span>Certs Issued: {Number(myInst.certCount)}</span>
+        <div className="dash-hero">
+          <div className="dash-hero-left">
+            <div className="dash-hero-avatar">
+              {myInst.name.charAt(0).toUpperCase()}
+            </div>
+            <div className="dash-hero-info">
+              <h1>{myInst.name}</h1>
+              <div className="dash-hero-meta">
+                <span className={`dash-status-pill dash-status-${myInst.status}`}>
+                  {INSTITUTION_STATUS[myInst.status]}
+                </span>
+                <span className="dash-meta-item">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0022 16z"/></svg>
+                  ID #{instId}
+                </span>
+                <a
+                  href={`https://basescan.org/address/${myInst.admin || address}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="dash-meta-link"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  BaseScan
+                </a>
+              </div>
             </div>
           </div>
         </div>
       )}
 
       {/* Stats Row */}
-      <div className="stats-grid stats-grid-3" style={{ marginBottom: 24 }}>
-        <div className="stat-card stat-card-sm">
-          <span className="stat-value" style={{ color: 'var(--accent)' }}>{stats.valid}</span>
-          <span className="stat-label">Valid</span>
+      <div className="dash-stats-row">
+        <div className="dash-stat-card">
+          <div className="dash-stat-icon dash-stat-icon-total">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15l2 2 4-4"/></svg>
+          </div>
+          <div className="dash-stat-info">
+            <span className="dash-stat-number">{allCertIds.length}</span>
+            <span className="dash-stat-label">Total Issued</span>
+          </div>
         </div>
-        <div className="stat-card stat-card-sm">
-          <span className="stat-value" style={{ color: 'var(--warning)' }}>{stats.expired}</span>
-          <span className="stat-label">Expired</span>
+        <div className="dash-stat-card">
+          <div className="dash-stat-icon dash-stat-icon-valid">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div className="dash-stat-info">
+            <span className="dash-stat-number">{stats.valid}</span>
+            <span className="dash-stat-label">Valid</span>
+          </div>
         </div>
-        <div className="stat-card stat-card-sm">
-          <span className="stat-value" style={{ color: 'var(--danger)' }}>{stats.revoked}</span>
-          <span className="stat-label">Revoked</span>
+        <div className="dash-stat-card">
+          <div className="dash-stat-icon dash-stat-icon-expired">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div className="dash-stat-info">
+            <span className="dash-stat-number">{stats.expired}</span>
+            <span className="dash-stat-label">Expired</span>
+          </div>
+        </div>
+        <div className="dash-stat-card">
+          <div className="dash-stat-icon dash-stat-icon-revoked">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          </div>
+          <div className="dash-stat-info">
+            <span className="dash-stat-number">{stats.revoked}</span>
+            <span className="dash-stat-label">Revoked</span>
+          </div>
         </div>
       </div>
 
-      {/* Issue Certificate Form */}
-      <div className="form-card">
-        <h2 className="form-title">Issue Certificate</h2>
+      {/* Issue Certificate Section */}
+      <div className="dash-section">
+        <div className="dash-section-header">
+          <h2>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="2"><circle cx="12" cy="8" r="4"/><path d="M8 21l4-7 4 7"/><path d="M12 11v3"/></svg>
+            Issue Certificate
+          </h2>
+        </div>
 
         {/* Mode Tabs */}
-        <div className="dash-cert-tabs">
+        <div className="dash-mode-tabs">
           <button
-            className={`dash-cert-tab ${certMode === 'existing' ? 'active' : ''}`}
+            className={`dash-mode-tab ${certMode === 'existing' ? 'active' : ''}`}
             onClick={() => setCertMode('existing')}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
             </svg>
-            Certify Existing File
+            Existing File
           </button>
           <button
-            className={`dash-cert-tab ${certMode === 'upload' ? 'active' : ''}`}
+            className={`dash-mode-tab ${certMode === 'upload' ? 'active' : ''}`}
             onClick={() => setCertMode('upload')}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -515,19 +615,19 @@ export default function InstitutionDashboard() {
           </button>
         </div>
 
-        {/* Mode: Certify Existing */}
-        {certMode === 'existing' && (
-          <div className="form-row">
-            <div className="form-group flex-1">
-              <label>
-                <span>{useHash ? 'File Hash' : 'BaseVault File ID'}</span>
-                <button className="form-toggle" onClick={() => setUseHash(!useHash)}>
+        <div className="dash-form-body">
+          {/* Mode: Certify Existing */}
+          {certMode === 'existing' && (
+            <div className="dash-form-field">
+              <label className="dash-label">
+                {useHash ? 'File Hash (SHA-256)' : 'BaseVault File ID'}
+                <button className="dash-toggle-btn" onClick={() => setUseHash(!useHash)}>
                   Switch to {useHash ? 'File ID' : 'Hash'}
                 </button>
               </label>
               <input
                 type="text"
-                className="input-full"
+                className="dash-input"
                 placeholder={useHash ? '0x...' : 'e.g. 42'}
                 value={fileIdOrHash}
                 onChange={(e) => {
@@ -538,136 +638,167 @@ export default function InstitutionDashboard() {
                 }}
               />
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Mode: Upload & Certify */}
-        {certMode === 'upload' && (
-          <div className="dash-upload-section">
-            {uploadStatus === 'idle' && !uploadFile && (
-              <FileDropzone
-                onFilesSelected={(files) => { setUploadFile(files[0]); setUploadStatus('idle'); }}
-                label="Drop document here to upload & certify"
-              />
-            )}
+          {/* Mode: Upload & Certify */}
+          {certMode === 'upload' && (
+            <div className="dash-upload-area">
+              {uploadStatus === 'idle' && !uploadFile && (
+                <FileDropzone
+                  onFilesSelected={(files) => { setUploadFile(files[0]); setUploadStatus('idle'); }}
+                  label="Drop document here to upload & certify"
+                />
+              )}
 
-            {uploadFile && uploadStatus === 'idle' && (
-              <div className="dash-upload-preview">
-                <div className="dash-upload-file-info">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
-                  </svg>
-                  <div>
-                    <strong>{uploadFile.name}</strong>
-                    <span>{uploadFile.type || 'unknown'} - {formatFileSize(uploadFile.size)}</span>
+              {uploadFile && uploadStatus === 'idle' && (
+                <div className="dash-file-preview">
+                  <div className="dash-file-preview-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="2">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                    </svg>
                   </div>
-                  <button className="dash-upload-remove" onClick={() => setUploadFile(null)} title="Remove">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <div className="dash-file-preview-info">
+                    <strong>{uploadFile.name}</strong>
+                    <span className="text-dim">{uploadFile.type || 'unknown'} - {formatFileSize(uploadFile.size)}</span>
+                  </div>
+                  <button className="dash-file-remove" onClick={() => setUploadFile(null)} title="Remove">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
                     </svg>
                   </button>
                 </div>
+              )}
+
+              {uploadFile && uploadStatus === 'idle' && (
                 <button className="btn btn-primary btn-full" onClick={handleUploadFile}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
                   </svg>
                   Upload On-Chain (Public)
                 </button>
-              </div>
-            )}
+              )}
 
-            {(uploadStatus === 'hashing' || uploadStatus === 'creating' || uploadStatus === 'uploading') && (
-              <div className="dash-upload-progress">
-                <div className="spinner" />
-                <p>{uploadProgress}</p>
-                {uploadChunkProgress.total > 0 && (
-                  <>
-                    <div className="progress-bar">
-                      <div className="progress-fill" style={{ width: `${(uploadChunkProgress.current / uploadChunkProgress.total) * 100}%` }} />
-                    </div>
-                    <p className="text-dim" style={{ fontSize: 13 }}>{uploadChunkProgress.current}/{uploadChunkProgress.total} chunks</p>
-                  </>
-                )}
-              </div>
-            )}
-
-            {uploadStatus === 'done' && (
-              <div className="dash-upload-done">
-                <div className="dash-upload-done-icon">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00c853" strokeWidth="2">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
-                  </svg>
+              {(uploadStatus === 'hashing' || uploadStatus === 'creating' || uploadStatus === 'uploading') && (
+                <div className="dash-upload-progress">
+                  <div className="spinner" />
+                  <p>{uploadProgress}</p>
+                  {uploadChunkProgress.total > 0 && (
+                    <>
+                      <div className="progress-bar">
+                        <div className="progress-fill" style={{ width: `${(uploadChunkProgress.current / uploadChunkProgress.total) * 100}%` }} />
+                      </div>
+                      <p className="text-dim" style={{ fontSize: 13 }}>{uploadChunkProgress.current}/{uploadChunkProgress.total} chunks</p>
+                    </>
+                  )}
                 </div>
-                <div className="dash-upload-done-info">
-                  <strong>File uploaded! ID: #{uploadedFileId}</strong>
-                  <span className="text-dim" style={{ fontSize: 12, wordBreak: 'break-all' }}>{uploadedFileHash}</span>
+              )}
+
+              {uploadStatus === 'done' && (
+                <div className="dash-upload-done">
+                  <div className="dash-upload-done-check">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00c853" strokeWidth="2">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <strong>Uploaded! File ID: #{uploadedFileId}</strong>
+                    <span className="text-dim" style={{ fontSize: 12, wordBreak: 'break-all', display: 'block', marginTop: 2 }}>{uploadedFileHash}</span>
+                  </div>
+                  <button className="btn btn-sm btn-outline" onClick={() => { setUploadFile(null); setUploadStatus('idle'); setUploadedFileId(0); setUploadedFileHash(''); }}>
+                    Change
+                  </button>
                 </div>
-                <button className="btn btn-sm btn-outline" onClick={() => { setUploadFile(null); setUploadStatus('idle'); setUploadedFileId(0); setUploadedFileHash(''); }}>
-                  Change File
-                </button>
-              </div>
+              )}
+            </div>
+          )}
+
+          {/* Recipient Fields */}
+          <div className="dash-form-row">
+            <div className="dash-form-field">
+              <label className="dash-label">Recipient Address *</label>
+              <input type="text" className="dash-input" placeholder="0x... or name.eth / name.base.eth" value={recipient} onChange={(e) => setRecipient(e.target.value)} />
+              {isResolvingENS && (
+                <div className="dash-ens-status dash-ens-resolving">
+                  <div className="spinner spinner-xs" /> Resolving {recipient}...
+                </div>
+              )}
+              {resolvedAddress && !isResolvingENS && (
+                <div className="dash-ens-status dash-ens-resolved">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00c853" strokeWidth="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  {resolvedAddress.slice(0, 6)}...{resolvedAddress.slice(-4)}
+                </div>
+              )}
+              {ensError && !isResolvingENS && (
+                <div className="dash-ens-status dash-ens-error">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                  {ensError}
+                </div>
+              )}
+            </div>
+            <div className="dash-form-field">
+              <label className="dash-label">Recipient Name</label>
+              <input type="text" className="dash-input" placeholder="John Doe" value={recipientName} onChange={(e) => setRecipientName(e.target.value)} />
+            </div>
+          </div>
+
+          <div className="dash-form-row">
+            <div className="dash-form-field">
+              <label className="dash-label">Certification Type</label>
+              <CertTypeSelect value={certType} onChange={setCertType} allowedMask={myInst?.certTypesMask} />
+            </div>
+            <div className="dash-form-field">
+              <label className="dash-label">Expires At (optional)</label>
+              <input type="date" className="dash-input" value={expiresAt} onChange={(e) => setExpiresAt(e.target.value)} />
+            </div>
+          </div>
+
+          <div className="dash-form-field">
+            <label className="dash-label">Metadata JSON (optional)</label>
+            <textarea
+              className="dash-input dash-textarea"
+              placeholder='{"program": "Computer Science", "grade": "A"}'
+              value={metadata}
+              onChange={(e) => setMetadata(e.target.value)}
+              rows={3}
+            />
+          </div>
+
+          <div className="dash-form-fee">
+            <span>Certification Fee</span>
+            <span className="dash-fee-value">Free (gas only)</span>
+          </div>
+
+          <button
+            className="btn btn-primary btn-full dash-submit-btn"
+            onClick={handleCertify}
+            disabled={isCertifying || isCertifyConfirming || (certMode === 'upload' && uploadStatus !== 'done')}
+          >
+            {isCertifying ? (
+              <><div className="spinner spinner-sm" style={{ marginRight: 8 }} /> Confirm in Wallet...</>
+            ) : isCertifyConfirming ? (
+              <><div className="spinner spinner-sm" style={{ marginRight: 8 }} /> Confirming on-chain...</>
+            ) : (
+              <>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+                Issue Certificate
+              </>
             )}
-          </div>
-        )}
+          </button>
 
-        {/* Common Fields (both modes) */}
-        <div className="form-row">
-          <div className="form-group flex-1">
-            <label>Recipient Address *</label>
-            <input type="text" className="input-full" placeholder="0x..." value={recipient} onChange={(e) => setRecipient(e.target.value)} />
-          </div>
-          <div className="form-group flex-1">
-            <label>Recipient Name</label>
-            <input type="text" className="input-full" placeholder="John Doe" value={recipientName} onChange={(e) => setRecipientName(e.target.value)} />
-          </div>
+          {certMode === 'upload' && uploadStatus !== 'done' && (
+            <p className="dash-form-hint">Upload the file first, then fill recipient details and certify.</p>
+          )}
         </div>
-
-        <div className="form-row">
-          <div className="form-group flex-1">
-            <label>Certification Type</label>
-            <CertTypeSelect value={certType} onChange={setCertType} allowedMask={myInst?.certTypesMask} />
-          </div>
-          <div className="form-group flex-1">
-            <label>Expires At (optional)</label>
-            <input type="date" className="input-full" value={expiresAt} onChange={(e) => setExpiresAt(e.target.value)} />
-          </div>
-        </div>
-
-        <div className="form-group">
-          <label>Metadata JSON (optional)</label>
-          <textarea
-            className="input-full textarea"
-            placeholder='{"program": "Computer Science", "grade": "A"}'
-            value={metadata}
-            onChange={(e) => setMetadata(e.target.value)}
-            rows={3}
-          />
-        </div>
-
-        <div className="form-fee">
-          <span>Fee:</span>
-          <strong>Free (gas only)</strong>
-        </div>
-
-        <button
-          className="btn btn-primary btn-full"
-          onClick={handleCertify}
-          disabled={isCertifying || isCertifyConfirming || (certMode === 'upload' && uploadStatus !== 'done')}
-        >
-          {isCertifying ? 'Confirm in wallet...' : isCertifyConfirming ? 'Confirming...' : 'Issue Certificate'}
-        </button>
-
-        {certMode === 'upload' && uploadStatus !== 'done' && (
-          <p className="text-dim" style={{ textAlign: 'center', marginTop: 8, fontSize: 13 }}>
-            Upload the file first, then fill recipient details and certify.
-          </p>
-        )}
       </div>
 
-      {/* Issued Certificates */}
-      <div className="section">
-        <div className="page-header-row">
-          <h2 className="section-title">Issued Certificates ({allCertIds.length})</h2>
+      {/* Issued Certificates Section */}
+      <div className="dash-section">
+        <div className="dash-section-header">
+          <h2>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            Issued Certificates
+            <span className="dash-section-count">{allCertIds.length}</span>
+          </h2>
           {allCertIds.length > 0 && (
             <button className="btn btn-sm btn-outline" onClick={handleCSVExport}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -683,7 +814,7 @@ export default function InstitutionDashboard() {
           <SearchFilter
             searchValue={search}
             onSearchChange={setSearch}
-            placeholder="Search by recipient..."
+            placeholder="Search by recipient name or address..."
             filters={filters}
             activeFilter={activeFilter}
             onFilterChange={setActiveFilter}
@@ -692,7 +823,12 @@ export default function InstitutionDashboard() {
         )}
 
         {filteredCerts.length === 0 ? (
-          <p className="text-dim">{allCertIds.length === 0 ? 'No certificates issued yet.' : 'No certificates match your filters.'}</p>
+          <div className="dash-empty-certs">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="1.5">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/>
+            </svg>
+            <p>{allCertIds.length === 0 ? 'No certificates issued yet. Use the form above to issue your first certificate.' : 'No certificates match your search or filters.'}</p>
+          </div>
         ) : (
           <div className="cert-grid">
             {filteredCerts.map(({ id, index }) => {
@@ -727,17 +863,24 @@ export default function InstitutionDashboard() {
       {/* Revoke Modal */}
       {revokingId && (
         <div className="modal-overlay" onClick={() => setRevokingId(null)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <h3>Revoke Certificate #{revokingId}</h3>
-            <p>This action cannot be undone. The certificate will be permanently marked as revoked.</p>
-            <div className="form-group">
-              <label>Reason</label>
-              <input type="text" className="input-full" placeholder="Reason for revocation" value={revokeReason} onChange={(e) => setRevokeReason(e.target.value)} />
+          <div className="modal dash-revoke-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="dash-revoke-header">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" strokeWidth="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+              <h3>Revoke Certificate #{revokingId}</h3>
             </div>
-            <div className="modal-actions">
+            <p className="dash-revoke-warning">This action is permanent and cannot be undone. The certificate will be marked as revoked on-chain forever.</p>
+            <div className="dash-form-field">
+              <label className="dash-label">Reason for Revocation</label>
+              <input type="text" className="dash-input" placeholder="e.g. Document was forged, graduation revoked..." value={revokeReason} onChange={(e) => setRevokeReason(e.target.value)} />
+            </div>
+            <div className="dash-revoke-actions">
               <button className="btn btn-outline" onClick={() => setRevokingId(null)}>Cancel</button>
               <button className="btn btn-danger" onClick={confirmRevoke} disabled={isRevoking}>
-                {isRevoking ? 'Revoking...' : 'Revoke'}
+                {isRevoking ? (
+                  <><div className="spinner spinner-sm" style={{ marginRight: 6 }} /> Revoking...</>
+                ) : 'Revoke Certificate'}
               </button>
             </div>
           </div>

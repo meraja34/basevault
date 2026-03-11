@@ -1,4 +1,4 @@
-import { CTR } from 'aes-js';
+import { ModeOfOperation, Counter } from 'aes-js';
 import { sha256 } from 'js-sha256';
 
 // Derive a deterministic 32-byte encryption key from wallet signature + password
@@ -25,7 +25,7 @@ export function encryptFile(data: ArrayBuffer, keyHex: string): ArrayBuffer {
   const iv = new Uint8Array(16);
   crypto.getRandomValues(iv);
 
-  const ctr = new CTR(keyBytes, iv);
+  const ctr = new ModeOfOperation.ctr(keyBytes, new Counter(iv));
   const encrypted = ctr.encrypt(new Uint8Array(data));
 
   // Prepend IV (16 bytes) to encrypted data
@@ -44,10 +44,13 @@ export function decryptFile(data: ArrayBuffer, keyHex: string): ArrayBuffer {
   const iv = dataBytes.slice(0, 16);
   const encrypted = dataBytes.slice(16);
 
-  const ctr = new CTR(keyBytes, iv);
+  const ctr = new ModeOfOperation.ctr(keyBytes, new Counter(iv));
   const decrypted = ctr.decrypt(encrypted);
 
-  return decrypted.buffer as ArrayBuffer;
+  // Create clean copy to avoid aes-js buffer offset issues
+  const result = new Uint8Array(decrypted.length);
+  result.set(decrypted);
+  return result.buffer;
 }
 
 // Parse Web3 errors into user-friendly messages
