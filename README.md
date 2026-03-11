@@ -9,9 +9,9 @@
 </p>
 
 <p align="center">
-  <a href="https://basevault.store"><img src="https://img.shields.io/badge/Landing_Page-basevault.store-0052FF?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Website" /></a>
-  <a href="https://app.basevault.store"><img src="https://img.shields.io/badge/Launch_App-app.basevault.store-00c853?style=for-the-badge&logo=google-chrome&logoColor=white" alt="App" /></a>
-  <a href="https://app.basevault.store/recover.html"><img src="https://img.shields.io/badge/Recovery_Tool-Standalone-ff6d00?style=for-the-badge&logo=download&logoColor=white" alt="Recovery" /></a>
+  <a href="https://basevault.store"><img src="https://img.shields.io/badge/Website-basevault.store-0052FF?style=for-the-badge" alt="Website" /></a>
+  <a href="https://app.basevault.store"><img src="https://img.shields.io/badge/Launch_App-app.basevault.store-00c853?style=for-the-badge" alt="App" /></a>
+  <a href="https://app.basevault.store/recover.html"><img src="https://img.shields.io/badge/Recovery_Tool-Standalone-ff6d00?style=for-the-badge" alt="Recovery" /></a>
 </p>
 
 <p align="center">
@@ -49,22 +49,15 @@ Every "decentralized storage" solution still depends on something centralized. I
 
 BaseVault writes your file bytes into Ethereum's security model via Base L2. As long as Ethereum exists, your files exist.
 
-<table>
-<tr>
-<th></th>
-<th align="center"><img src="https://img.shields.io/badge/BaseVault-0052FF?style=for-the-badge&logo=coinbase&logoColor=white" alt="BaseVault" /></th>
-<th align="center">IPFS / Pinata</th>
-<th align="center">Arweave</th>
-<th align="center">Cloud Storage</th>
-</tr>
-<tr><td><strong>Data Location</strong></td><td align="center">🟢 Base L2 Smart Contract</td><td align="center">Peer-to-peer network</td><td align="center">Arweave chain</td><td align="center">Company servers</td></tr>
-<tr><td><strong>Permanence</strong></td><td align="center">🟢 Forever (on-chain)</td><td align="center">Needs pinning</td><td align="center">Permanent</td><td align="center">Until you stop paying</td></tr>
-<tr><td><strong>Encryption</strong></td><td align="center">🟢 AES-256 (wallet + pass)</td><td align="center">None</td><td align="center">None</td><td align="center">Server-side</td></tr>
-<tr><td><strong>Verification</strong></td><td align="center">🟢 SHA-256 + certs</td><td align="center">CID hash</td><td align="center">TX hash</td><td align="center">None</td></tr>
-<tr><td><strong>Institutional Certs</strong></td><td align="center">🟢 13 types, batch, delegation</td><td align="center">No</td><td align="center">No</td><td align="center">No</td></tr>
-<tr><td><strong>Censorship</strong></td><td align="center">🟢 Uncensorable</td><td align="center">Gateway can block</td><td align="center">Uncensorable</td><td align="center">Provider can delete</td></tr>
-<tr><td><strong>Server Dependency</strong></td><td align="center">🟢 <strong>None</strong></td><td align="center">Pinning service</td><td align="center">None</td><td align="center">Full dependency</td></tr>
-</table>
+| | **BaseVault** | IPFS / Pinata | Arweave | Cloud Storage |
+|:---|:---:|:---:|:---:|:---:|
+| **Data Location** | **✅ Base L2 Smart Contract** | Peer-to-peer network | Arweave chain | Company servers |
+| **Permanence** | **✅ Forever (on-chain)** | ⚠️ Needs pinning | Permanent | ❌ Until you stop paying |
+| **Encryption** | **✅ AES-256 (wallet + pass)** | ❌ None | ❌ None | ⚠️ Server-side |
+| **Verification** | **✅ SHA-256 + institutional certs** | CID hash only | TX hash | ❌ None |
+| **Institutional Certs** | **✅ 13 types, batch, delegation** | ❌ No | ❌ No | ❌ No |
+| **Censorship** | **✅ Uncensorable** | ⚠️ Gateway can block | Uncensorable | ❌ Provider can delete |
+| **Server Dependency** | **✅ None** | ⚠️ Pinning service | None | ❌ Full dependency |
 
 ---
 
