@@ -49,15 +49,9 @@ Every "decentralized storage" solution still depends on something centralized. I
 
 BaseVault writes your file bytes into Ethereum's security model via Base L2. As long as Ethereum exists, your files exist.
 
-| | **BaseVault** | IPFS / Pinata | Arweave | Cloud Storage |
-|:---|:---:|:---:|:---:|:---:|
-| **Data Location** | ![](https://img.shields.io/badge/Base_L2_Smart_Contract-0052FF?style=flat-square) | Peer-to-peer network | Arweave chain | Company servers |
-| **Permanence** | ![](https://img.shields.io/badge/Forever_(on--chain)-0052FF?style=flat-square) | Needs pinning | Permanent | Until you stop paying |
-| **Encryption** | ![](https://img.shields.io/badge/AES--256_(wallet_+_pass)-0052FF?style=flat-square) | None | None | Server-side |
-| **Verification** | ![](https://img.shields.io/badge/SHA--256_+_institutional_certs-0052FF?style=flat-square) | CID hash only | TX hash | None |
-| **Institutional Certs** | ![](https://img.shields.io/badge/13_types,_batch,_delegation-0052FF?style=flat-square) | No | No | No |
-| **Censorship** | ![](https://img.shields.io/badge/Uncensorable-0052FF?style=flat-square) | Gateway can block | Uncensorable | Provider can delete |
-| **Server Dependency** | ![](https://img.shields.io/badge/None-0052FF?style=flat-square) | Pinning service | None | Full dependency |
+<p align="center">
+  <img src="https://basevault.store/comparison-table.svg" alt="BaseVault vs Others" width="900" />
+</p>
 
 ---
 

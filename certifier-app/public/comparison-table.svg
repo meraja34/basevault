@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="340" viewBox="0 0 900 340">
+  <style>
+    text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; font-size: 13px; fill: #c9d1d9; }
+    .header { font-weight: 700; font-size: 14px; fill: #f0f6fc; }
+    .row-label { font-weight: 600; fill: #f0f6fc; }
+    .highlight { fill: #e2e8f0; }
+  </style>
+
+  <!-- Background -->
+  <rect width="900" height="340" rx="12" fill="#0d1117"/>
+  <rect x="1" y="1" width="898" height="338" rx="11" fill="none" stroke="#30363d" stroke-width="1"/>
+
+  <!-- Column backgrounds -->
+  <!-- BaseVault column highlight -->
+  <rect x="181" y="1" width="170" height="338" fill="#0052FF" opacity="0.12"/>
+  <rect x="181" y="1" width="170" height="40" fill="#0052FF" opacity="0.25"/>
+
+  <!-- Header row background -->
+  <rect x="1" y="1" width="898" height="40" rx="11" fill="#161b22"/>
+  <rect x="1" y="30" width="898" height="11" fill="#161b22"/>
+  <rect x="181" y="1" width="170" height="40" fill="#0052FF" opacity="0.35"/>
+
+  <!-- Header row line -->
+  <line x1="0" y1="41" x2="900" y2="41" stroke="#30363d" stroke-width="1"/>
+
+  <!-- Row lines -->
+  <line x1="0" y1="83" x2="900" y2="83" stroke="#30363d" stroke-width="0.5" opacity="0.5"/>
+  <line x1="0" y1="125" x2="900" y2="125" stroke="#30363d" stroke-width="0.5" opacity="0.5"/>
+  <line x1="0" y1="167" x2="900" y2="167" stroke="#30363d" stroke-width="0.5" opacity="0.5"/>
+  <line x1="0" y1="209" x2="900" y2="209" stroke="#30363d" stroke-width="0.5" opacity="0.5"/>
+  <line x1="0" y1="251" x2="900" y2="251" stroke="#30363d" stroke-width="0.5" opacity="0.5"/>
+  <line x1="0" y1="293" x2="900" y2="293" stroke="#30363d" stroke-width="0.5" opacity="0.5"/>
+
+  <!-- Column lines -->
+  <line x1="180" y1="0" x2="180" y2="340" stroke="#30363d" stroke-width="0.5" opacity="0.5"/>
+  <line x1="351" y1="0" x2="351" y2="340" stroke="#30363d" stroke-width="0.5" opacity="0.5"/>
+  <line x1="531" y1="0" x2="531" y2="340" stroke="#30363d" stroke-width="0.5" opacity="0.5"/>
+  <line x1="711" y1="0" x2="711" y2="340" stroke="#30363d" stroke-width="0.5" opacity="0.5"/>
+
+  <!-- BaseVault column left/right border accent -->
+  <line x1="181" y1="0" x2="181" y2="340" stroke="#0052FF" stroke-width="1" opacity="0.4"/>
+  <line x1="350" y1="0" x2="350" y2="340" stroke="#0052FF" stroke-width="1" opacity="0.4"/>
+
+  <!-- HEADERS -->
+  <text x="90" y="26" text-anchor="middle" class="header"></text>
+  <text x="266" y="26" text-anchor="middle" class="header" fill="#93c5fd">BaseVault</text>
+  <text x="441" y="26" text-anchor="middle" class="header">IPFS / Pinata</text>
+  <text x="621" y="26" text-anchor="middle" class="header">Arweave</text>
+  <text x="805" y="26" text-anchor="middle" class="header">Cloud Storage</text>
+
+  <!-- ROW 1: Data Location -->
+  <text x="16" y="67" class="row-label">Data Location</text>
+  <text x="266" y="67" text-anchor="middle" class="highlight" font-weight="600">Base L2 Smart Contract</text>
+  <text x="441" y="67" text-anchor="middle">Peer-to-peer network</text>
+  <text x="621" y="67" text-anchor="middle">Arweave chain</text>
+  <text x="805" y="67" text-anchor="middle">Company servers</text>
+
+  <!-- ROW 2: Permanence -->
+  <text x="16" y="109" class="row-label">Permanence</text>
+  <text x="266" y="109" text-anchor="middle" class="highlight" font-weight="600">Forever (on-chain)</text>
+  <text x="441" y="109" text-anchor="middle" fill="#d29922">Needs pinning</text>
+  <text x="621" y="109" text-anchor="middle">Permanent</text>
+  <text x="805" y="109" text-anchor="middle" fill="#f85149">Until you stop paying</text>
+
+  <!-- ROW 3: Encryption -->
+  <text x="16" y="151" class="row-label">Encryption</text>
+  <text x="266" y="151" text-anchor="middle" class="highlight" font-weight="600">AES-256 (wallet + pass)</text>
+  <text x="441" y="151" text-anchor="middle" fill="#f85149">None</text>
+  <text x="621" y="151" text-anchor="middle" fill="#f85149">None</text>
+  <text x="805" y="151" text-anchor="middle" fill="#d29922">Server-side</text>
+
+  <!-- ROW 4: Verification -->
+  <text x="16" y="193" class="row-label">Verification</text>
+  <text x="266" y="193" text-anchor="middle" class="highlight" font-weight="600">SHA-256 + certs</text>
+  <text x="441" y="193" text-anchor="middle">CID hash only</text>
+  <text x="621" y="193" text-anchor="middle">TX hash</text>
+  <text x="805" y="193" text-anchor="middle" fill="#f85149">None</text>
+
+  <!-- ROW 5: Institutional Certs -->
+  <text x="16" y="235" class="row-label">Institutional Certs</text>
+  <text x="266" y="235" text-anchor="middle" class="highlight" font-weight="600">13 types, batch, delegate</text>
+  <text x="441" y="235" text-anchor="middle" fill="#f85149">No</text>
+  <text x="621" y="235" text-anchor="middle" fill="#f85149">No</text>
+  <text x="805" y="235" text-anchor="middle" fill="#f85149">No</text>
+
+  <!-- ROW 6: Censorship -->
+  <text x="16" y="277" class="row-label">Censorship</text>
+  <text x="266" y="277" text-anchor="middle" class="highlight" font-weight="600">Uncensorable</text>
+  <text x="441" y="277" text-anchor="middle" fill="#d29922">Gateway can block</text>
+  <text x="621" y="277" text-anchor="middle">Uncensorable</text>
+  <text x="805" y="277" text-anchor="middle" fill="#f85149">Provider can delete</text>
+
+  <!-- ROW 7: Server Dependency -->
+  <text x="16" y="319" class="row-label">Server Dependency</text>
+  <text x="266" y="319" text-anchor="middle" class="highlight" font-weight="600">None</text>
+  <text x="441" y="319" text-anchor="middle" fill="#d29922">Pinning service</text>
+  <text x="621" y="319" text-anchor="middle">None</text>
+  <text x="805" y="319" text-anchor="middle" fill="#f85149">Full dependency</text>
+</svg>
