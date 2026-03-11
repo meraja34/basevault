@@ -1,147 +1,219 @@
-# BaseVault
+<p align="center">
+  <img src="https://basevault.store/og-image.png" alt="BaseVault" width="600" />
+</p>
 
-**Fully on-chain document storage, encryption, and institutional certification on Base L2.**
+<h1 align="center">BaseVault</h1>
 
-Store real file bytes directly in smart contracts on Base. Not hash pointers. Not IPFS. Not a server. Your actual data, on the blockchain, forever.
+<p align="center">
+  <strong>Fully on-chain document storage, encryption, and institutional certification on Base L2</strong>
+</p>
 
-[Landing Page](https://basevault.store) | [App](https://app.basevault.store) | [Recovery Tool](https://app.basevault.store/recover.html) | [Farcaster MiniApp](https://farcaster.xyz/)
+<p align="center">
+  <a href="https://basevault.store"><img src="https://img.shields.io/badge/Landing_Page-basevault.store-0052FF?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Website" /></a>
+  <a href="https://app.basevault.store"><img src="https://img.shields.io/badge/Launch_App-app.basevault.store-00c853?style=for-the-badge&logo=google-chrome&logoColor=white" alt="App" /></a>
+  <a href="https://app.basevault.store/recover.html"><img src="https://img.shields.io/badge/Recovery_Tool-Standalone-ff6d00?style=for-the-badge&logo=download&logoColor=white" alt="Recovery" /></a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Solidity-0.8.24-363636?style=flat-square&logo=solidity" alt="Solidity" />
+  <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black" alt="React" />
+  <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Vite-6-646CFF?style=flat-square&logo=vite&logoColor=white" alt="Vite" />
+  <img src="https://img.shields.io/badge/Base-L2-0052FF?style=flat-square&logo=coinbase&logoColor=white" alt="Base" />
+  <img src="https://img.shields.io/badge/Foundry-Tests-red?style=flat-square" alt="Foundry" />
+  <img src="https://img.shields.io/badge/Encryption-AES--256--CTR-purple?style=flat-square&logo=letsencrypt&logoColor=white" alt="AES-256" />
+  <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="MIT" />
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Storage-0x4B46...Fed3-0052FF?style=flat-square&logo=ethereum&logoColor=white" alt="Storage Contract" />
+  <img src="https://img.shields.io/badge/Certifier-0x2FDb...0E3-0052FF?style=flat-square&logo=ethereum&logoColor=white" alt="Certifier Contract" />
+  <img src="https://img.shields.io/badge/Verified-Sourcify_Exact_Match-00c853?style=flat-square" alt="Verified" />
+</p>
+
+---
+
+## What is BaseVault?
+
+BaseVault stores your **actual file bytes** directly in a smart contract on Base. Not a hash pointer. Not IPFS. Not a server. Real data, on the blockchain, permanently.
+
+On top of storage, BaseVault has a complete **institutional certification system**. Universities, hospitals, law firms, and auditors can register on-chain and issue tamper-proof certifications for any document.
+
+> Your files. Your keys. Your proof. No servers, no IPFS, no middlemen.
 
 ---
 
 ## Why BaseVault?
 
-Every other "decentralized storage" solution still depends on something centralized. IPFS needs pinning services. Arweave has its own token economy. Cloud storage is just someone else's computer.
+Every "decentralized storage" solution still depends on something centralized. IPFS needs pinning services that can stop. Arweave has its own token economy. Cloud storage is just someone else's computer.
 
-BaseVault writes your actual file bytes into a smart contract on Base L2. The data is part of Ethereum's security model. It cannot be taken down, censored, or lost. As long as Ethereum exists, your files exist.
+BaseVault writes your file bytes into Ethereum's security model via Base L2. As long as Ethereum exists, your files exist.
 
-| | BaseVault | IPFS / Pinata | Arweave | Cloud Storage |
-|---|---|---|---|---|
-| Data Location | Base L2 Smart Contract | Peer-to-peer network | Arweave blockchain | Company servers |
-| File Permanence | Forever (on-chain) | Needs pinning (can disappear) | Permanent | Until you stop paying |
-| Encryption | AES-256 (wallet + password) | None by default | None by default | Server-side (provider has keys) |
-| Verification | SHA-256 + institutional certs | CID hash only | TX hash | None |
-| Institutional Certs | 13 types, batch, delegation | No | No | No |
-| Censorship Resistance | Uncensorable | Gateway can block | Uncensorable | Provider can delete |
-| Server Dependency | **None** | Pinning service required | None | Full dependency |
+| | **BaseVault** | IPFS / Pinata | Arweave | Cloud Storage |
+|:---|:---:|:---:|:---:|:---:|
+| **Data Location** | Base L2 Smart Contract | Peer-to-peer network | Arweave chain | Company servers |
+| **Permanence** | Forever (on-chain) | Needs pinning | Permanent | Until you stop paying |
+| **Encryption** | AES-256 (wallet + pass) | None | None | Server-side |
+| **Verification** | SHA-256 + certs | CID hash | TX hash | None |
+| **Institutional Certs** | 13 types, batch, delegation | No | No | No |
+| **Censorship** | Uncensorable | Gateway can block | Uncensorable | Provider can delete |
+| **Server Dependency** | **None** | Pinning service | None | Full dependency |
 
 ---
 
-## Core Features
+## Features
 
 ### On-Chain File Storage
-- Upload any file type up to 50MB (documents, images, video, audio, PDFs)
-- Files are chunked (24KB per transaction) and stored entirely in the smart contract
+- Upload any file type up to **50MB** (documents, images, video, audio, PDFs)
+- Chunked storage (**24KB per transaction**) stored entirely in the smart contract
 - SHA-256 hash computed and stored on-chain for integrity verification
-- Public or private visibility per file
-- In-app file viewer for images, PDFs, video, audio, text, and JSON
-- Batch chunk upload via EIP-5792 for smart wallets
+- Public or private visibility toggle per file
+- In-app file viewer (images, PDFs, video, audio, text, JSON)
+- Batch chunk upload via **EIP-5792** for smart wallets (one approval for all chunks)
 
 ### End-to-End Encryption
-- AES-256-CTR client-side encryption for private files
-- Two-factor key derivation: wallet signature + user-chosen password
+- **AES-256-CTR** client-side encryption
+- Two-factor key derivation: **wallet signature + user password**
 - Password is never stored, transmitted, or recoverable by anyone
 - Decrypt and view files directly in the browser
-- Even if the wallet is compromised, the attacker still needs the password
+- Even if wallet is compromised, attacker still needs the password
 
 ### Institutional Certification
-- Institutions register on-chain with name, metadata, and allowed cert types
-- 13 certification types: Degree, Transcript, Course Completion, Badge, License, Contract, NDA, Audit, IP Proof, Medical Record, Lab Report, Research Paper, Generic
-- Certify by File ID or by SHA-256 hash (file doesn't need to be on BaseVault)
-- Batch certification (up to 100 documents per transaction)
-- Delegate system for team members to issue certs on behalf of an institution
-- Certificate revocation with on-chain reason
-- Optional expiry dates
-- Public certificate page with QR code, PDF download, PNG export, and social sharing
+- Institutions register on-chain (name, metadata, allowed cert types)
+- **13 certification types:** Degree, Transcript, Course Completion, Badge, License, Contract, NDA, Audit, IP Proof, Medical Record, Lab Report, Research Paper, Generic
+- Certify by **File ID** or by **SHA-256 hash** (file doesn't need to be on BaseVault)
+- **Batch certification** (up to 100 documents per transaction)
+- **Delegate system** for team members to issue certs on behalf of institution
+- Revocation with on-chain reason + optional expiry dates
+- Public certificate page with **QR code, PDF download, PNG export, social sharing**
 
 ### Document Verification
-- Drag-and-drop any file to verify (no wallet required)
+- **Drag-and-drop** any file to verify (no wallet required)
 - Auto-computes SHA-256 and checks all on-chain records
 - Shows all certifications, issuing institutions, validity status
-- Manual hash input mode for programmatic verification
+- Manual hash input for programmatic verification
 - Public shareable certificate pages with QR codes
 
-### Dashboard and Profiles
-- App dashboard with file and certificate overview, recent activity, quick actions
-- Institution dashboard with combined upload-and-certify workflow
-- Wallet profile pages showing all files and certificates
-- Network statistics page (total files, certs, institutions, on-chain data volume)
+### Dashboard & Profiles
+- App dashboard with file/cert overview, recent activity, quick actions
+- Institution dashboard with upload-and-certify workflow
+- Wallet profile pages (all files + certificates for any address)
+- Network statistics (total files, certs, institutions, on-chain data volume)
 
-### Platform Support
-- Progressive web app, works on desktop and mobile
-- Farcaster MiniApp integration with auto-connect wallet
-- Bottom tab navigation optimized for mobile
-- Coinbase Smart Wallet, MetaMask, Rainbow, and WalletConnect support
+### Multi-Platform
+- Responsive web app (desktop + mobile)
+- **Farcaster MiniApp** with auto-connect wallet
+- Mobile bottom tab navigation
+- Coinbase Smart Wallet, MetaMask, Rainbow, WalletConnect support
+- Dark/light theme toggle
 
 ---
 
 ## Data Recovery
 
-BaseVault's "fully on-chain" promise means your data is always recoverable, even if this website goes down permanently.
+> **The core promise:** Even if basevault.store goes down permanently, you lose nothing.
 
 ### Recovery Tool
 
-A standalone HTML file that reads directly from the Base blockchain. No server, no API keys, no account needed.
+A **single standalone HTML file** that reads directly from the Base blockchain. No server, no API keys, no account needed.
 
-**[Download Recovery Tool](https://app.basevault.store/recover.html)** (right-click, Save As)
+**[Download recover.html](https://app.basevault.store/recover.html)** (right-click > Save As > keep on your computer)
 
-What it does:
-- **Browse files** for any wallet address
-- **Download public files** by reassembling chunks from the smart contract
-- **Decrypt and download private files** with your wallet + password
-- **View certificates** received by any wallet
-- **Verify documents** by hash or file drop
+| Feature | Requires Wallet? |
+|---------|:---:|
+| Browse files for any address | No |
+| Download public files | No |
+| Decrypt & download private files | Yes + password |
+| View certificates | No |
+| Verify documents by hash or file drop | No |
 
-The tool works from `file://` protocol (offline) and uses the free Base RPC endpoint. It has a built-in pure JavaScript AES-256-CTR implementation as fallback, so it works even without HTTPS.
+Works from `file://` protocol (fully offline). Built-in pure JavaScript **AES-256-CTR** implementation as fallback when Web Crypto API is unavailable. Only dependency is ethers.js from CDN for blockchain reads.
 
-### Manual Recovery
+### Manual Recovery (CLI / Script)
 
-If even the recovery tool is unavailable, all data can be recovered using any Ethereum-compatible tool (ethers.js, viem, cast, etherscan):
-
-```
-Storage Contract: 0x4B46B971f1fBDF6f6D45b703b2f2D042D06CFed3
-Certifier Contract: 0x2FDbfc75B8844Af376Be20b41c6C1ed70aA1c2E3
-Chain: Base (Chain ID 8453)
-RPC: https://mainnet.base.org
-```
+If even the recovery tool is unavailable, all data is recoverable with any Ethereum tool:
 
 ```
-1. getUserFileIds(walletAddress) -> array of file IDs
-2. getFile(fileId) -> metadata (name, type, size, chunkCount, isPublic)
-3. getChunk(fileId, chunkIndex) -> raw bytes (repeat for all chunks)
-4. Concatenate chunks in order -> complete file (public) or encrypted blob (private)
-5. For private files: sign "BaseVault: Authorize encryption key for private files"
-   Key = SHA-256(signature + password), IV = first 16 bytes, AES-256-CTR decrypt the rest
+Chain:    Base (8453)
+RPC:      https://mainnet.base.org
+Storage:  0x4B46B971f1fBDF6f6D45b703b2f2D042D06CFed3
+Certifier: 0x2FDbfc75B8844Af376Be20b41c6C1ed70aA1c2E3
 ```
 
-Both contracts are verified on BaseScan. ABIs are public.
+```
+Step 1:  getUserFileIds(walletAddress)              -> [fileId, fileId, ...]
+Step 2:  getFile(fileId)                            -> { fileName, fileType, fileSize, chunkCount, isPublic }
+Step 3:  getChunk(fileId, 0), getChunk(fileId, 1)...-> raw bytes per chunk
+Step 4:  Concatenate all chunks in order            -> complete file (if public)
+Step 5:  For private files:
+           Sign message: "BaseVault: Authorize encryption key for private files"
+           Key = SHA-256(signature + password)
+           IV = first 16 bytes of concatenated data
+           Decrypt remaining bytes with AES-256-CTR
+```
+
+Both contracts are **verified on BaseScan**. ABIs are publicly available.
 
 ---
 
 ## How Encryption Works
 
 ```
-Encrypt (Upload):
-  1. User selects "Private" and enters a password
-  2. Wallet signs: "BaseVault: Authorize encryption key for private files" (off-chain, no gas)
-  3. Key = SHA-256(wallet_signature + password) -> 32 bytes
-  4. Random 16-byte IV generated
-  5. File encrypted with AES-256-CTR
-  6. Output = [16-byte IV] + [encrypted data]
-  7. Chunked and stored on-chain
-
-Decrypt (Download):
-  1. Same wallet signs same message
-  2. Same password entered
-  3. Key = SHA-256(signature + password)
-  4. IV = first 16 bytes of retrieved data
-  5. Remaining bytes decrypted with AES-256-CTR
-  6. Original file restored
+ ENCRYPT (Upload)                              DECRYPT (Download)
+ ----------------                              ------------------
+ 1. User picks "Private" + enters password     1. Same wallet signs same message
+ 2. Wallet signs fixed message (no gas)        2. Same password entered
+ 3. Key = SHA-256(signature + password)        3. Key = SHA-256(signature + password)
+ 4. Random 16-byte IV generated               4. IV = first 16 bytes of data
+ 5. AES-256-CTR encrypt                       5. AES-256-CTR decrypt remaining bytes
+ 6. Output = [IV (16B)] + [ciphertext]        6. Original file restored in browser
+ 7. Chunked and stored on-chain
 ```
 
-Security model:
-- **Something you have** - your wallet private key (for the signature)
-- **Something you know** - your password
-- Both required. Neither alone is sufficient.
+**Two-factor security model:**
+| Factor | What It Is | What Happens If Compromised Alone |
+|--------|-----------|----------------------------------|
+| Wallet (private key) | Signs the message to derive key | Attacker still can't decrypt without password |
+| Password | Combined with signature for key | Useless without the specific wallet signature |
+
+---
+
+## Architecture
+
+```
+                    +-------------------+
+                    |   Base Blockchain  |
+                    |  (Ethereum L2)     |
+                    +--------+----------+
+                             |
+              +--------------+--------------+
+              |                             |
+   +----------+----------+     +-----------+-----------+
+   |  BaseVault V6       |     |  BaseVaultCertifier V7 |
+   |  File Storage       |     |  Institutional Certs   |
+   |  0x4B46...Fed3      |     |  0x2FDb...0E3          |
+   +----------+----------+     +-----------+-----------+
+              |                             |
+              +--------------+--------------+
+                             |
+              +--------------+--------------+
+              |                             |
+   +----------+----------+     +-----------+-----------+
+   |  basevault.store    |     |  app.basevault.store   |
+   |  Landing Page       |     |  Web Application       |
+   |  (same build)       |     |  (same build)          |
+   +---------------------+     +-----------+-----------+
+                                            |
+                                +-----------+-----------+
+                                |  recover.html         |
+                                |  Standalone Recovery   |
+                                |  (no React, pure HTML) |
+                                +-----------------------+
+```
+
+Both domains serve the same Vite build. `Home.tsx` detects the hostname and renders either the marketing landing page or the app dashboard.
+
+The recovery tool is a separate static HTML file with inline CSS/JS. Zero build dependencies.
 
 ---
 
@@ -149,76 +221,57 @@ Security model:
 
 ### BaseVault V6 (File Storage)
 
-**Address:** [`0x4B46B971f1fBDF6f6D45b703b2f2D042D06CFed3`](https://basescan.org/address/0x4B46B971f1fBDF6f6D45b703b2f2D042D06CFed3)
-**Status:** Verified (Sourcify exact match)
+<a href="https://basescan.org/address/0x4B46B971f1fBDF6f6D45b703b2f2D042D06CFed3"><img src="https://img.shields.io/badge/BaseScan-0x4B46...Fed3-0052FF?style=flat-square&logo=ethereum" alt="BaseScan" /></a> <img src="https://img.shields.io/badge/Verified-Sourcify-00c853?style=flat-square" alt="Verified" />
 
 | Function | Description |
-|----------|-------------|
+|:---------|:------------|
 | `createFileWithData()` | Create file + upload all chunks in one tx |
 | `createFile()` | Create file record, upload chunks separately |
-| `uploadChunk()` | Upload a single chunk |
+| `uploadChunk()` | Upload a single chunk of file data |
 | `getFile()` | Get file metadata (name, type, size, chunks, visibility) |
-| `getChunk()` | Read a chunk's raw bytes |
+| `getChunk()` | Read a chunk's raw bytes from chain |
 | `getUserFileIds()` | Get all file IDs for a wallet |
-| `setFileVisibility()` | Toggle public/private |
+| `setFileVisibility()` | Toggle public/private visibility |
 | `verifyDocument()` | Check if a file hash exists on-chain |
+| `hashToFileId()` | Map SHA-256 hash to file ID |
 
-### BaseVaultCertifier V7 (Certification)
+### BaseVaultCertifier V7 (Institutional Certification)
 
-**Address:** [`0x2FDbfc75B8844Af376Be20b41c6C1ed70aA1c2E3`](https://basescan.org/address/0x2FDbfc75B8844Af376Be20b41c6C1ed70aA1c2E3)
-**Status:** Verified (Sourcify exact match)
+<a href="https://basescan.org/address/0x2FDbfc75B8844Af376Be20b41c6C1ed70aA1c2E3"><img src="https://img.shields.io/badge/BaseScan-0x2FDb...0E3-0052FF?style=flat-square&logo=ethereum" alt="BaseScan" /></a> <img src="https://img.shields.io/badge/Verified-Sourcify-00c853?style=flat-square" alt="Verified" />
 
 | Function | Description |
-|----------|-------------|
-| `registerInstitution()` | Register as a certifying institution |
-| `certify()` | Issue a certificate for a file |
-| `certifyByHash()` | Issue a certificate by document hash |
+|:---------|:------------|
+| `registerInstitution()` | Register as certifying institution |
+| `certify()` | Issue a certificate for a file by ID |
+| `certifyByHash()` | Issue a certificate by SHA-256 hash |
 | `batchCertify()` | Certify up to 100 documents at once |
 | `revokeCert()` | Revoke a certificate with reason |
 | `setDelegate()` | Add/remove team members for cert issuance |
-| `getCert()` | Get certificate details |
+| `getCert()` | Get certificate details (struct) |
 | `getRecipientCerts()` | Get all certs received by a wallet |
-| `getInstitution()` | Get institution details |
-| `isCertValid()` | Check if a cert is valid (not expired, not revoked) |
+| `getInstitution()` | Get institution name, status, metadata |
+| `isCertValid()` | Check validity (not expired, not revoked) |
 | `verifyCertifications()` | Get all certs for a file hash |
+| `getHashCertIds()` | Get cert IDs for a file hash |
 
-All fees are currently set to zero. Users only pay Base network gas.
-
----
-
-## Architecture
-
-```
-basevault.store           -> Landing page (features, comparison, FAQ, recovery info)
-app.basevault.store       -> App (upload, files, certs, verify, dashboard, profiles)
-app.basevault.store/recover.html -> Standalone recovery tool (no React, pure HTML)
-Farcaster MiniApp         -> Same app with miniapp mode detection
-```
-
-Both `basevault.store` and `app.basevault.store` serve the same Vite build. The Home component detects the hostname and renders either the landing page or the app dashboard.
-
-The recovery tool is a separate standalone HTML file in `certifier-app/public/`. It uses ethers.js from CDN and has zero server dependencies.
+> All fees are currently set to **zero**. Users only pay Base network gas (~$0.001 per tx).
 
 ---
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Blockchain | Base L2 (Ethereum) |
-| Storage Contract | Solidity 0.8.24 (BaseVault V6) |
-| Certifier Contract | Solidity 0.8.24 (BaseVaultCertifier V7) |
-| Frontend | React 19 + TypeScript + Vite |
-| Web3 | wagmi v2 + viem + RainbowKit v2 |
-| Encryption | AES-256-CTR (aes-js) |
-| Hashing | SHA-256 (js-sha256) |
-| PDF Export | jsPDF |
-| Image Export | html2canvas |
-| QR Codes | qrcode (canvas) |
-| MiniApp SDK | @farcaster/miniapp-sdk |
-| Recovery Tool | Vanilla HTML/JS + ethers.js CDN |
-| Contracts Tooling | Foundry |
-| Deployment | Nginx + Let's Encrypt SSL |
+<table>
+<tr><td><strong>Layer</strong></td><td><strong>Technology</strong></td></tr>
+<tr><td>Blockchain</td><td><img src="https://img.shields.io/badge/Base-L2_(Ethereum)-0052FF?style=flat-square&logo=coinbase&logoColor=white" /></td></tr>
+<tr><td>Smart Contracts</td><td><img src="https://img.shields.io/badge/Solidity-0.8.24-363636?style=flat-square&logo=solidity" /> <img src="https://img.shields.io/badge/Foundry-Build_%26_Test-red?style=flat-square" /></td></tr>
+<tr><td>Frontend</td><td><img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black" /> <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white" /> <img src="https://img.shields.io/badge/Vite-6-646CFF?style=flat-square&logo=vite&logoColor=white" /></td></tr>
+<tr><td>Web3</td><td><img src="https://img.shields.io/badge/wagmi-v2-black?style=flat-square" /> <img src="https://img.shields.io/badge/viem-latest-black?style=flat-square" /> <img src="https://img.shields.io/badge/RainbowKit-v2-7B3FE4?style=flat-square" /></td></tr>
+<tr><td>Encryption</td><td><img src="https://img.shields.io/badge/AES--256--CTR-aes--js-purple?style=flat-square" /> <img src="https://img.shields.io/badge/SHA--256-js--sha256-blue?style=flat-square" /></td></tr>
+<tr><td>Exports</td><td><img src="https://img.shields.io/badge/jsPDF-PDF_Export-d32f2f?style=flat-square" /> <img src="https://img.shields.io/badge/html2canvas-PNG_Export-ff9800?style=flat-square" /> <img src="https://img.shields.io/badge/qrcode-QR_Codes-000?style=flat-square" /></td></tr>
+<tr><td>MiniApp</td><td><img src="https://img.shields.io/badge/Farcaster-MiniApp_SDK-7C65C1?style=flat-square" /></td></tr>
+<tr><td>Recovery Tool</td><td><img src="https://img.shields.io/badge/Vanilla_JS-No_Framework-f7df1e?style=flat-square&logo=javascript&logoColor=black" /> <img src="https://img.shields.io/badge/ethers.js-v6_CDN-2535a0?style=flat-square" /></td></tr>
+<tr><td>Hosting</td><td><img src="https://img.shields.io/badge/Nginx-Reverse_Proxy-009639?style=flat-square&logo=nginx&logoColor=white" /> <img src="https://img.shields.io/badge/Let's_Encrypt-SSL-003A70?style=flat-square&logo=letsencrypt&logoColor=white" /></td></tr>
+</table>
 
 ---
 
@@ -231,84 +284,97 @@ BaseVault/
       BaseVault.sol                 # File storage contract (V6)
       BaseVaultCertifier.sol        # Certification contract (V7)
       IBaseVault.sol                # Interface for cross-contract calls
-    script/                         # Deployment scripts (Foundry)
+    script/                         # Foundry deployment scripts
     test/                           # 60 security tests (Foundry)
 
   certifier-app/                    # Main app (landing + app + recovery)
     src/
-      abi/                          # Contract ABIs
+      abi/                          # Contract ABIs (auto-generated)
       components/
-        Header.tsx                  # Navigation (domain-aware)
-        BottomTabs.tsx              # Mobile bottom tabs
-        FileDropzone.tsx            # Drag-drop upload
-        FileCard.tsx                # File display, decrypt, view
-        FAQ.tsx                     # Landing page FAQ
-        ShareButtons.tsx            # Social sharing for certs
-        SearchFilter.tsx            # Search + filter chips
+        Header.tsx                  # Navigation (domain-aware routing)
+        BottomTabs.tsx              # Mobile bottom tab navigation
+        FileDropzone.tsx            # Drag-drop file upload zone
+        FileCard.tsx                # File display, decrypt, view, download
+        FAQ.tsx                     # Accordion FAQ component
+        ShareButtons.tsx            # Social sharing (X, LinkedIn, Farcaster, WhatsApp)
+        SearchFilter.tsx            # Reusable search + filter chips
       pages/
         Home.tsx                    # Landing page (basevault.store)
         AppHome.tsx                 # App dashboard (app.basevault.store)
-        Upload.tsx                  # File upload with encryption
-        Gallery.tsx                 # Public file gallery
-        MyFiles.tsx                 # User's files
+        Upload.tsx                  # File upload with encryption options
+        Gallery.tsx                 # Public file gallery with search/filter
+        MyFiles.tsx                 # User's uploaded files
         MyCertificates.tsx          # User's received certificates
-        InstitutionRegister.tsx     # Institution registration
-        InstitutionDashboard.tsx    # Cert issuance dashboard
+        InstitutionRegister.tsx     # Institution registration form
+        InstitutionDashboard.tsx    # Cert issuance + upload-and-certify
         CertificateView.tsx         # Certificate page (PDF/PNG/QR/share)
-        Verify.tsx                  # Document verification
-        Profile.tsx                 # Wallet profile
-        Stats.tsx                   # Network statistics
+        Verify.tsx                  # Document verification (drop + hash)
+        Profile.tsx                 # Wallet profile page
+        Stats.tsx                   # Network-wide statistics
       utils/
-        crypto.ts                   # AES-256 encrypt/decrypt
-        ipfs.ts                     # SHA-256 hash, chunking
+        crypto.ts                   # AES-256-CTR encrypt/decrypt, key derivation
+        ipfs.ts                     # SHA-256 hashing, file chunking
       hooks/
-        useMiniApp.ts               # Farcaster detection
+        useMiniApp.ts               # Farcaster MiniApp detection
       styles/
-        globals.css                 # All styles (dark/light, responsive)
-      config.ts                     # Wagmi + RainbowKit config
-      constants.ts                  # Contract addresses, cert types
+        globals.css                 # All styles (dark/light, responsive, miniapp)
+      config.ts                     # Wagmi + RainbowKit + Farcaster config
+      constants.ts                  # Contract addresses, cert types, limits
     public/
-      recover.html                  # Standalone recovery tool
-      .well-known/farcaster.json    # MiniApp manifest
-      icon.svg, icon.png            # Logo
+      recover.html                  # Standalone on-chain recovery tool
+      .well-known/farcaster.json    # Farcaster MiniApp manifest
+      icon.svg, icon.png            # BaseVault logo
 
-  frontend/                         # Legacy frontend (V6 storage-only UI)
+  frontend/                         # Legacy frontend (V6 file storage only)
 ```
 
 ---
 
-## Development
+## Getting Started
 
 ### Prerequisites
-- Node.js 18+
-- Foundry (for contracts)
 
-### Run the App
+- **Node.js 18+** and npm
+- **Foundry** (for smart contract development)
+- **MetaMask** or any WalletConnect-compatible wallet
+
+### Run Locally
+
 ```bash
+# Clone the repository
+git clone https://github.com/meraja34/basevault.git
+cd basevault
+
+# Install dependencies and start dev server
 cd certifier-app
 npm install
 npm run dev
 ```
 
+App will be available at `http://localhost:5173`
+
 ### Build for Production
+
 ```bash
 cd certifier-app
 npm run build
-# Output in certifier-app/build/
-# Nginx serves this directory
+# Output: certifier-app/build/
 ```
 
-### Run Contract Tests
+### Smart Contract Development
+
 ```bash
 cd contracts
+
+# Build contracts
+forge build
+
+# Run all tests (60 tests)
 forge test -vvv
-```
 
-### Deploy Contracts
-```bash
-cd contracts
+# Deploy (example)
 forge create src/BaseVaultCertifier.sol:BaseVaultCertifier \
-  --constructor-args <basevault-address> <registration-fee> <per-cert-fee> <batch-discount-bps> \
+  --constructor-args <basevault-address> <reg-fee> <cert-fee> <batch-discount-bps> \
   --rpc-url https://mainnet.base.org \
   --private-key $PRIVATE_KEY \
   --broadcast
@@ -318,37 +384,71 @@ forge create src/BaseVaultCertifier.sol:BaseVaultCertifier \
 
 ## Deployment
 
-Both `basevault.store` and `app.basevault.store` are served by Nginx from the same build directory:
+Both `basevault.store` and `app.basevault.store` are served by Nginx from the same build:
 
 ```bash
 cd certifier-app && npm run build
 sudo nginx -s reload
 ```
 
-Nginx uses `try_files $uri $uri/ /index.html` for SPA routing. Static assets (JS, CSS, images) are cached with immutable headers. `index.html` is never cached to ensure instant deploys.
-
-SSL certificates are managed by Let's Encrypt (Certbot).
+- Nginx: `try_files $uri $uri/ /index.html` for SPA routing
+- Static assets: `Cache-Control: public, immutable` (Vite content-hashed filenames)
+- `index.html`: `Cache-Control: no-cache` (instant deploys)
+- SSL: Let's Encrypt via Certbot (auto-renewal)
 
 ---
 
 ## Farcaster MiniApp
 
-BaseVault is available as a Farcaster MiniApp. The manifest at `/.well-known/farcaster.json` configures auto-connect via Farcaster wallet provider and compact mobile UI.
+BaseVault is available as a **Farcaster MiniApp** with auto-connect wallet, compact header, and bottom tab navigation for mobile.
 
-FID: 16795
+Manifest: `/.well-known/farcaster.json` | FID: **16795**
 
 ---
 
 ## Security
 
-- All encryption happens client-side. No keys, passwords, or plaintext ever leave the browser.
-- Contract source is verified on BaseScan and Sourcify.
-- 60 comprehensive security tests covering both contracts.
-- No admin backdoors for file access. Only the uploader can modify visibility.
-- Contract owner can only adjust fees and withdraw collected fees.
+| Area | Detail |
+|:-----|:-------|
+| **Client-side encryption** | All AES-256-CTR encryption/decryption happens in the browser. Keys, passwords, and plaintext never leave the device. |
+| **Contract verification** | Both contracts verified on BaseScan + Sourcify (exact match). |
+| **Test coverage** | 60 comprehensive security tests covering access control, edge cases, and attack vectors. |
+| **No admin file access** | Contract owner can adjust fees and withdraw collected fees. No backdoor to read, modify, or delete user files. |
+| **Two-factor decryption** | Wallet signature + password both required. Single-factor compromise is insufficient. |
+| **On-chain permanence** | Once stored, data cannot be deleted, modified, or censored by anyone, including the contract owner. |
+
+---
+
+## Contributing
+
+Contributions are welcome. Please open an issue first to discuss what you'd like to change.
+
+```bash
+# Fork the repo
+# Create your feature branch
+git checkout -b feat/your-feature
+
+# Make your changes, then
+forge test        # Make sure contract tests pass
+npm run build     # Make sure frontend builds
+
+# Open a pull request
+```
 
 ---
 
 ## License
 
-MIT
+[MIT](LICENSE)
+
+---
+
+<p align="center">
+  <strong>Built on</strong>
+  <br/>
+  <img src="https://img.shields.io/badge/Base-0052FF?style=for-the-badge&logo=coinbase&logoColor=white" alt="Base" />
+</p>
+
+<p align="center">
+  <sub>Your files. Your keys. Your proof.</sub>
+</p>
