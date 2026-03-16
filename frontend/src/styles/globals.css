@@ -2485,19 +2485,21 @@ textarea {
 
 .native-mode {
   --max-width: 100%;
-  padding-top: env(safe-area-inset-top);
+  background: var(--bg);
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
 /* ─── Mobile Header ─── */
 .mobile-header {
-  background: rgba(10, 10, 26, 0.97);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--bg);
   border-bottom: 1px solid var(--border);
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 100;
-  padding-top: env(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top, 24px);
 }
 
 .mobile-header-inner {
@@ -2505,17 +2507,17 @@ textarea {
   align-items: center;
   gap: 10px;
   padding: 0 16px;
-  height: 52px;
+  height: 48px;
 }
 
 .mobile-logo {
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   border-radius: 8px;
 }
 
 .mobile-title {
-  font-size: 1.125rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--text);
   letter-spacing: -0.3px;
@@ -2532,12 +2534,10 @@ textarea {
   left: 0;
   right: 0;
   display: flex;
-  background: rgba(10, 10, 26, 0.97);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--bg);
   border-top: 1px solid var(--border);
   z-index: 100;
-  padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .mobile-nav-tab {
@@ -2546,9 +2546,9 @@ textarea {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  padding: 8px 0;
-  min-height: 56px;
+  gap: 2px;
+  padding: 6px 0;
+  min-height: 52px;
   color: var(--text-dim);
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;
@@ -2560,8 +2560,8 @@ textarea {
 }
 
 .mobile-nav-icon svg {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   opacity: 0.5;
   transition: opacity 0.15s ease;
 }
@@ -2571,16 +2571,18 @@ textarea {
 }
 
 .mobile-nav-label {
-  font-size: 0.75rem;
+  font-size: 0.675rem;
   font-weight: 600;
   letter-spacing: 0.2px;
 }
 
 /* ─── Main Content ─── */
 .native-mode .main-content {
-  padding: 16px;
-  padding-bottom: 80px;
+  padding: 12px 14px;
+  padding-top: calc(env(safe-area-inset-top, 24px) + 56px);
+  padding-bottom: 68px;
   max-width: 100%;
+  min-height: 100vh;
 }
 
 /* ─── Page Titles ─── */
@@ -2589,154 +2591,165 @@ textarea {
 }
 
 .native-mode .page-title {
-  font-size: 1.375rem;
-  margin-bottom: 0.35rem;
+  font-size: 1.2rem;
+  margin-bottom: 0.25rem;
+  font-weight: 700;
 }
 
 .native-mode .page-desc {
-  font-size: 0.875rem;
-  margin-bottom: 1.25rem;
-  line-height: 1.5;
+  font-size: 0.8rem;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+  color: var(--text-dim);
 }
 
-/* ─── Buttons - 44px minimum touch target ─── */
+/* ─── Buttons ─── */
 .native-mode .btn {
-  padding: 12px 20px;
-  font-size: 0.9375rem;
-  min-height: 44px;
+  padding: 10px 18px;
+  font-size: 0.875rem;
+  min-height: 42px;
   border-radius: 10px;
 }
 
 .native-mode .btn-lg {
-  padding: 14px 24px;
-  font-size: 1rem;
-  min-height: 48px;
+  padding: 12px 20px;
+  font-size: 0.9375rem;
+  min-height: 46px;
   width: 100%;
 }
 
 .native-mode .btn-sm {
-  padding: 8px 14px;
-  font-size: 0.8125rem;
-  min-height: 36px;
+  padding: 7px 12px;
+  font-size: 0.8rem;
+  min-height: 34px;
 }
 
-/* ─── Inputs - 16px prevents iOS zoom ─── */
+/* ─── Inputs ─── */
 .native-mode input,
 .native-mode textarea,
 .native-mode .input-full {
-  padding: 12px 16px;
-  font-size: 1rem;
+  padding: 10px 14px;
+  font-size: 0.9375rem;
   border-radius: 10px;
-  min-height: 44px;
+  min-height: 42px;
 }
 
 /* ─── Dropzone ─── */
 .native-mode .dropzone {
-  padding: 2rem 1.5rem;
+  padding: 1.5rem 1rem;
   border-radius: 12px;
 }
 
 .native-mode .dropzone-icon svg {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
 }
 
 .native-mode .dropzone-label {
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
 }
 
 .native-mode .dropzone-hint {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
 }
 
 /* ─── Upload preview ─── */
 .native-mode .upload-preview {
-  padding: 16px;
-  margin-top: 16px;
+  padding: 14px;
+  margin-top: 12px;
   border-radius: 12px;
 }
 
 .native-mode .preview-info h3 {
-  font-size: 1rem;
+  font-size: 0.9375rem;
 }
 
 .native-mode .preview-info p {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
 }
 
 /* ─── Visibility Toggle ─── */
 .native-mode .visibility-toggle {
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .native-mode .toggle-btn {
-  padding: 10px;
-  font-size: 0.875rem;
-  min-height: 44px;
+  padding: 8px;
+  font-size: 0.8125rem;
+  min-height: 40px;
   border-radius: 10px;
 }
 
-/* ─── File Grid - 2 column ─── */
+/* ─── File Grid - 2 column compact ─── */
 .native-mode .file-grid {
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin-top: 1rem;
+  gap: 8px;
+  margin-top: 0.75rem;
+}
+
+.native-mode .file-card {
+  border-radius: 10px;
 }
 
 .native-mode .file-card-preview {
-  height: 100px;
+  height: 80px;
 }
 
 .native-mode .file-card-info {
-  padding: 10px;
+  padding: 8px;
 }
 
 .native-mode .file-card-name {
-  font-size: 0.8125rem;
-  margin-bottom: 4px;
+  font-size: 0.75rem;
+  margin-bottom: 2px;
 }
 
 .native-mode .file-card-meta {
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
+}
+
+.native-mode .file-card-actions {
+  padding: 6px 8px;
+  gap: 4px;
 }
 
 .native-mode .file-card-actions .btn-sm {
-  font-size: 0.75rem;
-  padding: 6px 10px;
-  min-height: 32px;
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  min-height: 28px;
 }
 
 /* ─── Verify tabs ─── */
 .native-mode .verify-tabs {
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: 6px;
+  margin-bottom: 12px;
 }
 
 .native-mode .tab {
-  padding: 10px 20px;
-  font-size: 0.875rem;
-  min-height: 44px;
+  padding: 8px 16px;
+  font-size: 0.8125rem;
+  min-height: 40px;
   border-radius: 10px;
 }
 
 /* ─── Results / Details ─── */
 .native-mode .verify-result {
-  padding: 16px;
-  margin-top: 16px;
+  padding: 14px;
+  margin-top: 12px;
   border-radius: 12px;
 }
 
 .native-mode .detail-row {
-  padding: 6px 0;
+  padding: 5px 0;
 }
 
 .native-mode .detail-label {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
 }
 
 .native-mode .detail-value {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
 }
 
 /* ─── File Viewer - fullscreen ─── */
@@ -2754,78 +2767,91 @@ textarea {
 
 /* ─── Decrypt/Password sections ─── */
 .native-mode .decrypt-section {
-  padding: 12px;
-  margin-top: 8px;
+  padding: 10px;
+  margin-top: 6px;
   border-radius: 10px;
 }
 
 .native-mode .decrypt-section label {
-  font-size: 0.8125rem;
+  font-size: 0.8rem;
 }
 
 .native-mode .password-section label {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
 }
 
 .native-mode .password-hint {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
 }
 
 /* ─── Connect prompt ─── */
 .native-mode .connect-prompt {
-  padding: 2rem 1rem;
+  padding: 1.5rem 1rem;
+  border-radius: 12px;
+  background: var(--bg-card);
+  text-align: center;
 }
 
 .native-mode .connect-prompt p {
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   margin-bottom: 1rem;
 }
 
 /* ─── Pagination ─── */
 .native-mode .pagination {
-  margin-top: 16px;
+  margin-top: 12px;
   gap: 8px;
 }
 
 .native-mode .page-info {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
 }
 
 /* ─── Empty state ─── */
 .native-mode .empty-state {
-  padding: 3rem 1rem;
+  padding: 2rem 1rem;
 }
 
 .native-mode .empty-state p {
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
 }
 
 /* ─── Progress bar ─── */
 .native-mode .progress-bar {
-  height: 6px;
+  height: 5px;
   border-radius: 3px;
 }
 
 /* ─── Success section ─── */
 .native-mode .success-section {
-  padding: 1.25rem;
+  padding: 1rem;
   border-radius: 12px;
 }
 
 .native-mode .success-section h3 {
-  font-size: 1.125rem;
+  font-size: 1rem;
 }
 
 /* ─── Stats row on upload ─── */
 .native-mode .stats-row {
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 
 .native-mode .stat-card {
-  padding: 12px;
+  padding: 10px;
   border-radius: 10px;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
+}
+
+/* ─── Scrollbar hidden ─── */
+.native-mode ::-webkit-scrollbar {
+  display: none;
+}
+
+.native-mode {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* ─── Footer hidden ─── */

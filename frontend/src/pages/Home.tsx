@@ -55,7 +55,7 @@ export default function Home() {
             </svg>
             Web App
           </a>
-          <a href="https://github.com/meraja34/basevault/releases/download/v1.0.0/basevault-v1.0.0-final.apk" className="btn btn-app" download>
+          <a href="https://github.com/meraja34/basevault/releases/download/v1.0.1/basevault-v1.0.1-final.apk" className="btn btn-app" download>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M17 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z" />
               <path d="M12 18h.01" />
