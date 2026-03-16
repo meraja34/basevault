@@ -6,7 +6,6 @@ const config: CapacitorConfig = {
   webDir: 'build',
   server: {
     androidScheme: 'https',
-    allowNavigation: ['keys.coinbase.com', '*.coinbase.com', 'www.coinbase.com'],
   },
   plugins: {
     SplashScreen: {

@@ -3806,3 +3806,183 @@ textarea { resize: vertical; min-height: 100px; }
 .native-mode ~ [role="region"] {
   bottom: 100px !important;
 }
+
+/* ================================================================
+   NATIVE WALLET UI
+   ================================================================ */
+.nw-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 0;
+}
+.nw-card {
+  width: 100%;
+  background: linear-gradient(145deg, var(--bg-card) 0%, rgba(18, 18, 42, 0.7) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 24px;
+  padding: 36px 24px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+.nw-card-success {
+  border-color: rgba(0, 200, 83, 0.2);
+}
+.nw-card h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.nw-logo {
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+}
+.nw-tagline {
+  color: var(--primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.nw-sub {
+  color: var(--text-dim);
+  font-size: 0.88rem;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+.nw-icon-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+}
+.nw-icon-blue {
+  background: rgba(0, 82, 255, 0.12);
+  color: var(--primary);
+}
+.nw-icon-green {
+  background: rgba(0, 200, 83, 0.12);
+  color: var(--accent);
+}
+.nw-icon-purple {
+  background: rgba(124, 77, 255, 0.12);
+  color: #7c4dff;
+}
+.nw-input {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  color: var(--text);
+  font-size: 16px;
+  margin-bottom: 12px;
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: inherit;
+}
+.nw-input:focus {
+  border-color: var(--primary);
+}
+.nw-btn {
+  width: 100%;
+  padding: 14px 20px;
+  border-radius: 16px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+  font-family: inherit;
+  min-height: 50px;
+}
+.nw-btn:active {
+  transform: scale(0.98);
+}
+.nw-btn-primary {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(0, 82, 255, 0.3);
+}
+.nw-btn-primary:disabled {
+  opacity: 0.6;
+}
+.nw-btn-secondary {
+  background: var(--bg-input);
+  color: var(--text);
+  border: 1px solid var(--border);
+  margin-top: 10px;
+}
+.nw-btn-ghost {
+  background: none;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  margin-top: 12px;
+  min-height: 40px;
+}
+.nw-error {
+  color: var(--danger);
+  font-size: 0.82rem;
+  margin-bottom: 12px;
+}
+.nw-warning {
+  color: var(--warning);
+  font-size: 0.85rem;
+  margin-bottom: 16px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+.nw-key-box {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 16px;
+  word-break: break-all;
+}
+.nw-key-box code {
+  font-size: 0.78rem;
+  color: var(--accent);
+  background: none;
+  padding: 0;
+}
+.nw-addr {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+.nw-addr code {
+  font-size: 0.72rem;
+}
+.nw-addr-small {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-family: monospace;
+  margin-bottom: 16px;
+}
+.nw-note {
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  margin-bottom: 16px;
+}
+.nw-back {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 4px 0;
+  margin-bottom: 12px;
+  font-family: inherit;
+  align-self: flex-start;
+  min-height: auto;
+}

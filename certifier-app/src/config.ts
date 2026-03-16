@@ -1,6 +1,7 @@
 import { createConfig, createConnector, http, fallback } from 'wagmi';
 import { base } from 'wagmi/chains';
 import { coinbaseWallet } from 'wagmi/connectors';
+import { localWalletConnector } from './wallet/localConnector.ts';
 
 // Multiple public Base RPCs for resilience (no API keys needed)
 const baseTransport = fallback([
@@ -68,6 +69,7 @@ export const farcasterConnectorId = 'farcasterFrame';
 
 export const config = createConfig({
   connectors: [
+    localWalletConnector(),
     farcasterFrameConnector(),
     coinbaseWallet({
       appName: 'BaseVault',

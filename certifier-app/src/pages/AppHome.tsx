@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useAccount, useReadContract, useReadContracts } from 'wagmi';
+import { Capacitor } from '@capacitor/core';
 import { WalletCompact } from '../components/WalletButton.tsx';
+import NativeWallet from '../wallet/NativeWallet.tsx';
 import { useMiniApp } from '../hooks/useMiniApp.ts';
 import { CONTRACT_ADDRESS, CERTIFIER_ADDRESS, CERTIFIER_LIVE, CERT_TYPE_LABELS, CERT_TYPE_ICONS } from '../constants.ts';
 import { baseVaultAbi, certifierAbi } from '../abi/index.ts';
@@ -124,7 +126,51 @@ export default function AppHome() {
     );
   };
 
+  const isNative = Capacitor.isNativePlatform();
+
   if (!isConnected) {
+    // Native Android: show built-in wallet (no external popup needed)
+    if (isNative) {
+      return (
+        <div className="page app-home">
+          <NativeWallet />
+
+          {/* Network stats */}
+          <div className="app-network-bar">
+            <div className="app-net-item">
+              <span className="app-net-num">{fileCount ? Number(fileCount) : 0}</span>
+              <span className="app-net-txt">Files</span>
+            </div>
+            <div className="app-net-sep" />
+            <div className="app-net-item">
+              <span className="app-net-num">{certCount ? Number(certCount) : 0}</span>
+              <span className="app-net-txt">Certs</span>
+            </div>
+            <div className="app-net-sep" />
+            <div className="app-net-item">
+              <span className="app-net-num">{instCount ? Number(instCount) : 0}</span>
+              <span className="app-net-txt">Institutions</span>
+            </div>
+          </div>
+
+          <div className="app-quick-links">
+            <Link to="/gallery" className="app-quick-link">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              Public Gallery
+            </Link>
+            <Link to="/verify" className="app-quick-link">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              Verify Document
+            </Link>
+            <Link to="/stats" className="app-quick-link">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+              Network Stats
+            </Link>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="page app-home">
         <div className="app-connect-card">
