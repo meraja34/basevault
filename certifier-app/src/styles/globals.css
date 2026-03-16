@@ -3348,14 +3348,87 @@ textarea { resize: vertical; min-height: 100px; }
 
 /* ===== OnchainKit Wallet Overrides ===== */
 
-/* Prevent Tailwind reset from breaking our styles */
-.ock-font-family * {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+/* Dialog overlay (Radix) */
+[data-slot="dialog-overlay"] {
+  background: rgba(0, 0, 0, 0.75) !important;
+  backdrop-filter: blur(6px) !important;
+  -webkit-backdrop-filter: blur(6px) !important;
 }
 
-/* Wallet connect button */
-[data-testid="ockConnectWallet_Container"] button,
-.ock-connect-button {
+/* Dialog content container (Radix) */
+[data-slot="dialog-content"] {
+  background: transparent !important;
+  padding: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* The actual modal card inside dialog */
+[data-testid="ockModalOverlay"] {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6) !important;
+  color: var(--text) !important;
+  font-family: 'Inter', sans-serif !important;
+  width: 22rem !important;
+  max-width: calc(100vw - 32px) !important;
+}
+
+/* Modal heading */
+[data-testid="ockModalOverlay"] h2 {
+  color: var(--text) !important;
+}
+
+/* Modal muted text */
+[data-testid="ockModalOverlay"] span {
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* Wallet option buttons in modal */
+[data-testid="ockModalOverlay"] > div > button,
+[data-testid="ockModalOverlay"] .flex.w-full.flex-col.gap-3 > button {
+  background: var(--bg-input) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 0.9rem !important;
+  padding: 12px 16px !important;
+  transition: background 0.15s, border-color 0.15s !important;
+}
+
+[data-testid="ockModalOverlay"] > div > button:hover,
+[data-testid="ockModalOverlay"] .flex.w-full.flex-col.gap-3 > button:hover {
+  background: var(--bg-card-hover) !important;
+  border-color: var(--primary) !important;
+}
+
+/* Close button (top right) */
+[data-testid="ockModalOverlay"] > button {
+  color: var(--text-dim) !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+[data-testid="ockModalOverlay"] > button:hover {
+  color: var(--text) !important;
+}
+
+/* Divider line "or use another wallet" */
+[data-testid="ockModalOverlay"] .relative .border-ock-line,
+[data-testid="ockModalOverlay"] .relative div[class*="border"] {
+  border-color: var(--border) !important;
+}
+
+/* Legal text at bottom */
+[data-testid="ockModalOverlay"] > div:last-child {
+  color: var(--text-muted) !important;
+}
+
+/* Connect wallet button (in header/pages) */
+[data-testid="ockConnectWallet_Container"] > button {
   background: var(--primary) !important;
   color: #fff !important;
   border: none !important;
@@ -3367,108 +3440,66 @@ textarea { resize: vertical; min-height: 100px; }
   font-family: 'Inter', sans-serif !important;
 }
 
-[data-testid="ockConnectWallet_Container"] button:hover {
+[data-testid="ockConnectWallet_Container"] > button:hover {
   background: var(--primary-hover) !important;
 }
 
-/* Wallet dropdown */
-[data-testid="ockWalletDropdown"] {
+/* Connected state button */
+[data-testid="ockConnectWallet_Connected"] {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  color: var(--text) !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* Wallet dropdown (after connected) */
+[data-testid="ockWalletDropdown"],
+[data-testid="ockWalletDropdownContent"] {
   background: var(--bg-card) !important;
   border: 1px solid var(--border) !important;
   border-radius: 12px !important;
   box-shadow: var(--shadow-lg) !important;
-  overflow: hidden !important;
-}
-
-/* Modal overlay */
-[data-testid="ockModalOverlay"],
-.fixed.inset-0 {
-  background: rgba(0, 0, 0, 0.7) !important;
-  backdrop-filter: blur(4px) !important;
-  -webkit-backdrop-filter: blur(4px) !important;
-}
-
-/* Modal container */
-[data-testid="ockModal"],
-[role="dialog"] {
-  background: var(--bg-card) !important;
-  border: 1px solid var(--border) !important;
-  border-radius: 16px !important;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6) !important;
-  max-width: 400px !important;
-  width: calc(100% - 32px) !important;
-  margin: auto !important;
-  color: var(--text) !important;
-  font-family: 'Inter', sans-serif !important;
-  overflow: hidden !important;
-}
-
-/* Modal on mobile - bottom sheet style */
-@media (max-width: 640px) {
-  [data-testid="ockModal"],
-  [role="dialog"] {
-    max-width: 100% !important;
-    width: 100% !important;
-    border-radius: 20px 20px 0 0 !important;
-    position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    margin: 0 !important;
-    max-height: 85vh !important;
-    overflow-y: auto !important;
-  }
-}
-
-/* Modal headings */
-[data-testid="ockModal"] h2,
-[data-testid="ockModal"] h3,
-[role="dialog"] h2,
-[role="dialog"] h3 {
   color: var(--text) !important;
   font-family: 'Inter', sans-serif !important;
 }
 
-/* Modal text */
-[data-testid="ockModal"] p,
-[data-testid="ockModal"] span,
-[role="dialog"] p,
-[role="dialog"] span {
-  color: var(--text-dim) !important;
-  font-family: 'Inter', sans-serif !important;
-}
-
-/* Modal buttons */
-[data-testid="ockModal"] button,
-[role="dialog"] button {
-  font-family: 'Inter', sans-serif !important;
-  border-radius: 10px !important;
-}
-
-/* Primary action buttons in modal */
-[data-testid="ockModal"] button[data-testid*="primary"],
-[role="dialog"] button:not([aria-label="Close"]) {
-  font-weight: 600 !important;
-}
-
-/* Close button in modal */
-[data-testid="ockModal"] button[aria-label="Close"],
-[role="dialog"] button[aria-label="Close"] {
-  color: var(--text-dim) !important;
-  background: transparent !important;
-}
-
-/* Identity/Avatar in dropdown */
+/* Identity section in dropdown */
 [data-testid="ockIdentity"] {
+  color: var(--text) !important;
+}
+
+[data-testid="ockIdentity"] [data-testid="ockAddress"],
+[data-testid="ockIdentity"] [data-testid="ockName"] {
   color: var(--text) !important;
 }
 
 /* Disconnect button */
 [data-testid="ockWalletDropdownDisconnect"] button {
   color: var(--danger) !important;
-  background: transparent !important;
 }
 
 [data-testid="ockWalletDropdownDisconnect"] button:hover {
   background: rgba(255, 82, 82, 0.1) !important;
+}
+
+/* Mobile: bottom sheet style modal */
+@media (max-width: 640px) {
+  [data-slot="dialog-content"] {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: auto !important;
+    transform: none !important;
+    width: 100% !important;
+  }
+
+  [data-testid="ockModalOverlay"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 20px 20px 0 0 !important;
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+  }
 }
