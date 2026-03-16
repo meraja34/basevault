@@ -1915,6 +1915,42 @@ select.input-full { appearance: none; cursor: pointer; }
   transition: color var(--transition);
 }
 .file-viewer-close:hover { color: var(--text); }
+.file-viewer-top {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  padding: 0.6rem 0.75rem;
+  gap: 8px;
+}
+.file-viewer-top .file-viewer-close {
+  position: static;
+  font-size: 1.5rem;
+  padding: 0;
+  flex-shrink: 0;
+}
+.file-viewer-top .file-viewer-filename {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+}
+.file-viewer-save-btn {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: var(--transition);
+  min-height: auto;
+  padding: 0;
+}
+.file-viewer-save-btn:hover { color: var(--primary); border-color: var(--primary); }
 .file-viewer-filename {
   padding: 0.75rem 2.5rem 0.75rem 1rem;
   font-size: 0.85rem;

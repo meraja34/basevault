@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { usePublicClient, useSignMessage, useWriteContract, useWalletClient } from 'wagmi';
 import { encodeFunctionData } from 'viem';
+import { Capacitor } from '@capacitor/core';
 import toast from 'react-hot-toast';
 import { formatFileSize, chunksToBlob, fileToChunks } from '../utils/ipfs.ts';
 import { decryptFile, deriveKeyFromSignature, encryptFile, friendlyError } from '../utils/crypto.ts';
@@ -9,12 +10,51 @@ import { baseVaultAbi } from '../abi/index.ts';
 
 const SIGN_MESSAGE = 'BaseVault: Authorize encryption key for private files';
 
+// Native file save + share
+async function nativeDownload(blob: Blob, fileName: string) {
+  try {
+    const { Filesystem, Directory } = await import('@capacitor/filesystem');
+
+    // Convert blob to base64
+    const reader = new FileReader();
+    const base64 = await new Promise<string>((resolve) => {
+      reader.onload = () => {
+        const result = reader.result as string;
+        resolve(result.split(',')[1]); // strip data:mime;base64,
+      };
+      reader.readAsDataURL(blob);
+    });
+
+    // Save to cache directory
+    const result = await Filesystem.writeFile({
+      path: fileName,
+      data: base64,
+      directory: Directory.Cache,
+    });
+
+    // Share the file (opens system share sheet with save option)
+    try {
+      const { Share } = await import('@capacitor/share');
+      await Share.share({
+        title: fileName,
+        url: result.uri,
+      });
+    } catch {
+      toast.success(`Saved: ${fileName}`);
+    }
+  } catch (err) {
+    console.error('Native download failed:', err);
+    toast.error('Download failed');
+  }
+}
+
 function FileViewer({ url, fileName, fileType, onClose }: { url: string; fileName: string; fileType: string; onClose: () => void }) {
   const isImage = fileType.startsWith('image/');
   const isPdf = fileType === 'application/pdf';
   const isText = fileType.startsWith('text/') || fileType === 'application/json' || fileType === 'application/xml';
   const isVideo = fileType.startsWith('video/');
   const isAudio = fileType.startsWith('audio/');
+  const isNative = Capacitor.isNativePlatform();
 
   const [textContent, setTextContent] = useState<string>('');
 
@@ -30,8 +70,23 @@ function FileViewer({ url, fileName, fileType, onClose }: { url: string; fileNam
     return () => document.removeEventListener('keydown', handleKey);
   }, [onClose]);
 
-  const openInNewTab = () => {
-    window.open(url, '_blank');
+  const handleSave = async () => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      if (isNative) {
+        await nativeDownload(blob, fileName);
+      } else {
+        const dl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = dl;
+        a.download = fileName;
+        a.click();
+        URL.revokeObjectURL(dl);
+      }
+    } catch {
+      toast.error('Save failed');
+    }
   };
 
   const renderContent = () => {
@@ -39,13 +94,26 @@ function FileViewer({ url, fileName, fileType, onClose }: { url: string; fileNam
       return <img src={url} alt={fileName} />;
     }
     if (isPdf) {
+      // Android WebView can't render PDFs with <object>, use iframe or fallback
+      if (isNative) {
+        return (
+          <div className="file-viewer-fallback">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" strokeWidth="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <p style={{ marginTop: 12 }}>{fileName}</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>PDF preview not available on Android</p>
+            <div className="file-viewer-fallback-actions">
+              <button className="btn btn-sm btn-primary" onClick={handleSave}>Save & Open</button>
+            </div>
+          </div>
+        );
+      }
       return (
         <object data={url} type="application/pdf" className="file-viewer-pdf">
           <div className="file-viewer-fallback">
-            <p>PDF preview not supported on this device.</p>
+            <p>PDF preview not supported.</p>
             <div className="file-viewer-fallback-actions">
-              <button className="btn btn-sm btn-primary" onClick={openInNewTab}>Open in New Tab</button>
-              <a href={url} download={fileName} className="btn btn-sm">Download</a>
+              <button className="btn btn-sm btn-primary" onClick={() => window.open(url, '_blank')}>Open in New Tab</button>
+              <button className="btn btn-sm" onClick={handleSave}>Download</button>
             </div>
           </div>
         </object>
@@ -70,8 +138,9 @@ function FileViewer({ url, fileName, fileType, onClose }: { url: string; fileNam
       <div className="file-viewer-fallback">
         <p>Preview not available for this file type.</p>
         <div className="file-viewer-fallback-actions">
-          <button className="btn btn-sm btn-primary" onClick={openInNewTab}>Open in New Tab</button>
-          <a href={url} download={fileName} className="btn btn-sm">Download</a>
+          <button className="btn btn-sm btn-primary" onClick={handleSave}>
+            {isNative ? 'Save & Share' : 'Download'}
+          </button>
         </div>
       </div>
     );
@@ -80,8 +149,13 @@ function FileViewer({ url, fileName, fileType, onClose }: { url: string; fileNam
   return (
     <div className="file-viewer-overlay" onClick={onClose}>
       <div className="file-viewer-content" onClick={e => e.stopPropagation()}>
-        <button className="file-viewer-close" onClick={onClose}>&times;</button>
-        <div className="file-viewer-filename" title={fileName}>{fileName}</div>
+        <div className="file-viewer-top">
+          <button className="file-viewer-close" onClick={onClose}>&times;</button>
+          <div className="file-viewer-filename" title={fileName}>{fileName}</div>
+          <button className="file-viewer-save-btn" onClick={handleSave}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
+        </div>
         <div className="file-viewer-body">
           {renderContent()}
         </div>
@@ -414,14 +488,20 @@ export default function FileCard({
       const chunks = await loadChunks();
       const bytes = reassembleChunks(chunks);
       const blob = new Blob([new Uint8Array(bytes)], { type: fileType });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = fileName;
-      a.click();
-      URL.revokeObjectURL(url);
+
+      if (Capacitor.isNativePlatform()) {
+        await nativeDownload(blob, fileName);
+      } else {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
     } catch (err) {
       console.error('Download failed:', err);
+      toast.error('Download failed');
     }
     setLoading(false);
   };
@@ -611,7 +691,7 @@ export default function FileCard({
               Lock
             </button>
           )}
-          {isPublic && !isIncomplete && (
+          {(isPublic || (isOwner && viewerUrl)) && !isIncomplete && (
             <button className="btn btn-sm" onClick={handleDownload} disabled={loading}>
               {loading ? '...' : 'Download'}
             </button>
