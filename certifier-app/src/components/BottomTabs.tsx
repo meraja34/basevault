@@ -51,12 +51,12 @@ const moreLinks = [
   { path: '/stats', label: 'Network Stats' },
 ];
 
-export default function BottomTabs() {
+export default function BottomTabs({ isNative = false }: { isNative?: boolean }) {
   const location = useLocation();
   const [showMore, setShowMore] = useState(false);
 
-  // Hide bottom tabs on landing page
-  if (location.pathname === '/') return null;
+  // Hide bottom tabs on landing page (but always show in native mode)
+  if (location.pathname === '/' && !isNative) return null;
 
   return (
     <>

@@ -1,6 +1,15 @@
-import { createConfig, createConnector, http } from 'wagmi';
+import { createConfig, createConnector, http, fallback } from 'wagmi';
 import { base } from 'wagmi/chains';
 import { coinbaseWallet } from 'wagmi/connectors';
+
+// Multiple public Base RPCs for resilience (no API keys needed)
+const baseTransport = fallback([
+  http('https://mainnet.base.org'),
+  http('https://base.meowrpc.com'),
+  http('https://base.drpc.org'),
+  http('https://1rpc.io/base'),
+  http(), // default public RPC
+]);
 
 // Farcaster MiniApp connector - uses SDK's ethereum provider
 function farcasterFrameConnector() {
@@ -68,6 +77,6 @@ export const config = createConfig({
   ],
   chains: [base],
   transports: {
-    [base.id]: http(),
+    [base.id]: baseTransport,
   },
 });

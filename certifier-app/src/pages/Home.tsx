@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useReadContract } from 'wagmi';
+import { Capacitor } from '@capacitor/core';
 import { CERTIFIER_ADDRESS, CONTRACT_ADDRESS, CERTIFIER_LIVE } from '../constants.ts';
 import { certifierAbi, baseVaultAbi } from '../abi/index.ts';
 import FAQ from '../components/FAQ.tsx';
@@ -105,8 +106,8 @@ function Counter({ target, label }: { target: number; label: string }) {
 }
 
 export default function Home() {
-  // Show dashboard on app.basevault.store, landing page on basevault.store
-  const isApp = window.location.hostname.startsWith('app.');
+  // Show dashboard on app.basevault.store, native Android app, or landing page on basevault.store
+  const isApp = window.location.hostname.startsWith('app.') || Capacitor.isNativePlatform();
   if (isApp) return <AppHome />;
   return <LandingPage />;
 }
@@ -139,7 +140,7 @@ function LandingPage() {
               Web App
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
             </a>
-            <a href="https://github.com/meraja34/basevault/releases/download/v2.0.0/basevault-v2.0.0-final.apk" className="lp-btn-main lp-btn-android">
+            <a href="https://github.com/meraja34/basevault/releases/download/v3.0.0/basevault-v3.0.0-final.apk" className="lp-btn-main lp-btn-android">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/><path d="M12 18h.01"/></svg>
               Android App
             </a>
@@ -450,7 +451,7 @@ function LandingPage() {
             Open App
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
           </a>
-          <a href="https://github.com/meraja34/basevault/releases/download/v2.0.0/basevault-v2.0.0-final.apk" className="lp-btn-main lp-btn-android">
+          <a href="https://github.com/meraja34/basevault/releases/download/v3.0.0/basevault-v3.0.0-final.apk" className="lp-btn-main lp-btn-android">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/><path d="M12 18h.01"/></svg>
             Android App
           </a>

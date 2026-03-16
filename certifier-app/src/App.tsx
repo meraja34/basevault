@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { base } from 'wagmi/chains';
+import { Capacitor } from '@capacitor/core';
 import { config, farcasterConnectorId } from './config.ts';
 import { useMiniApp } from './hooks/useMiniApp.ts';
 import Header from './components/Header.tsx';
@@ -49,12 +50,49 @@ function AppContent() {
   const { address, isConnected } = useAccount();
   const { connect, connectors } = useConnect();
   const isMiniApp = useMiniApp();
+  const isNative = Capacitor.isNativePlatform();
 
   // Apply saved theme
   useEffect(() => {
     const saved = localStorage.getItem('basevault-theme');
     if (saved) document.documentElement.setAttribute('data-theme', saved);
   }, []);
+
+  // Native: StatusBar + hardware back button
+  useEffect(() => {
+    if (!isNative) return;
+
+    (async () => {
+      try {
+        const { StatusBar, Style } = await import('@capacitor/status-bar');
+        await StatusBar.setStyle({ style: Style.Dark });
+        await StatusBar.setBackgroundColor({ color: '#0a0a1a' });
+        await StatusBar.setOverlaysWebView({ overlay: false });
+      } catch {}
+
+      try {
+        const { SplashScreen } = await import('@capacitor/splash-screen');
+        await SplashScreen.hide();
+      } catch {}
+    })();
+
+    // Hardware back button
+    let backHandler: any;
+    (async () => {
+      try {
+        const { App: CapApp } = await import('@capacitor/app');
+        backHandler = await CapApp.addListener('backButton', () => {
+          if (window.history.length > 1) {
+            window.history.back();
+          } else {
+            CapApp.exitApp();
+          }
+        });
+      } catch {}
+    })();
+
+    return () => { backHandler?.remove?.(); };
+  }, [isNative]);
 
   // MiniApp: signal ready + auto-connect Farcaster wallet
   useEffect(() => {
@@ -97,14 +135,16 @@ function AppContent() {
     return () => { cancelled = true; };
   }, [isMiniApp, isConnected]);
 
+  const appClass = `app ${isMiniApp ? 'miniapp-mode' : ''} ${isNative ? 'native-mode' : ''}`;
+
   return (
-    <BrowserRouter>
-      <div className={`app ${isMiniApp ? 'miniapp-mode' : ''}`}>
-        {/* Hide header in miniapp mode - use bottom tabs instead */}
-        {!isMiniApp && <Header />}
+    <>
+      <div className={appClass}>
+        {/* Hide header in miniapp/native mode - use bottom tabs instead */}
+        {!isMiniApp && !isNative && <Header />}
 
         {/* MiniApp compact header */}
-        {isMiniApp && (
+        {isMiniApp && !isNative && (
           <div className="miniapp-header">
             <Link to="/" className="logo">
               <img src="/icon.svg" alt="BaseVault" className="logo-img" />
@@ -112,6 +152,21 @@ function AppContent() {
             </Link>
             {address && (
               <span className="miniapp-address">
+                {address.slice(0, 6)}...{address.slice(-4)}
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Native Android compact header */}
+        {isNative && (
+          <div className="native-header">
+            <Link to="/" className="native-header-logo">
+              <img src="/icon.svg" alt="BaseVault" className="logo-img" />
+              <span className="logo-text">BaseVault</span>
+            </Link>
+            {address && (
+              <span className="native-header-address">
                 {address.slice(0, 6)}...{address.slice(-4)}
               </span>
             )}
@@ -134,8 +189,8 @@ function AppContent() {
           </Routes>
         </main>
 
-        {/* Enhanced Footer - Desktop only, hide in miniapp */}
-        {!isMiniApp && (
+        {/* Enhanced Footer - Desktop only, hide in miniapp/native */}
+        {!isMiniApp && !isNative && (
           <footer className="footer-enhanced">
             <div className="footer-grid">
               <div className="footer-col">
@@ -186,10 +241,10 @@ function AppContent() {
           </footer>
         )}
 
-        {/* Mobile Bottom Tabs - always show on mobile, or in miniapp */}
-        <BottomTabs />
+        {/* Mobile Bottom Tabs - always show on mobile, or in miniapp/native */}
+        <BottomTabs isNative={isNative} />
       </div>
-    </BrowserRouter>
+    </>
   );
 }
 
@@ -211,7 +266,9 @@ export default function App() {
             },
           }}
         >
-          <AppContent />
+          <BrowserRouter>
+            <AppContent />
+          </BrowserRouter>
           <Toaster position="bottom-center" toastOptions={{
             style: { background: '#1a1a2e', color: '#fff', border: '1px solid #333' }
           }} />

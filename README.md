@@ -11,6 +11,7 @@
 <p align="center">
   <a href="https://basevault.store"><img src="https://img.shields.io/badge/Website-basevault.store-0052FF?style=for-the-badge" alt="Website" /></a>
   <a href="https://app.basevault.store"><img src="https://img.shields.io/badge/Launch_App-app.basevault.store-00c853?style=for-the-badge" alt="App" /></a>
+  <a href="https://github.com/meraja34/basevault/releases/download/v3.0.0/basevault-v3.0.0-final.apk"><img src="https://img.shields.io/badge/Android_App-v3.0.0_APK-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Android" /></a>
   <a href="https://app.basevault.store/recover.html"><img src="https://img.shields.io/badge/Recovery_Tool-Standalone-ff6d00?style=for-the-badge" alt="Recovery" /></a>
 </p>
 
@@ -96,10 +97,75 @@ BaseVault writes your file bytes into Ethereum's security model via Base L2. As 
 
 ### Multi-Platform
 - Responsive web app (desktop + mobile)
+- **Android App** (standalone, serverless, no backend dependency)
 - **Farcaster MiniApp** with auto-connect wallet
 - Mobile bottom tab navigation
 - Coinbase Smart Wallet, MetaMask, Rainbow, WalletConnect support
 - Dark/light theme toggle
+
+---
+
+## Android App
+
+**[Download APK (v3.0.0)](https://github.com/meraja34/basevault/releases/download/v3.0.0/basevault-v3.0.0-final.apk)**
+
+The BaseVault Android app is a fully standalone, serverless application. It works without basevault.store or any backend server. All data comes directly from Base blockchain RPC calls.
+
+### How It Works
+
+The app is a Capacitor-wrapped version of the same React web app, with native Android optimizations:
+
+1. **No server dependency** - The app reads/writes data directly to Base blockchain smart contracts via public RPC endpoints
+2. **RPC Fallback** - 5 public Base RPCs configured with automatic failover (mainnet.base.org, base.meowrpc.com, base.drpc.org, 1rpc.io/base, default)
+3. **Wallet via browser** - Coinbase Smart Wallet opens in a browser flow, signs transactions, and returns to the app
+4. **All 11 pages work** - Upload, Gallery, My Files, Certificates, Verify, Register, Dashboard, Profile, Stats, Certificate View, Recovery
+
+### What Works Offline
+
+- Previously loaded data is cached by React Query
+- File verification (if hash is known)
+- Viewing already-loaded certificates and files
+
+### What Needs Internet
+
+- Uploading files (blockchain transactions)
+- Loading new data from chain
+- Connecting wallet
+- Issuing/revoking certificates
+
+### Build From Source
+
+```bash
+cd certifier-app
+
+# Install dependencies
+npm install
+
+# Build web app
+npm run build
+
+# Sync with Android
+npx cap sync android
+
+# Build APK
+cd android
+./gradlew assembleRelease
+
+# Sign APK
+zipalign -v -p 4 app/build/outputs/apk/release/app-release-unsigned.apk basevault-aligned.apk
+apksigner sign --ks /path/to/basevault.keystore --ks-key-alias basevault --out basevault-signed.apk basevault-aligned.apk
+```
+
+### Technical Details
+
+| Property | Value |
+|:---------|:------|
+| Package | `store.basevault.app` |
+| Min SDK | Android 5.0 (API 21) |
+| Target SDK | Android 14 (API 34) |
+| Size | ~4.6 MB |
+| Framework | Capacitor 8 |
+| Plugins | @capacitor/app, @capacitor/status-bar, @capacitor/splash-screen |
 
 ---
 
@@ -190,22 +256,24 @@ Both contracts are **verified on BaseScan**. ABIs are publicly available.
               |                             |
               +--------------+--------------+
                              |
-              +--------------+--------------+
-              |                             |
-   +----------+----------+     +-----------+-----------+
-   |  basevault.store    |     |  app.basevault.store   |
-   |  Landing Page       |     |  Web Application       |
-   |  (same build)       |     |  (same build)          |
-   +---------------------+     +-----------+-----------+
-                                            |
-                                +-----------+-----------+
-                                |  recover.html         |
-                                |  Standalone Recovery   |
-                                |  (no React, pure HTML) |
-                                +-----------------------+
+          +------------------+------------------+
+          |                  |                  |
+  +-------+-------+ +-------+-------+ +--------+--------+
+  | basevault.store| | app.basevault | | Android App     |
+  | Landing Page   | | Web App       | | Capacitor       |
+  | (same build)   | | (same build)  | | (same build)    |
+  +----------------+ +-------+-------+ | No server needed|
+                             |         +-----------------+
+                  +----------+----------+
+                  |  recover.html       |
+                  |  Standalone Recovery |
+                  |  (no React, no deps) |
+                  +---------------------+
 ```
 
-Both domains serve the same Vite build. `Home.tsx` detects the hostname and renders either the marketing landing page or the app dashboard.
+All three platforms (web landing, web app, Android) serve the same React build. `Home.tsx` detects the context (hostname or Capacitor native) and renders accordingly.
+
+The Android app talks directly to Base blockchain via public RPCs. Zero server dependency.
 
 The recovery tool is a separate static HTML file with inline CSS/JS. Zero build dependencies.
 
@@ -262,6 +330,7 @@ The recovery tool is a separate static HTML file with inline CSS/JS. Zero build 
 <tr><td>Web3</td><td><img src="https://img.shields.io/badge/wagmi-v2-black?style=flat-square" /> <img src="https://img.shields.io/badge/viem-latest-black?style=flat-square" /> <img src="https://img.shields.io/badge/RainbowKit-v2-7B3FE4?style=flat-square" /></td></tr>
 <tr><td>Encryption</td><td><img src="https://img.shields.io/badge/AES--256--CTR-aes--js-purple?style=flat-square" /> <img src="https://img.shields.io/badge/SHA--256-js--sha256-blue?style=flat-square" /></td></tr>
 <tr><td>Exports</td><td><img src="https://img.shields.io/badge/jsPDF-PDF_Export-d32f2f?style=flat-square" /> <img src="https://img.shields.io/badge/html2canvas-PNG_Export-ff9800?style=flat-square" /> <img src="https://img.shields.io/badge/qrcode-QR_Codes-000?style=flat-square" /></td></tr>
+<tr><td>Android</td><td><img src="https://img.shields.io/badge/Capacitor-8-119EFF?style=flat-square&logo=capacitor&logoColor=white" /> <img src="https://img.shields.io/badge/Android-5.0+-3DDC84?style=flat-square&logo=android&logoColor=white" /></td></tr>
 <tr><td>MiniApp</td><td><img src="https://img.shields.io/badge/Farcaster-MiniApp_SDK-7C65C1?style=flat-square" /></td></tr>
 <tr><td>Recovery Tool</td><td><img src="https://img.shields.io/badge/Vanilla_JS-No_Framework-f7df1e?style=flat-square&logo=javascript&logoColor=black" /> <img src="https://img.shields.io/badge/ethers.js-v6_CDN-2535a0?style=flat-square" /></td></tr>
 <tr><td>Hosting</td><td><img src="https://img.shields.io/badge/Nginx-Reverse_Proxy-009639?style=flat-square&logo=nginx&logoColor=white" /> <img src="https://img.shields.io/badge/Let's_Encrypt-SSL-003A70?style=flat-square&logo=letsencrypt&logoColor=white" /></td></tr>
@@ -312,12 +381,18 @@ BaseVault/
         useMiniApp.ts               # Farcaster MiniApp detection
       styles/
         globals.css                 # All styles (dark/light, responsive, miniapp)
-      config.ts                     # Wagmi + RainbowKit + Farcaster config
+      config.ts                     # Wagmi config + RPC fallback + connectors
       constants.ts                  # Contract addresses, cert types, limits
     public/
       recover.html                  # Standalone on-chain recovery tool
       .well-known/farcaster.json    # Farcaster MiniApp manifest
       icon.svg, icon.png            # BaseVault logo
+    android/                        # Capacitor Android project
+      app/build.gradle              # Version 3.0.0, package store.basevault.app
+    capacitor.config.ts             # Capacitor config (splash, statusbar)
+
+  releases/                         # Signed APKs
+    basevault-v3.0.0-final.apk     # Latest Android release
 
   frontend/                         # Legacy frontend (V6 file storage only)
 ```
