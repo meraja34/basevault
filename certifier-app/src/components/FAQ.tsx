@@ -42,8 +42,16 @@ const faqs = [
     a: 'All fees are currently set to zero. You only pay Base network gas fees, which are usually less than $0.01 per transaction. All costs are shown before you confirm.',
   },
   {
+    q: 'What happens if basevault.store goes down?',
+    a: `Nothing is lost. BaseVault has zero server dependency. Your files and certificates live on the Base blockchain, not on our servers.\n\nYou have three ways to access your data without basevault.store:\n\n1. Android App: Runs 100% standalone with its own built-in wallet and direct blockchain access\n2. Recovery Tool: A single HTML file that works offline in any browser\n3. Direct RPC: Use BaseScan, ethers.js, or any Ethereum tool to read the smart contracts\n\nBaseVault is a protocol, not a service. As long as Ethereum exists, your data exists.`,
+  },
+  {
+    q: 'How does the Android app work without a server?',
+    a: `The Android app is fully standalone. It creates a wallet locally on your device, encrypts the private key with your password, and stores it securely. All blockchain operations (upload, download, certify, verify) go directly to Base RPC endpoints.\n\nThe app connects to 5 public Base RPCs with automatic failover. If one goes down, it switches to the next. No BaseVault server is involved at any point.\n\nFeatures: Fingerprint unlock, local wallet, file viewer, all 11 pages functional.`,
+  },
+  {
     q: 'What wallets are supported?',
-    a: 'Coinbase Smart Wallet is recommended (supports batch transactions for large files). MetaMask, Rainbow, and any WalletConnect wallet also work. In Farcaster/Warpcast, the embedded wallet auto-connects.',
+    a: 'On the web app: Coinbase Smart Wallet (supports batch transactions for large files), MetaMask, Rainbow, and any WalletConnect wallet. In Farcaster/Warpcast, the embedded wallet auto-connects.\n\nOn the Android app: Built-in local wallet with fingerprint unlock. Private key is generated on your device and never leaves it.',
   },
   {
     q: 'How do I verify a document?',

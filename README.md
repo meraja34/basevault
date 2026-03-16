@@ -44,6 +44,41 @@ On top of storage, BaseVault has a complete **institutional certification system
 
 ---
 
+## Zero Server Dependency
+
+**BaseVault is a protocol, not a service.** There is no backend server, no database, no API, no account system. The website and Android app are just UIs that talk directly to the blockchain via public RPC endpoints.
+
+### What happens if basevault.store goes offline?
+
+**Nothing.** Your files and certificates live on Base blockchain, not on our servers. You have three independent ways to access your data:
+
+| Access Method | Server Needed? | Internet Needed? |
+|:---|:---:|:---:|
+| **Android App** (standalone, built-in wallet) | No | Yes (for blockchain) |
+| **Recovery Tool** (offline HTML file) | No | Yes (for blockchain) |
+| **Direct RPC** (BaseScan, ethers.js, any tool) | No | Yes (for blockchain) |
+| **Smart Contract** (read from any Ethereum client) | No | Yes (for blockchain) |
+
+### How the Android app works without a server
+
+The Android app (4.6 MB APK) is fully self-contained:
+
+1. **Built-in wallet** - generates a private key locally on your device using viem
+2. **Password encryption** - private key encrypted with AES-256 and stored on device
+3. **Fingerprint unlock** - biometric auth for fast access
+4. **5 RPC endpoints** - automatic failover across public Base RPCs (mainnet.base.org, base.meowrpc.com, base.drpc.org, 1rpc.io/base, default)
+5. **Local signing** - all transactions signed on-device, sent directly to blockchain
+6. **No proxy, no relay, no middleware** - the app talks to Base L2 nodes directly
+
+### The guarantee
+
+- Website goes down? App and recovery tool still work.
+- Domain expires? Access files through BaseScan or any RPC.
+- Team disappears? Smart contracts run forever on Ethereum.
+- No account, no subscription, no vendor lock-in. Ever.
+
+---
+
 ## Why BaseVault?
 
 Every "decentralized storage" solution still depends on something centralized. IPFS needs pinning services that can stop. Arweave has its own token economy. Cloud storage is just someone else's computer.

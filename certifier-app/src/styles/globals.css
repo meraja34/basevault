@@ -3390,6 +3390,39 @@ textarea { resize: vertical; min-height: 100px; }
   transition: background 0.2s;
 }
 .lp-recovery-btn:hover { background: #003ecb; }
+
+/* Zero Server Dependency section */
+.lp-zero-server-points {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 36px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.lp-zs-point {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 1rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+.lp-zs-check {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 200, 83, 0.12);
+  color: #00c853;
+  border-radius: 50%;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
 .lp-recovery-contracts {
   text-align: center;
   margin-top: 36px;
