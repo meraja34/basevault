@@ -3361,14 +3361,14 @@ textarea { resize: vertical; min-height: 100px; }
 
 /* ===== OnchainKit Wallet Overrides ===== */
 
-/* Dialog overlay (Radix) */
+/* --- Radix Dialog Overlay --- */
 [data-slot="dialog-overlay"] {
-  background: rgba(0, 0, 0, 0.75) !important;
-  backdrop-filter: blur(6px) !important;
-  -webkit-backdrop-filter: blur(6px) !important;
+  background: rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
 }
 
-/* Dialog content container (Radix) */
+/* --- Radix Dialog Content (positioning wrapper) --- */
 [data-slot="dialog-content"] {
   background: transparent !important;
   padding: 0 !important;
@@ -3377,126 +3377,233 @@ textarea { resize: vertical; min-height: 100px; }
   outline: none !important;
 }
 
-/* The actual modal card inside dialog */
+/* --- Modal Card --- */
 [data-testid="ockModalOverlay"] {
   background: var(--bg-card) !important;
   border: 1px solid var(--border) !important;
-  border-radius: 16px !important;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5) !important;
   color: var(--text) !important;
   font-family: 'Inter', sans-serif !important;
   width: 22rem !important;
   max-width: calc(100vw - 32px) !important;
+  padding: 28px 24px 20px !important;
 }
 
-/* Modal heading */
+/* App logo in modal */
+[data-testid="ockModalOverlay"] img {
+  border-radius: 14px !important;
+}
+
+/* App name heading */
 [data-testid="ockModalOverlay"] h2 {
   color: var(--text) !important;
+  font-size: 1.2rem !important;
+  font-weight: 700 !important;
+  margin-top: 4px !important;
 }
 
-/* Modal muted text */
-[data-testid="ockModalOverlay"] span {
+/* All text */
+[data-testid="ockModalOverlay"] span,
+[data-testid="ockModalOverlay"] a {
   font-family: 'Inter', sans-serif !important;
 }
 
-/* Wallet option buttons in modal */
-[data-testid="ockModalOverlay"] > div > button,
-[data-testid="ockModalOverlay"] .flex.w-full.flex-col.gap-3 > button {
+/* "Sign in with Base" - primary CTA */
+[data-testid="ockModalOverlay"] .flex.w-full.flex-col.gap-3 > button:first-child {
+  background: var(--primary) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 14px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  padding: 14px 18px !important;
+  transition: background 0.15s !important;
+}
+
+[data-testid="ockModalOverlay"] .flex.w-full.flex-col.gap-3 > button:first-child:hover {
+  background: var(--primary-hover) !important;
+}
+
+/* Other wallet buttons */
+[data-testid="ockModalOverlay"] .flex.w-full.flex-col.gap-3 > button:not(:first-child) {
   background: var(--bg-input) !important;
   color: var(--text) !important;
   border: 1px solid var(--border) !important;
   border-radius: 12px !important;
   font-family: 'Inter', sans-serif !important;
-  font-size: 0.9rem !important;
+  font-size: 0.875rem !important;
   padding: 12px 16px !important;
   transition: background 0.15s, border-color 0.15s !important;
 }
 
-[data-testid="ockModalOverlay"] > div > button:hover,
-[data-testid="ockModalOverlay"] .flex.w-full.flex-col.gap-3 > button:hover {
+[data-testid="ockModalOverlay"] .flex.w-full.flex-col.gap-3 > button:not(:first-child):hover {
   background: var(--bg-card-hover) !important;
-  border-color: var(--primary) !important;
+  border-color: var(--border-hover) !important;
 }
 
-/* Close button (top right) */
+/* Close X button */
 [data-testid="ockModalOverlay"] > button {
   color: var(--text-dim) !important;
   background: transparent !important;
   border: none !important;
+  opacity: 0.6;
+  transition: opacity 0.15s !important;
 }
 
 [data-testid="ockModalOverlay"] > button:hover {
-  color: var(--text) !important;
+  opacity: 1;
 }
 
-/* Divider line "or use another wallet" */
-[data-testid="ockModalOverlay"] .relative .border-ock-line,
+/* Divider "or use another wallet" */
 [data-testid="ockModalOverlay"] .relative div[class*="border"] {
   border-color: var(--border) !important;
 }
 
-/* Legal text at bottom */
-[data-testid="ockModalOverlay"] > div:last-child {
+[data-testid="ockModalOverlay"] .relative span {
   color: var(--text-muted) !important;
+  font-size: 0.75rem !important;
+  background: var(--bg-card) !important;
 }
 
-/* Connect wallet button (in header/pages) */
+/* Legal text */
+[data-testid="ockModalOverlay"] > div:last-child {
+  color: var(--text-muted) !important;
+  opacity: 0.7;
+}
+
+[data-testid="ockModalOverlay"] > div:last-child a {
+  color: var(--primary) !important;
+}
+
+/* --- Connect Button (header/pages) --- */
 [data-testid="ockConnectWallet_Container"] > button {
   background: var(--primary) !important;
   color: #fff !important;
   border: none !important;
   border-radius: 10px !important;
   padding: 8px 16px !important;
-  font-size: 0.875rem !important;
+  font-size: 0.85rem !important;
   font-weight: 600 !important;
   cursor: pointer !important;
   font-family: 'Inter', sans-serif !important;
+  transition: background 0.15s !important;
 }
 
 [data-testid="ockConnectWallet_Container"] > button:hover {
   background: var(--primary-hover) !important;
 }
 
-/* Connected state button */
+/* --- Connected State --- */
 [data-testid="ockConnectWallet_Connected"] {
   background: var(--bg-card) !important;
   border: 1px solid var(--border) !important;
   border-radius: 10px !important;
   color: var(--text) !important;
   font-family: 'Inter', sans-serif !important;
+  padding: 6px 12px !important;
 }
 
-/* Wallet dropdown (after connected) */
+/* --- Wallet Dropdown --- */
 [data-testid="ockWalletDropdown"],
 [data-testid="ockWalletDropdownContent"] {
   background: var(--bg-card) !important;
   border: 1px solid var(--border) !important;
-  border-radius: 12px !important;
+  border-radius: 14px !important;
   box-shadow: var(--shadow-lg) !important;
+  color: var(--text) !important;
+  font-family: 'Inter', sans-serif !important;
+  padding: 8px !important;
+}
+
+[data-testid="ockIdentity"],
+[data-testid="ockIdentity"] [data-testid="ockAddress"],
+[data-testid="ockIdentity"] [data-testid="ockName"] {
   color: var(--text) !important;
   font-family: 'Inter', sans-serif !important;
 }
 
-/* Identity section in dropdown */
-[data-testid="ockIdentity"] {
-  color: var(--text) !important;
-}
-
-[data-testid="ockIdentity"] [data-testid="ockAddress"],
-[data-testid="ockIdentity"] [data-testid="ockName"] {
-  color: var(--text) !important;
-}
-
-/* Disconnect button */
 [data-testid="ockWalletDropdownDisconnect"] button {
   color: var(--danger) !important;
+  border-radius: 10px !important;
 }
 
 [data-testid="ockWalletDropdownDisconnect"] button:hover {
   background: rgba(255, 82, 82, 0.1) !important;
 }
 
-/* Mobile: bottom sheet style modal */
+/* --- Light Mode overrides --- */
+[data-theme="light"] [data-testid="ockModalOverlay"] {
+  background: #fff !important;
+  border-color: #dddde5 !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15) !important;
+}
+
+[data-theme="light"] [data-testid="ockModalOverlay"] .flex.w-full.flex-col.gap-3 > button:not(:first-child) {
+  background: #f5f5f8 !important;
+  border-color: #dddde5 !important;
+  color: #1a1a2e !important;
+}
+
+[data-theme="light"] [data-testid="ockModalOverlay"] .flex.w-full.flex-col.gap-3 > button:not(:first-child):hover {
+  background: #eeeef2 !important;
+  border-color: #bbbbc5 !important;
+}
+
+[data-theme="light"] [data-testid="ockModalOverlay"] h2 {
+  color: #1a1a2e !important;
+}
+
+[data-theme="light"] [data-testid="ockModalOverlay"] .relative span {
+  background: #fff !important;
+  color: #888899 !important;
+}
+
+[data-theme="light"] [data-testid="ockConnectWallet_Connected"] {
+  background: #fff !important;
+  border-color: #dddde5 !important;
+  color: #1a1a2e !important;
+}
+
+[data-theme="light"] [data-testid="ockWalletDropdown"],
+[data-theme="light"] [data-testid="ockWalletDropdownContent"] {
+  background: #fff !important;
+  border-color: #dddde5 !important;
+  box-shadow: 0 8px 48px rgba(0, 0, 0, 0.12) !important;
+}
+
+[data-theme="light"] [data-testid="ockIdentity"],
+[data-theme="light"] [data-testid="ockIdentity"] [data-testid="ockAddress"],
+[data-theme="light"] [data-testid="ockIdentity"] [data-testid="ockName"] {
+  color: #1a1a2e !important;
+}
+
+[data-theme="light"] [data-slot="dialog-overlay"] {
+  background: rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Also override ock CSS variables for light mode */
+[data-theme="light"] {
+  --ock-background: #fff;
+  --ock-background-active: #eeeef2;
+  --ock-background-alternate: #f5f5f8;
+  --ock-background-alternate-active: #eeeef2;
+  --ock-background-alternate-hover: #eeeef2;
+  --ock-background-hover: #f5f5f8;
+  --ock-background-inverse: #1a1a2e;
+  --ock-background-reverse: #fff;
+  --ock-foreground: #1a1a2e;
+  --ock-foreground-disabled: #888899;
+  --ock-foreground-inverse: #fff;
+  --ock-foreground-muted: #555570;
+  --ock-line: #dddde5;
+  --ock-secondary: #f5f5f8;
+  --ock-secondary-active: #eeeef2;
+  --ock-secondary-hover: #eeeef2;
+}
+
+/* --- Mobile: bottom sheet --- */
 @media (max-width: 640px) {
   [data-slot="dialog-content"] {
     position: fixed !important;
@@ -3506,15 +3613,35 @@ textarea { resize: vertical; min-height: 100px; }
     top: auto !important;
     transform: none !important;
     translate: none !important;
+    -webkit-transform: none !important;
     width: 100% !important;
     max-width: 100% !important;
+    padding: 0 !important;
   }
 
   [data-testid="ockModalOverlay"] {
     width: 100% !important;
     max-width: 100% !important;
     border-radius: 20px 20px 0 0 !important;
-    max-height: 85vh !important;
+    border-bottom: none !important;
+    max-height: 80vh !important;
     overflow-y: auto !important;
+    padding: 24px 20px 28px !important;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  /* Logo smaller on mobile */
+  [data-testid="ockModalOverlay"] img {
+    width: 48px !important;
+    height: 48px !important;
+  }
+
+  [data-testid="ockModalOverlay"] h2 {
+    font-size: 1.1rem !important;
+  }
+
+  /* Buttons full width, larger touch target */
+  [data-testid="ockModalOverlay"] .flex.w-full.flex-col.gap-3 > button {
+    min-height: 48px !important;
   }
 }
