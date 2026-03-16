@@ -2767,6 +2767,8 @@ textarea { resize: vertical; min-height: 100px; }
   transition: all 0.2s ease;
 }
 .lp-btn-main:hover { background: var(--primary-hover); color: #fff; transform: translateY(-1px); }
+.lp-btn-android { background: #00c853; }
+.lp-btn-android:hover { background: #00e676; }
 .lp-btn-sec {
   display: inline-flex;
   align-items: center;
