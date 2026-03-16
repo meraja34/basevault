@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAccount, useReadContract, useWriteContract, usePublicClient } from 'wagmi';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { WalletCompact } from '../components/WalletButton.tsx';
 import toast from 'react-hot-toast';
 import { CONTRACT_ADDRESS } from '../constants.ts';
 import { baseVaultAbi } from '../abi/index.ts';
@@ -87,7 +87,7 @@ export default function MyFiles() {
         <h1 className="page-title">My Files</h1>
         <div className="connect-prompt">
           <p>Connect your wallet to see your uploaded files</p>
-          <ConnectButton />
+          <WalletCompact />
         </div>
       </div>
     );

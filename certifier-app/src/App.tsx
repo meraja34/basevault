@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
-import '@rainbow-me/rainbowkit/styles.css';
-import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
+import '@coinbase/onchainkit/styles.css';
+import { OnchainKitProvider } from '@coinbase/onchainkit';
 import { WagmiProvider, useAccount, useConnect } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { base } from 'wagmi/chains';
 import { config, farcasterConnectorId } from './config.ts';
 import { useMiniApp } from './hooks/useMiniApp.ts';
 import Header from './components/Header.tsx';
@@ -175,13 +176,11 @@ function AppContent() {
             </div>
 
             <div className="footer-bottom">
-              <span className="footer-built">
-                <svg width="16" height="16" viewBox="0 0 111 111" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="55.5" cy="55.5" r="55.5" fill="#0052FF"/>
-                  <path d="M55.4 93.5c20.9 0 37.9-16.6 38.5-37.4H69.1c-.6 10.4-9.2 18.6-13.7 18.6-9.5 0-20.5-9.2-20.5-19.2s11-19.2 20.5-19.2c4.5 0 13.1 8.2 13.7 18.6h24.8C93.3 34.1 76.3 17.5 55.4 17.5 34 17.5 16.7 34.8 16.7 55.5S34 93.5 55.4 93.5z" fill="white"/>
-                </svg>
-                Built on Base
-              </span>
+              <div className="footer-built-on-base">
+                <span className="footer-built-text">Built on</span>
+                <video src="/base-square-motion.mp4" autoPlay loop muted playsInline className="footer-base-motion" />
+                <img src="/base-wordmark-white.svg" alt="Base" className="footer-base-wordmark" />
+              </div>
               <span className="footer-copy">BaseVault - Your files. Your keys. Your proof.</span>
             </div>
           </footer>
@@ -198,16 +197,25 @@ export default function App() {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider theme={darkTheme({
-          accentColor: '#0052FF',
-          accentColorForeground: 'white',
-          borderRadius: 'medium',
-        })}>
+        <OnchainKitProvider
+          chain={base}
+          config={{
+            appearance: {
+              name: 'BaseVault',
+              logo: '/icon.svg',
+              mode: 'dark',
+              theme: 'base',
+            },
+            wallet: {
+              display: 'modal',
+            },
+          }}
+        >
           <AppContent />
           <Toaster position="bottom-center" toastOptions={{
             style: { background: '#1a1a2e', color: '#fff', border: '1px solid #333' }
           }} />
-        </RainbowKitProvider>
+        </OnchainKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );

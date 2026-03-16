@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAccount, useWriteContract, usePublicClient, useSignMessage, useReadContract, useWalletClient } from 'wagmi';
 import { encodeFunctionData } from 'viem';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { WalletCompact } from '../components/WalletButton.tsx';
 import toast from 'react-hot-toast';
 import FileDropzone from '../components/FileDropzone.tsx';
 import { computeFileHash, fileToChunks, formatFileSize } from '../utils/ipfs.ts';
@@ -335,7 +335,7 @@ export default function Upload() {
       {!isConnected ? (
         <div className="connect-prompt">
           <p>Connect your wallet to upload files</p>
-          <ConnectButton />
+          <WalletCompact />
         </div>
       ) : (
         <div className="upload-area">
