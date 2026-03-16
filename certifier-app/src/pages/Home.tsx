@@ -126,7 +126,7 @@ function LandingPage() {
       {/* ===== HERO ===== */}
       <section className="lp-hero">
         <div className="lp-hero-content">
-          <p className="lp-hero-tag"><img src="/base-square-blue.svg" alt="Base" width="18" height="18" style={{ borderRadius: 4, verticalAlign: 'middle', marginRight: 6 }} />Fully On-Chain Document Platform on Base</p>
+          <p className="lp-hero-tag">Fully On-Chain Document Platform on Base</p>
           <h1 className="lp-hero-h1">
             Store, Encrypt, Certify<br/>& Verify Documents On-Chain
           </h1>
