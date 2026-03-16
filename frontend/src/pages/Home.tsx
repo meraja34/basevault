@@ -46,6 +46,16 @@ export default function Home() {
           <Link to="/upload" className="btn btn-primary btn-lg">Upload Files</Link>
           <Link to="/verify" className="btn btn-outline btn-lg">Verify Document</Link>
         </div>
+        <div className="app-download">
+          <a href="https://github.com/meraja34/basevault/raw/main/releases/basevault-v1.0.0-release.apk" className="btn btn-download" download>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M17 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z" />
+              <path d="M12 18h.01" />
+            </svg>
+            Download Android App
+            <span className="download-badge">v1.0.0</span>
+          </a>
+        </div>
       </section>
 
       <section className="features">
