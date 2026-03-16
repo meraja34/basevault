@@ -1,4 +1,4 @@
-import { WalletButton } from './WalletButton.tsx';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Link, useLocation } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 import ThemeToggle from './ThemeToggle.tsx';
@@ -65,7 +65,7 @@ export default function Header() {
         )}
         <div className="header-actions">
           <ThemeToggle />
-          {!isLanding && <WalletButton />}
+          {!isLanding && <ConnectButton showBalance={false} chainStatus="none" accountStatus="address" />}
         </div>
       </div>
     </header>

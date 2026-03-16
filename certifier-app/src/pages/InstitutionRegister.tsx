@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAccount, useWriteContract, useReadContract, useWaitForTransactionReceipt } from 'wagmi';
 
-import { WalletCompact } from '../components/WalletButton.tsx';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import toast from 'react-hot-toast';
 import { CERTIFIER_ADDRESS, CERT_TYPE_LABELS, CERT_TYPE_ICONS } from '../constants.ts';
 import { certifierAbi } from '../abi/index.ts';
@@ -208,7 +208,7 @@ export default function InstitutionRegister() {
             </div>
             <p>Connect your wallet to register</p>
             <span className="register-connect-hint">Use a Safe multisig wallet for institutional admin control</span>
-            <WalletCompact />
+            <ConnectButton />
           </div>
         ) : (
           <div className="register-form-card">

@@ -1,6 +1,14 @@
+import { connectorsForWallets } from '@rainbow-me/rainbowkit';
+import {
+  coinbaseWallet,
+  metaMaskWallet,
+  rainbowWallet,
+  walletConnectWallet,
+} from '@rainbow-me/rainbowkit/wallets';
 import { createConfig, createConnector, http } from 'wagmi';
 import { base } from 'wagmi/chains';
-import { coinbaseWallet } from 'wagmi/connectors';
+
+coinbaseWallet.preference = 'smartWalletOnly';
 
 // Farcaster MiniApp connector - uses SDK's ethereum provider
 function farcasterFrameConnector() {
@@ -55,17 +63,27 @@ function farcasterFrameConnector() {
   }));
 }
 
+const walletConnectors = connectorsForWallets(
+  [
+    {
+      groupName: 'Recommended',
+      wallets: [coinbaseWallet, metaMaskWallet],
+    },
+    {
+      groupName: 'Other Wallets',
+      wallets: [rainbowWallet, walletConnectWallet],
+    },
+  ],
+  {
+    projectId: 'YOUR_WALLETCONNECT_PROJECT_ID',
+    appName: 'BaseVault',
+  }
+);
+
 export const farcasterConnectorId = 'farcasterFrame';
 
 export const config = createConfig({
-  connectors: [
-    farcasterFrameConnector(),
-    coinbaseWallet({
-      appName: 'BaseVault',
-      appLogoUrl: 'https://basevault.store/icon.png',
-      preference: 'smartWalletOnly',
-    }),
-  ],
+  connectors: [farcasterFrameConnector(), ...walletConnectors],
   chains: [base],
   transports: {
     [base.id]: http(),

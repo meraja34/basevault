@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useAccount, useReadContract, useReadContracts, useWriteContract, useWaitForTransactionReceipt, usePublicClient, useWalletClient } from 'wagmi';
 import { useQueryClient } from '@tanstack/react-query';
 import { encodeFunctionData, isAddress } from 'viem';
-import { WalletCompact } from '../components/WalletButton.tsx';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import toast from 'react-hot-toast';
 import { CERTIFIER_ADDRESS, CONTRACT_ADDRESS, INSTITUTION_STATUS, CERT_TYPE_LABELS } from '../constants.ts';
 import { certifierAbi, baseVaultAbi } from '../abi/index.ts';
@@ -487,7 +487,7 @@ export default function InstitutionDashboard() {
           </div>
           <h2>Institution Dashboard</h2>
           <p>Connect your institution wallet to manage certifications, issue new certificates, and view your activity.</p>
-          <WalletCompact />
+          <ConnectButton />
         </div>
       </div>
     );

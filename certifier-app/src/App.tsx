@@ -1,17 +1,14 @@
 import { useEffect } from 'react';
-import '@coinbase/onchainkit/styles.css';
-import { OnchainKitProvider } from '@coinbase/onchainkit';
+import '@rainbow-me/rainbowkit/styles.css';
+import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
 import { WagmiProvider, useAccount, useConnect } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { base } from 'wagmi/chains';
 import { config, farcasterConnectorId } from './config.ts';
 import { useMiniApp } from './hooks/useMiniApp.ts';
-import { useAppMode } from './hooks/useAppMode.ts';
 import Header from './components/Header.tsx';
 import BottomTabs from './components/BottomTabs.tsx';
-import { MobileHeader, MobileBottomNav } from './components/MobileNav.tsx';
 import Home from './pages/Home.tsx';
 import Upload from './pages/Upload.tsx';
 import Gallery from './pages/Gallery.tsx';
@@ -51,34 +48,12 @@ function AppContent() {
   const { address, isConnected } = useAccount();
   const { connect, connectors } = useConnect();
   const isMiniApp = useMiniApp();
-  const mode = useAppMode();
-  const isNative = mode === 'native';
 
   // Apply saved theme
   useEffect(() => {
     const saved = localStorage.getItem('basevault-theme');
     if (saved) document.documentElement.setAttribute('data-theme', saved);
   }, []);
-
-  // Native app: Status bar + back button
-  useEffect(() => {
-    if (!isNative) return;
-    import('@capacitor/status-bar').then(({ StatusBar, Style }) => {
-      StatusBar.setStyle({ style: Style.Dark });
-      StatusBar.setBackgroundColor({ color: '#0a0a1a' });
-      StatusBar.setOverlaysWebView({ overlay: false });
-    }).catch(() => {});
-
-    import('@capacitor/app').then(({ App: CapApp }) => {
-      CapApp.addListener('backButton', ({ canGoBack }) => {
-        if (canGoBack) {
-          window.history.back();
-        } else {
-          CapApp.exitApp();
-        }
-      });
-    }).catch(() => {});
-  }, [isNative]);
 
   // MiniApp: signal ready + auto-connect Farcaster wallet
   useEffect(() => {
@@ -87,11 +62,16 @@ function AppContent() {
     (async () => {
       try {
         const { sdk } = await import('@farcaster/miniapp-sdk');
+
+        // Signal to Warpcast that the miniapp is loaded
         await sdk.actions.ready();
 
         if (cancelled || isConnected) return;
+
+        // Only auto-connect inside miniapp context
         if (!isMiniApp) return;
 
+        // Small delay to let the SDK provider initialize
         await new Promise(r => setTimeout(r, 500));
         if (cancelled || isConnected) return;
 
@@ -101,27 +81,28 @@ function AppContent() {
             connect({ connector: fc });
           } catch (e) {
             console.log('Farcaster auto-connect attempt failed, retrying...', e);
+            // Retry once after a longer delay
             await new Promise(r => setTimeout(r, 1500));
             if (!cancelled && !isConnected) {
               connect({ connector: fc });
             }
           }
         }
-      } catch {}
+      } catch {
+        // Not in Farcaster context or SDK not available
+      }
     })();
 
     return () => { cancelled = true; };
   }, [isMiniApp, isConnected]);
 
-  const appClass = isNative ? 'app native-mode'
-    : isMiniApp ? 'app miniapp-mode'
-    : 'app';
-
   return (
     <BrowserRouter>
-      <div className={appClass}>
-        {/* Header by mode */}
-        {mode === 'web' && <Header />}
+      <div className={`app ${isMiniApp ? 'miniapp-mode' : ''}`}>
+        {/* Hide header in miniapp mode - use bottom tabs instead */}
+        {!isMiniApp && <Header />}
+
+        {/* MiniApp compact header */}
         {isMiniApp && (
           <div className="miniapp-header">
             <Link to="/" className="logo">
@@ -135,11 +116,10 @@ function AppContent() {
             )}
           </div>
         )}
-        {isNative && <MobileHeader />}
 
         <main className="main-content">
           <Routes>
-            <Route path="/" element={<PageWrapper title="BaseVault"><Home /></PageWrapper>} />
+            <Route path="/" element={<PageWrapper title="BaseVault - On-Chain Document Storage & Certification"><Home /></PageWrapper>} />
             <Route path="/upload" element={<PageWrapper title="Upload | BaseVault"><Upload /></PageWrapper>} />
             <Route path="/gallery" element={<PageWrapper title="Gallery | BaseVault"><Gallery /></PageWrapper>} />
             <Route path="/my-files" element={<PageWrapper title="My Files | BaseVault"><MyFiles /></PageWrapper>} />
@@ -153,8 +133,8 @@ function AppContent() {
           </Routes>
         </main>
 
-        {/* Footer only for web */}
-        {mode === 'web' && (
+        {/* Enhanced Footer - Desktop only, hide in miniapp */}
+        {!isMiniApp && (
           <footer className="footer-enhanced">
             <div className="footer-grid">
               <div className="footer-col">
@@ -164,6 +144,7 @@ function AppContent() {
                 </h4>
                 <p className="footer-about">Fully on-chain document storage and institutional certification on Base. No servers, no IPFS. Your files live on the blockchain.</p>
               </div>
+
               <div className="footer-col">
                 <h4 className="footer-col-title">Quick Links</h4>
                 <Link to="/upload" className="footer-link">Upload</Link>
@@ -172,6 +153,7 @@ function AppContent() {
                 <Link to="/register" className="footer-link">Register</Link>
                 {address && <Link to={`/profile/${address}`} className="footer-link">My Profile</Link>}
               </div>
+
               <div className="footer-col">
                 <h4 className="footer-col-title">Resources</h4>
                 <a href={`https://basescan.org/address/${BASEVAULT_ADDRESS}`} target="_blank" rel="noopener noreferrer" className="footer-link">BaseScan (Storage)</a>
@@ -180,67 +162,52 @@ function AppContent() {
                 <Link to="/stats" className="footer-link">Network Stats</Link>
                 <a href="/recover.html" className="footer-link">Recovery Tool</a>
               </div>
+
               <div className="footer-col">
                 <h4 className="footer-col-title">Connect</h4>
-                <a href="https://warpcast.com/alphacaster.eth" target="_blank" rel="noopener noreferrer" className="footer-link">Farcaster</a>
-                <a href="https://github.com/meraja34/basevault" target="_blank" rel="noopener noreferrer" className="footer-link">GitHub</a>
+                <a href="https://warpcast.com/alphacaster.eth" target="_blank" rel="noopener noreferrer" className="footer-link">
+                  Farcaster
+                </a>
+                <a href="https://github.com/meraja34/basevault" target="_blank" rel="noopener noreferrer" className="footer-link">
+                  GitHub
+                </a>
               </div>
             </div>
+
             <div className="footer-bottom">
-              <div className="footer-built-on-base">
-                <span className="footer-built-text">Built on</span>
-                <video
-                  src="/base-square-motion.mp4"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="footer-base-motion"
-                />
-                <img src="/base-wordmark-white.svg" alt="Base" className="footer-base-wordmark" />
-              </div>
+              <span className="footer-built">
+                <svg width="16" height="16" viewBox="0 0 111 111" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="55.5" cy="55.5" r="55.5" fill="#0052FF"/>
+                  <path d="M55.4 93.5c20.9 0 37.9-16.6 38.5-37.4H69.1c-.6 10.4-9.2 18.6-13.7 18.6-9.5 0-20.5-9.2-20.5-19.2s11-19.2 20.5-19.2c4.5 0 13.1 8.2 13.7 18.6h24.8C93.3 34.1 76.3 17.5 55.4 17.5 34 17.5 16.7 34.8 16.7 55.5S34 93.5 55.4 93.5z" fill="white"/>
+                </svg>
+                Built on Base
+              </span>
               <span className="footer-copy">BaseVault - Your files. Your keys. Your proof.</span>
             </div>
           </footer>
         )}
 
-        {/* Bottom nav by mode */}
-        {isMiniApp && <BottomTabs />}
-        {isNative && <MobileBottomNav />}
-        {mode === 'web' && <BottomTabs />}
+        {/* Mobile Bottom Tabs - always show on mobile, or in miniapp */}
+        <BottomTabs />
       </div>
     </BrowserRouter>
   );
 }
 
 export default function App() {
-  const mode = useAppMode();
-
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <OnchainKitProvider
-          chain={base}
-          config={{
-            appearance: {
-              name: 'BaseVault',
-              logo: '/icon.svg',
-              mode: 'dark',
-              theme: 'base',
-            },
-            wallet: {
-              display: 'modal',
-            },
-          }}
-        >
+        <RainbowKitProvider theme={darkTheme({
+          accentColor: '#0052FF',
+          accentColorForeground: 'white',
+          borderRadius: 'medium',
+        })}>
           <AppContent />
-          <Toaster
-            position={mode === 'native' ? 'top-center' : 'bottom-center'}
-            toastOptions={{
-              style: { background: '#1a1a2e', color: '#fff', border: '1px solid #333' }
-            }}
-          />
-        </OnchainKitProvider>
+          <Toaster position="bottom-center" toastOptions={{
+            style: { background: '#1a1a2e', color: '#fff', border: '1px solid #333' }
+          }} />
+        </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );

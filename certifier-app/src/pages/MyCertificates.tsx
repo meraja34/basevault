@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useAccount, useReadContract, useReadContracts } from 'wagmi';
-import { WalletCompact } from '../components/WalletButton.tsx';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { CERTIFIER_ADDRESS, CERT_TYPE_LABELS } from '../constants.ts';
 import { certifierAbi } from '../abi/index.ts';
 import CertCard from '../components/CertCard.tsx';
@@ -142,7 +142,7 @@ export default function MyCertificates() {
         <h1 className="page-title">My Certificates</h1>
         <div className="connect-prompt">
           <p>Connect your wallet to view certificates issued to you.</p>
-          <WalletCompact />
+          <ConnectButton />
         </div>
       </div>
     );
