@@ -353,6 +353,78 @@ function LandingPage() {
         </div>
       </section>
 
+      {/* ===== ZERO SERVER DEPENDENCY ===== */}
+      <section className="lp-sec" ref={s9.ref}>
+        <div className={s9.cls}>
+          <h2 className="lp-sec-h2">Zero Server Dependency</h2>
+          <p className="lp-sec-sub">
+            BaseVault has no backend server, no database, no API. The website is just a UI that talks directly to the blockchain.
+            If basevault.store goes offline tomorrow, nothing is lost. Your files, certificates, and data stay on Base forever.
+          </p>
+
+          <div className="lp-cards-3">
+            <div className="lp-card">
+              <h3>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{verticalAlign:'middle',marginRight:8}}>
+                  <path d="M17 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/><path d="M12 18h.01"/>
+                </svg>
+                Standalone Android App
+              </h3>
+              <p>
+                The Android app runs 100% without basevault.store. It has its own built-in wallet, reads data from 5 public Base RPCs with automatic failover, and signs transactions locally on your device.
+                No account. No login server. No API key. Just you and the blockchain.
+              </p>
+              <a href="https://github.com/meraja34/basevault/releases/download/v3.0.0/basevault-v3.0.0-final.apk" className="lp-recovery-btn">Download Android App</a>
+            </div>
+            <div className="lp-card">
+              <h3>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{verticalAlign:'middle',marginRight:8}}>
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Offline Recovery Tool
+              </h3>
+              <p>
+                A single HTML file you save on your computer. Works offline, opens in any browser, reads directly from the blockchain.
+                Recover all your files even if every BaseVault server shuts down permanently.
+              </p>
+              <a href="/recover.html" download="basevault-recover.html" className="lp-recovery-btn">Download Recovery Tool</a>
+            </div>
+            <div className="lp-card">
+              <h3>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{verticalAlign:'middle',marginRight:8}}>
+                  <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+                </svg>
+                Open Source & Verified
+              </h3>
+              <p>
+                Both smart contracts are verified on BaseScan. Source code is on GitHub. Anyone can build their own frontend, write a script, or use any Ethereum tool to access their data.
+                BaseVault is a protocol, not a service.
+              </p>
+              <a href="https://github.com/meraja34/basevault" target="_blank" rel="noopener noreferrer" className="lp-recovery-btn">View on GitHub</a>
+            </div>
+          </div>
+
+          <div className="lp-zero-server-points">
+            <div className="lp-zs-point">
+              <span className="lp-zs-check">&#10003;</span>
+              <span>Website goes down? App and recovery tool still work.</span>
+            </div>
+            <div className="lp-zs-point">
+              <span className="lp-zs-check">&#10003;</span>
+              <span>Domain expires? Access files through BaseScan or any RPC.</span>
+            </div>
+            <div className="lp-zs-point">
+              <span className="lp-zs-check">&#10003;</span>
+              <span>Team disappears? Smart contracts run forever on Ethereum.</span>
+            </div>
+            <div className="lp-zs-point">
+              <span className="lp-zs-check">&#10003;</span>
+              <span>No account, no subscription, no vendor lock-in. Ever.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ===== DATA RECOVERY ===== */}
       <section className="lp-sec" ref={s8.ref}>
         <div className={s8.cls}>
@@ -439,78 +511,6 @@ function LandingPage() {
       <section className="lp-sec lp-sec-dark" ref={s7.ref}>
         <div className={s7.cls}>
           <FAQ />
-        </div>
-      </section>
-
-      {/* ===== ZERO SERVER DEPENDENCY ===== */}
-      <section className="lp-sec" ref={s9.ref}>
-        <div className={s9.cls}>
-          <h2 className="lp-sec-h2">Zero Server Dependency</h2>
-          <p className="lp-sec-sub">
-            BaseVault has no backend server, no database, no API. The website is just a UI that talks directly to the blockchain.
-            If basevault.store goes offline tomorrow, nothing is lost. Your files, certificates, and data stay on Base forever.
-          </p>
-
-          <div className="lp-cards-3">
-            <div className="lp-card">
-              <h3>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{verticalAlign:'middle',marginRight:8}}>
-                  <path d="M17 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/><path d="M12 18h.01"/>
-                </svg>
-                Standalone Android App
-              </h3>
-              <p>
-                The Android app runs 100% without basevault.store. It has its own built-in wallet, reads data from 5 public Base RPCs with automatic failover, and signs transactions locally on your device.
-                No account. No login server. No API key. Just you and the blockchain.
-              </p>
-              <a href="https://github.com/meraja34/basevault/releases/download/v3.0.0/basevault-v3.0.0-final.apk" className="lp-recovery-btn">Download Android App</a>
-            </div>
-            <div className="lp-card">
-              <h3>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{verticalAlign:'middle',marginRight:8}}>
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-                Offline Recovery Tool
-              </h3>
-              <p>
-                A single HTML file you save on your computer. Works offline, opens in any browser, reads directly from the blockchain.
-                Recover all your files even if every BaseVault server shuts down permanently.
-              </p>
-              <a href="/recover.html" download="basevault-recover.html" className="lp-recovery-btn">Download Recovery Tool</a>
-            </div>
-            <div className="lp-card">
-              <h3>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{verticalAlign:'middle',marginRight:8}}>
-                  <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
-                </svg>
-                Open Source & Verified
-              </h3>
-              <p>
-                Both smart contracts are verified on BaseScan. Source code is on GitHub. Anyone can build their own frontend, write a script, or use any Ethereum tool to access their data.
-                BaseVault is a protocol, not a service.
-              </p>
-              <a href="https://github.com/meraja34/basevault" target="_blank" rel="noopener noreferrer" className="lp-recovery-btn">View on GitHub</a>
-            </div>
-          </div>
-
-          <div className="lp-zero-server-points">
-            <div className="lp-zs-point">
-              <span className="lp-zs-check">&#10003;</span>
-              <span>Website goes down? App and recovery tool still work.</span>
-            </div>
-            <div className="lp-zs-point">
-              <span className="lp-zs-check">&#10003;</span>
-              <span>Domain expires? Access files through BaseScan or any RPC.</span>
-            </div>
-            <div className="lp-zs-point">
-              <span className="lp-zs-check">&#10003;</span>
-              <span>Team disappears? Smart contracts run forever on Ethereum.</span>
-            </div>
-            <div className="lp-zs-point">
-              <span className="lp-zs-check">&#10003;</span>
-              <span>No account, no subscription, no vendor lock-in. Ever.</span>
-            </div>
-          </div>
         </div>
       </section>
 
