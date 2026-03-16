@@ -135,7 +135,8 @@ BaseVault writes your file bytes into Ethereum's security model via Base L2. As 
 - **Android App** (standalone, serverless, no backend dependency)
 - **Farcaster MiniApp** with auto-connect wallet
 - Mobile bottom tab navigation
-- Coinbase Smart Wallet, MetaMask, Rainbow, WalletConnect support
+- Web: Coinbase Smart Wallet, MetaMask, Rainbow, WalletConnect
+- Android: Built-in local wallet with fingerprint unlock
 - Dark/light theme toggle
 
 ---
@@ -152,8 +153,9 @@ The app is a Capacitor-wrapped version of the same React web app, with native An
 
 1. **No server dependency** - The app reads/writes data directly to Base blockchain smart contracts via public RPC endpoints
 2. **RPC Fallback** - 5 public Base RPCs configured with automatic failover (mainnet.base.org, base.meowrpc.com, base.drpc.org, 1rpc.io/base, default)
-3. **Wallet via browser** - Coinbase Smart Wallet opens in a browser flow, signs transactions, and returns to the app
-4. **All 11 pages work** - Upload, Gallery, My Files, Certificates, Verify, Register, Dashboard, Profile, Stats, Certificate View, Recovery
+3. **Built-in local wallet** - Private key generated on-device with viem, encrypted with AES-256, stored locally. All transactions signed on the phone itself. No external wallet app needed
+4. **Fingerprint unlock** - Biometric authentication for fast wallet access
+5. **All 11 pages work** - Upload, Gallery, My Files, Certificates, Verify, Register, Dashboard, Profile, Stats, Certificate View, Recovery
 
 ### What Works Offline
 
@@ -165,8 +167,12 @@ The app is a Capacitor-wrapped version of the same React web app, with native An
 
 - Uploading files (blockchain transactions)
 - Loading new data from chain
-- Connecting wallet
 - Issuing/revoking certificates
+
+### What Works Fully Offline
+
+- Creating/importing wallet (local operation)
+- Unlocking with password or fingerprint
 
 ### Build From Source
 
