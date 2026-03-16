@@ -3492,7 +3492,9 @@ textarea { resize: vertical; min-height: 100px; }
     right: 0 !important;
     top: auto !important;
     transform: none !important;
+    translate: none !important;
     width: 100% !important;
+    max-width: 100% !important;
   }
 
   [data-testid="ockModalOverlay"] {
