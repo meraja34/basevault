@@ -6,9 +6,10 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { config, farcasterConnectorId } from './config';
-import { useMiniApp } from './hooks/useMiniApp';
+import { useAppMode } from './hooks/useAppMode';
 import Header from './components/Header';
 import BottomTabs from './components/BottomTabs';
+import { MobileHeader, MobileBottomNav } from './components/MobileNav';
 import Home from './pages/Home';
 import Upload from './pages/Upload';
 import Gallery from './pages/Gallery';
@@ -18,33 +19,56 @@ import MyFiles from './pages/MyFiles';
 const queryClient = new QueryClient();
 
 function AppContent() {
-  const isMiniApp = useMiniApp();
+  const mode = useAppMode();
+  const isMiniApp = mode === 'miniapp';
+  const isNative = mode === 'native';
   const { connect, connectors } = useConnect();
   const { isConnected } = useAccount();
 
-  // Signal to MiniApp host and auto-connect wallet
+  // Signal to MiniApp host and auto-connect wallet (miniapp only)
   useEffect(() => {
+    if (!isMiniApp) return;
     import('@farcaster/miniapp-sdk').then(({ sdk }) => {
       sdk.actions.ready();
-
-      // Auto-connect if inside MiniApp and not already connected
-      if (isMiniApp && !isConnected) {
+      if (!isConnected) {
         const fc = connectors.find(c => c.id === farcasterConnectorId);
-        if (fc) {
-          connect({ connector: fc });
-        }
+        if (fc) connect({ connector: fc });
       }
     }).catch(() => {});
   }, [isMiniApp, isConnected]);
 
+  // Native app: Status bar + back button
+  useEffect(() => {
+    if (!isNative) return;
+    import('@capacitor/status-bar').then(({ StatusBar, Style }) => {
+      StatusBar.setStyle({ style: Style.Dark });
+      StatusBar.setBackgroundColor({ color: '#0a0a1a' });
+    }).catch(() => {});
+
+    import('@capacitor/app').then(({ App: CapApp }) => {
+      CapApp.addListener('backButton', ({ canGoBack }) => {
+        if (canGoBack) {
+          window.history.back();
+        } else {
+          CapApp.exitApp();
+        }
+      });
+    }).catch(() => {});
+  }, [isNative]);
+
+  const appClass = isNative ? 'app native-mode'
+    : isMiniApp ? 'app miniapp-mode'
+    : 'app';
+
   return (
     <BrowserRouter>
-      <div className={`app ${isMiniApp ? 'miniapp-mode' : ''}`}>
-        {!isMiniApp && <Header />}
+      <div className={appClass}>
+        {/* Header by mode */}
+        {mode === 'web' && <Header />}
         {isMiniApp && (
           <header className="miniapp-header">
             <div className="miniapp-header-inner">
-              <img src="/icon.svg" alt="BaseVault" className="logo-img" style={{ width: 28, height: 28 }} />
+              <img src="./icon.svg" alt="BaseVault" className="logo-img" style={{ width: 28, height: 28 }} />
               <span className="miniapp-title">BaseVault</span>
               <div style={{ marginLeft: 'auto' }}>
                 <ConnectButton showBalance={false} chainStatus="none" accountStatus="avatar" label="Connect" />
@@ -52,9 +76,12 @@ function AppContent() {
             </div>
           </header>
         )}
+        {isNative && <MobileHeader />}
+
         <main className="main-content">
           <Routes>
-            {isMiniApp ? (
+            {/* Native + MiniApp: skip landing, go to upload */}
+            {(isNative || isMiniApp) ? (
               <Route path="/" element={<Navigate to="/upload" replace />} />
             ) : (
               <Route path="/" element={<Home />} />
@@ -65,7 +92,9 @@ function AppContent() {
             <Route path="/my-files" element={<MyFiles />} />
           </Routes>
         </main>
-        {!isMiniApp && (
+
+        {/* Footer only for web */}
+        {mode === 'web' && (
           <footer className="footer">
             <p>BaseVault - Decentralized File Storage on Base Chain</p>
             <p className="footer-sub">Your files. Your keys. Your proof.</p>
@@ -89,13 +118,18 @@ function AppContent() {
             </div>
           </footer>
         )}
+
+        {/* Bottom nav by mode */}
         {isMiniApp && <BottomTabs />}
+        {isNative && <MobileBottomNav />}
       </div>
     </BrowserRouter>
   );
 }
 
 export default function App() {
+  const mode = useAppMode();
+
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
@@ -105,9 +139,12 @@ export default function App() {
           borderRadius: 'medium',
         })}>
           <AppContent />
-          <Toaster position="bottom-center" toastOptions={{
-            style: { background: '#1a1a2e', color: '#fff', border: '1px solid #333' }
-          }} />
+          <Toaster
+            position={mode === 'native' ? 'top-center' : 'bottom-center'}
+            toastOptions={{
+              style: { background: '#1a1a2e', color: '#fff', border: '1px solid #333' }
+            }}
+          />
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>

@@ -10,3 +10,10 @@ contracts/lib/
 .env
 *.log
 .DS_Store
+frontend/android/.gradle/
+frontend/android/build/
+frontend/android/app/build/
+frontend/android/app/release/
+frontend/android/capacitor-*/build/
+frontend/android/.idea/
+frontend/android/local.properties
