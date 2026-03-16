@@ -17,3 +17,6 @@ frontend/android/app/release/
 frontend/android/capacitor-*/build/
 frontend/android/.idea/
 frontend/android/local.properties
+*.keystore
+*.jks
+contracts/broadcast/
