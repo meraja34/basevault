@@ -17,6 +17,13 @@ frontend/android/app/release/
 frontend/android/capacitor-*/build/
 frontend/android/.idea/
 frontend/android/local.properties
+certifier-app/android/.gradle/
+certifier-app/android/build/
+certifier-app/android/app/build/
+certifier-app/android/app/release/
+certifier-app/android/capacitor-*/build/
+certifier-app/android/.idea/
+certifier-app/android/local.properties
 *.keystore
 *.jks
 contracts/broadcast/

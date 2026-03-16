@@ -8,8 +8,10 @@ import { Toaster } from 'react-hot-toast';
 import { base } from 'wagmi/chains';
 import { config, farcasterConnectorId } from './config.ts';
 import { useMiniApp } from './hooks/useMiniApp.ts';
+import { useAppMode } from './hooks/useAppMode.ts';
 import Header from './components/Header.tsx';
 import BottomTabs from './components/BottomTabs.tsx';
+import { MobileHeader, MobileBottomNav } from './components/MobileNav.tsx';
 import Home from './pages/Home.tsx';
 import Upload from './pages/Upload.tsx';
 import Gallery from './pages/Gallery.tsx';
@@ -49,12 +51,34 @@ function AppContent() {
   const { address, isConnected } = useAccount();
   const { connect, connectors } = useConnect();
   const isMiniApp = useMiniApp();
+  const mode = useAppMode();
+  const isNative = mode === 'native';
 
   // Apply saved theme
   useEffect(() => {
     const saved = localStorage.getItem('basevault-theme');
     if (saved) document.documentElement.setAttribute('data-theme', saved);
   }, []);
+
+  // Native app: Status bar + back button
+  useEffect(() => {
+    if (!isNative) return;
+    import('@capacitor/status-bar').then(({ StatusBar, Style }) => {
+      StatusBar.setStyle({ style: Style.Dark });
+      StatusBar.setBackgroundColor({ color: '#0a0a1a' });
+      StatusBar.setOverlaysWebView({ overlay: false });
+    }).catch(() => {});
+
+    import('@capacitor/app').then(({ App: CapApp }) => {
+      CapApp.addListener('backButton', ({ canGoBack }) => {
+        if (canGoBack) {
+          window.history.back();
+        } else {
+          CapApp.exitApp();
+        }
+      });
+    }).catch(() => {});
+  }, [isNative]);
 
   // MiniApp: signal ready + auto-connect Farcaster wallet
   useEffect(() => {
@@ -63,16 +87,11 @@ function AppContent() {
     (async () => {
       try {
         const { sdk } = await import('@farcaster/miniapp-sdk');
-
-        // Signal to Warpcast that the miniapp is loaded
         await sdk.actions.ready();
 
         if (cancelled || isConnected) return;
-
-        // Only auto-connect inside miniapp context
         if (!isMiniApp) return;
 
-        // Small delay to let the SDK provider initialize
         await new Promise(r => setTimeout(r, 500));
         if (cancelled || isConnected) return;
 
@@ -82,28 +101,27 @@ function AppContent() {
             connect({ connector: fc });
           } catch (e) {
             console.log('Farcaster auto-connect attempt failed, retrying...', e);
-            // Retry once after a longer delay
             await new Promise(r => setTimeout(r, 1500));
             if (!cancelled && !isConnected) {
               connect({ connector: fc });
             }
           }
         }
-      } catch {
-        // Not in Farcaster context or SDK not available
-      }
+      } catch {}
     })();
 
     return () => { cancelled = true; };
   }, [isMiniApp, isConnected]);
 
+  const appClass = isNative ? 'app native-mode'
+    : isMiniApp ? 'app miniapp-mode'
+    : 'app';
+
   return (
     <BrowserRouter>
-      <div className={`app ${isMiniApp ? 'miniapp-mode' : ''}`}>
-        {/* Hide header in miniapp mode - use bottom tabs instead */}
-        {!isMiniApp && <Header />}
-
-        {/* MiniApp compact header */}
+      <div className={appClass}>
+        {/* Header by mode */}
+        {mode === 'web' && <Header />}
         {isMiniApp && (
           <div className="miniapp-header">
             <Link to="/" className="logo">
@@ -117,10 +135,11 @@ function AppContent() {
             )}
           </div>
         )}
+        {isNative && <MobileHeader />}
 
         <main className="main-content">
           <Routes>
-            <Route path="/" element={<PageWrapper title="BaseVault - On-Chain Document Storage & Certification"><Home /></PageWrapper>} />
+            <Route path="/" element={<PageWrapper title="BaseVault"><Home /></PageWrapper>} />
             <Route path="/upload" element={<PageWrapper title="Upload | BaseVault"><Upload /></PageWrapper>} />
             <Route path="/gallery" element={<PageWrapper title="Gallery | BaseVault"><Gallery /></PageWrapper>} />
             <Route path="/my-files" element={<PageWrapper title="My Files | BaseVault"><MyFiles /></PageWrapper>} />
@@ -134,8 +153,8 @@ function AppContent() {
           </Routes>
         </main>
 
-        {/* Enhanced Footer - Desktop only, hide in miniapp */}
-        {!isMiniApp && (
+        {/* Footer only for web */}
+        {mode === 'web' && (
           <footer className="footer-enhanced">
             <div className="footer-grid">
               <div className="footer-col">
@@ -145,7 +164,6 @@ function AppContent() {
                 </h4>
                 <p className="footer-about">Fully on-chain document storage and institutional certification on Base. No servers, no IPFS. Your files live on the blockchain.</p>
               </div>
-
               <div className="footer-col">
                 <h4 className="footer-col-title">Quick Links</h4>
                 <Link to="/upload" className="footer-link">Upload</Link>
@@ -154,7 +172,6 @@ function AppContent() {
                 <Link to="/register" className="footer-link">Register</Link>
                 {address && <Link to={`/profile/${address}`} className="footer-link">My Profile</Link>}
               </div>
-
               <div className="footer-col">
                 <h4 className="footer-col-title">Resources</h4>
                 <a href={`https://basescan.org/address/${BASEVAULT_ADDRESS}`} target="_blank" rel="noopener noreferrer" className="footer-link">BaseScan (Storage)</a>
@@ -163,18 +180,12 @@ function AppContent() {
                 <Link to="/stats" className="footer-link">Network Stats</Link>
                 <a href="/recover.html" className="footer-link">Recovery Tool</a>
               </div>
-
               <div className="footer-col">
                 <h4 className="footer-col-title">Connect</h4>
-                <a href="https://warpcast.com/alphacaster.eth" target="_blank" rel="noopener noreferrer" className="footer-link">
-                  Farcaster
-                </a>
-                <a href="https://github.com/meraja34/basevault" target="_blank" rel="noopener noreferrer" className="footer-link">
-                  GitHub
-                </a>
+                <a href="https://warpcast.com/alphacaster.eth" target="_blank" rel="noopener noreferrer" className="footer-link">Farcaster</a>
+                <a href="https://github.com/meraja34/basevault" target="_blank" rel="noopener noreferrer" className="footer-link">GitHub</a>
               </div>
             </div>
-
             <div className="footer-bottom">
               <span className="footer-built">
                 <svg width="16" height="16" viewBox="0 0 111 111" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -188,14 +199,18 @@ function AppContent() {
           </footer>
         )}
 
-        {/* Mobile Bottom Tabs - always show on mobile, or in miniapp */}
-        <BottomTabs />
+        {/* Bottom nav by mode */}
+        {isMiniApp && <BottomTabs />}
+        {isNative && <MobileBottomNav />}
+        {mode === 'web' && <BottomTabs />}
       </div>
     </BrowserRouter>
   );
 }
 
 export default function App() {
+  const mode = useAppMode();
+
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
@@ -214,9 +229,12 @@ export default function App() {
           }}
         >
           <AppContent />
-          <Toaster position="bottom-center" toastOptions={{
-            style: { background: '#1a1a2e', color: '#fff', border: '1px solid #333' }
-          }} />
+          <Toaster
+            position={mode === 'native' ? 'top-center' : 'bottom-center'}
+            toastOptions={{
+              style: { background: '#1a1a2e', color: '#fff', border: '1px solid #333' }
+            }}
+          />
         </OnchainKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
