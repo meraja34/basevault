@@ -290,13 +290,14 @@ code {
   gap: 1rem;
 }
 
-.app-download {
+.app-links {
   margin-top: 1.5rem;
   display: flex;
   justify-content: center;
+  gap: 1rem;
 }
 
-.btn-download {
+.btn-app {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -312,23 +313,24 @@ code {
   cursor: pointer;
 }
 
-.btn-download:hover {
+.btn-app:hover {
   background: var(--bg-card-hover);
-  border-color: var(--accent);
-  color: var(--accent);
+  border-color: var(--primary);
+  color: #fff;
 }
 
-.btn-download svg {
+.btn-app svg {
   flex-shrink: 0;
 }
 
-.download-badge {
+.app-badge {
   background: var(--accent);
   color: #000;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 700;
-  padding: 0.15rem 0.5rem;
+  padding: 0.1rem 0.45rem;
   border-radius: 20px;
+  letter-spacing: 0.5px;
 }
 
 /* ===== Features Grid ===== */

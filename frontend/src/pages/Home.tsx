@@ -46,14 +46,22 @@ export default function Home() {
           <Link to="/upload" className="btn btn-primary btn-lg">Upload Files</Link>
           <Link to="/verify" className="btn btn-outline btn-lg">Verify Document</Link>
         </div>
-        <div className="app-download">
-          <a href="https://github.com/meraja34/basevault/raw/main/releases/basevault-v1.0.0-release.apk" className="btn btn-download" download>
+        <div className="app-links">
+          <a href="https://app.basevault.store" className="btn btn-app" target="_blank" rel="noopener noreferrer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="2" y1="12" x2="22" y2="12" />
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+            </svg>
+            Web App
+          </a>
+          <a href="https://github.com/meraja34/basevault/raw/main/releases/basevault-v1.0.0-release.apk" className="btn btn-app" download>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M17 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z" />
               <path d="M12 18h.01" />
             </svg>
-            Download Android App
-            <span className="download-badge">v1.0.0</span>
+            Android App
+            <span className="app-badge">APK</span>
           </a>
         </div>
       </section>
