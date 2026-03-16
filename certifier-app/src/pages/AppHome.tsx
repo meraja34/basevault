@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useAccount, useReadContract, useReadContracts } from 'wagmi';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { WalletCompact } from '../components/WalletButton.tsx';
 import { useMiniApp } from '../hooks/useMiniApp.ts';
 import { CONTRACT_ADDRESS, CERTIFIER_ADDRESS, CERTIFIER_LIVE, CERT_TYPE_LABELS, CERT_TYPE_ICONS } from '../constants.ts';
 import { baseVaultAbi, certifierAbi } from '../abi/index.ts';
@@ -138,7 +138,7 @@ export default function AppHome() {
               <p>Connecting wallet...</p>
             </div>
           ) : (
-            <ConnectButton />
+            <WalletCompact />
           )}
         </div>
 

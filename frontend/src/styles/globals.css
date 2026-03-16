@@ -2483,43 +2483,59 @@ textarea {
    Proper mobile sizing - between desktop and miniapp
    ========================================================= */
 
+/* =================================================================
+   NATIVE ANDROID APP MODE - Completely different from web
+   ================================================================= */
+
 .native-mode {
   --max-width: 100%;
-  background: var(--bg);
+  --app-bg: #060612;
+  --app-card: #0e0e22;
+  --app-card-border: #1a1a35;
+  --app-accent: #0052FF;
+  --app-text: #f0f0ff;
+  --app-dim: #7777aa;
+  background: var(--app-bg);
   min-height: 100vh;
   overflow-x: hidden;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* ─── Mobile Header ─── */
+.native-mode ::-webkit-scrollbar { display: none; }
+
+/* ─── App Header ─── */
 .mobile-header {
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
+  background: var(--app-bg);
+  border-bottom: 1px solid var(--app-card-border);
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 100;
-  padding-top: env(safe-area-inset-top, 24px);
+  z-index: 200;
 }
 
 .mobile-header-inner {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 0 16px;
-  height: 48px;
+  gap: 8px;
+  padding: 0 14px;
+  height: 44px;
 }
 
 .mobile-logo {
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
 }
 
 .mobile-title {
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  color: var(--text);
+  color: var(--app-text);
   letter-spacing: -0.3px;
 }
 
@@ -2527,17 +2543,23 @@ textarea {
   margin-left: auto;
 }
 
-/* ─── Mobile Bottom Navigation ─── */
+/* Shrink RainbowKit button in native */
+.native-mode [data-testid="rk-connect-button"],
+.native-mode [data-testid="rk-account-button"] {
+  transform: scale(0.85);
+  transform-origin: right center;
+}
+
+/* ─── Bottom Tab Bar ─── */
 .mobile-bottom-nav {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   display: flex;
-  background: var(--bg);
-  border-top: 1px solid var(--border);
-  z-index: 100;
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: var(--app-bg);
+  border-top: 1px solid var(--app-card-border);
+  z-index: 200;
 }
 
 .mobile-nav-tab {
@@ -2546,24 +2568,35 @@ textarea {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
-  padding: 6px 0;
-  min-height: 52px;
-  color: var(--text-dim);
+  gap: 1px;
+  padding: 6px 0 8px;
+  color: var(--app-dim);
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;
-  transition: color 0.15s ease;
+  transition: color 0.15s;
+  position: relative;
 }
 
 .mobile-nav-tab.active {
-  color: var(--primary);
+  color: var(--app-accent);
+}
+
+.mobile-nav-tab.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 25%;
+  right: 25%;
+  height: 2px;
+  background: var(--app-accent);
+  border-radius: 0 0 2px 2px;
 }
 
 .mobile-nav-icon svg {
-  width: 22px;
-  height: 22px;
-  opacity: 0.5;
-  transition: opacity 0.15s ease;
+  width: 20px;
+  height: 20px;
+  opacity: 0.4;
+  transition: opacity 0.15s;
 }
 
 .mobile-nav-tab.active .mobile-nav-icon svg {
@@ -2571,190 +2604,283 @@ textarea {
 }
 
 .mobile-nav-label {
-  font-size: 0.675rem;
+  font-size: 0.6rem;
   font-weight: 600;
-  letter-spacing: 0.2px;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
 }
 
-/* ─── Main Content ─── */
+/* ─── Main Content Area ─── */
 .native-mode .main-content {
-  padding: 12px 14px;
-  padding-top: calc(env(safe-area-inset-top, 24px) + 56px);
-  padding-bottom: 68px;
+  padding: 8px 12px;
+  padding-top: 52px;
+  padding-bottom: 58px;
   max-width: 100%;
   min-height: 100vh;
+  background: var(--app-bg);
 }
 
-/* ─── Page Titles ─── */
+/* ─── Page Layout ─── */
 .native-mode .page {
   max-width: 100%;
 }
 
 .native-mode .page-title {
-  font-size: 1.2rem;
-  margin-bottom: 0.25rem;
-  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 2px;
+  font-weight: 800;
+  color: var(--app-text);
+  letter-spacing: -0.3px;
 }
 
 .native-mode .page-desc {
-  font-size: 0.8rem;
-  margin-bottom: 1rem;
-  line-height: 1.4;
-  color: var(--text-dim);
+  font-size: 0.75rem;
+  margin-bottom: 12px;
+  line-height: 1.35;
+  color: var(--app-dim);
+}
+
+/* ─── Cards & Surfaces ─── */
+.native-mode .upload-preview,
+.native-mode .verify-result,
+.native-mode .connect-prompt,
+.native-mode .upload-success,
+.native-mode .decrypt-section {
+  background: var(--app-card);
+  border: 1px solid var(--app-card-border);
+  border-radius: 14px;
+  padding: 14px;
 }
 
 /* ─── Buttons ─── */
 .native-mode .btn {
-  padding: 10px 18px;
-  font-size: 0.875rem;
-  min-height: 42px;
-  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  min-height: 40px;
+  border-radius: 12px;
+  letter-spacing: 0.2px;
+}
+
+.native-mode .btn-primary {
+  background: var(--app-accent);
+  box-shadow: 0 2px 12px rgba(0, 82, 255, 0.3);
 }
 
 .native-mode .btn-lg {
   padding: 12px 20px;
-  font-size: 0.9375rem;
-  min-height: 46px;
+  font-size: 0.875rem;
+  min-height: 44px;
   width: 100%;
+  border-radius: 14px;
 }
 
 .native-mode .btn-sm {
-  padding: 7px 12px;
-  font-size: 0.8rem;
-  min-height: 34px;
+  padding: 6px 10px;
+  font-size: 0.75rem;
+  min-height: 30px;
+  border-radius: 8px;
+}
+
+.native-mode .btn-outline {
+  border-color: var(--app-card-border);
+  color: var(--app-text);
 }
 
 /* ─── Inputs ─── */
 .native-mode input,
 .native-mode textarea,
 .native-mode .input-full {
-  padding: 10px 14px;
-  font-size: 0.9375rem;
-  border-radius: 10px;
-  min-height: 42px;
+  padding: 10px 12px;
+  font-size: 0.875rem;
+  border-radius: 12px;
+  min-height: 40px;
+  background: var(--app-card);
+  border-color: var(--app-card-border);
+  color: var(--app-text);
+}
+
+.native-mode input:focus,
+.native-mode textarea:focus {
+  border-color: var(--app-accent);
+  box-shadow: 0 0 0 2px rgba(0, 82, 255, 0.15);
 }
 
 /* ─── Dropzone ─── */
 .native-mode .dropzone {
-  padding: 1.5rem 1rem;
-  border-radius: 12px;
+  padding: 1.25rem 1rem;
+  border-radius: 14px;
+  border: 2px dashed var(--app-card-border);
+  background: var(--app-card);
+}
+
+.native-mode .dropzone:active {
+  border-color: var(--app-accent);
+  background: rgba(0, 82, 255, 0.05);
 }
 
 .native-mode .dropzone-icon svg {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
+  opacity: 0.5;
 }
 
 .native-mode .dropzone-label {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
+  color: var(--app-text);
 }
 
 .native-mode .dropzone-hint {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
+  color: var(--app-dim);
 }
 
-/* ─── Upload preview ─── */
+/* ─── Upload Preview ─── */
 .native-mode .upload-preview {
-  padding: 14px;
-  margin-top: 12px;
-  border-radius: 12px;
+  margin-top: 10px;
 }
 
 .native-mode .preview-info h3 {
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
+  color: var(--app-text);
 }
 
 .native-mode .preview-info p {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
+  color: var(--app-dim);
+}
+
+.native-mode .cost-estimate {
+  color: var(--app-accent) !important;
+  font-weight: 600;
 }
 
 /* ─── Visibility Toggle ─── */
 .native-mode .visibility-toggle {
-  gap: 8px;
+  gap: 6px;
   margin-bottom: 10px;
 }
 
 .native-mode .toggle-btn {
   padding: 8px;
-  font-size: 0.8125rem;
-  min-height: 40px;
+  font-size: 0.8rem;
+  min-height: 38px;
   border-radius: 10px;
+  background: var(--app-card);
+  border-color: var(--app-card-border);
+  color: var(--app-dim);
 }
 
-/* ─── File Grid - 2 column compact ─── */
+.native-mode .toggle-btn.toggle-active {
+  background: rgba(0, 82, 255, 0.12);
+  border-color: var(--app-accent);
+  color: var(--app-accent);
+}
+
+/* ─── File Grid ─── */
 .native-mode .file-grid {
   grid-template-columns: repeat(2, 1fr);
   gap: 8px;
-  margin-top: 0.75rem;
+  margin-top: 8px;
 }
 
 .native-mode .file-card {
-  border-radius: 10px;
+  border-radius: 12px;
+  background: var(--app-card);
+  border-color: var(--app-card-border);
+  overflow: hidden;
 }
 
 .native-mode .file-card-preview {
-  height: 80px;
+  height: 72px;
+  background: rgba(0, 82, 255, 0.05);
 }
 
 .native-mode .file-card-info {
-  padding: 8px;
+  padding: 8px 10px;
 }
 
 .native-mode .file-card-name {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   margin-bottom: 2px;
+  color: var(--app-text);
+  font-weight: 600;
 }
 
 .native-mode .file-card-meta {
-  font-size: 0.625rem;
+  font-size: 0.6rem;
+  color: var(--app-dim);
 }
 
 .native-mode .file-card-actions {
   padding: 6px 8px;
   gap: 4px;
+  border-top: 1px solid var(--app-card-border);
 }
 
 .native-mode .file-card-actions .btn-sm {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   padding: 4px 8px;
-  min-height: 28px;
+  min-height: 26px;
+  border-radius: 6px;
 }
 
-/* ─── Verify tabs ─── */
+/* ─── Verify ─── */
 .native-mode .verify-tabs {
-  gap: 6px;
+  gap: 0;
   margin-bottom: 12px;
+  background: var(--app-card);
+  border-radius: 12px;
+  padding: 3px;
+  border: 1px solid var(--app-card-border);
 }
 
 .native-mode .tab {
-  padding: 8px 16px;
-  font-size: 0.8125rem;
-  min-height: 40px;
+  padding: 8px 14px;
+  font-size: 0.8rem;
+  min-height: 36px;
   border-radius: 10px;
+  border: none;
+  color: var(--app-dim);
+  background: transparent;
+}
+
+.native-mode .tab.tab-active,
+.native-mode .tab.active {
+  background: var(--app-accent);
+  color: #fff;
 }
 
 /* ─── Results / Details ─── */
 .native-mode .verify-result {
-  padding: 14px;
-  margin-top: 12px;
-  border-radius: 12px;
+  margin-top: 10px;
 }
 
 .native-mode .detail-row {
-  padding: 5px 0;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+
+.native-mode .detail-row:last-child {
+  border-bottom: none;
 }
 
 .native-mode .detail-label {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
+  color: var(--app-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .native-mode .detail-value {
-  font-size: 0.8125rem;
+  font-size: 0.8rem;
+  color: var(--app-text);
 }
 
-/* ─── File Viewer - fullscreen ─── */
+/* ─── File Viewer ─── */
 .native-mode .file-viewer-overlay {
   padding: 0;
+  background: var(--app-bg);
 }
 
 .native-mode .file-viewer-content {
@@ -2763,76 +2889,109 @@ textarea {
   height: 100vh;
   border-radius: 0;
   border: none;
+  background: var(--app-bg);
 }
 
-/* ─── Decrypt/Password sections ─── */
+/* ─── Decrypt/Password ─── */
 .native-mode .decrypt-section {
-  padding: 10px;
-  margin-top: 6px;
-  border-radius: 10px;
+  margin-top: 8px;
 }
 
-.native-mode .decrypt-section label {
-  font-size: 0.8rem;
-}
-
+.native-mode .decrypt-section label,
 .native-mode .password-section label {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
+  color: var(--app-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 .native-mode .password-hint {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
+  color: var(--app-dim);
 }
 
-/* ─── Connect prompt ─── */
+/* ─── Connect Prompt ─── */
 .native-mode .connect-prompt {
-  padding: 1.5rem 1rem;
-  border-radius: 12px;
-  background: var(--bg-card);
   text-align: center;
+  margin-top: 2rem;
 }
 
 .native-mode .connect-prompt p {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   margin-bottom: 1rem;
+  color: var(--app-dim);
 }
 
 /* ─── Pagination ─── */
 .native-mode .pagination {
-  margin-top: 12px;
-  gap: 8px;
+  margin-top: 10px;
+  gap: 6px;
 }
 
 .native-mode .page-info {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
+  color: var(--app-dim);
 }
 
-/* ─── Empty state ─── */
+/* ─── Empty State ─── */
 .native-mode .empty-state {
-  padding: 2rem 1rem;
+  padding: 2.5rem 1rem;
+  text-align: center;
+}
+
+.native-mode .empty-state svg {
+  opacity: 0.3;
 }
 
 .native-mode .empty-state p {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
+  color: var(--app-dim);
 }
 
-/* ─── Progress bar ─── */
+/* ─── Progress ─── */
+.native-mode .upload-progress {
+  text-align: center;
+  padding: 1rem 0;
+}
+
 .native-mode .progress-bar {
-  height: 5px;
-  border-radius: 3px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--app-card-border);
+  overflow: hidden;
 }
 
-/* ─── Success section ─── */
+.native-mode .progress-fill {
+  background: var(--app-accent);
+}
+
+.native-mode .progress-sub {
+  font-size: 0.7rem;
+  color: var(--app-dim);
+}
+
+/* ─── Success ─── */
+.native-mode .upload-success {
+  text-align: center;
+}
+
+.native-mode .success-icon {
+  font-size: 2rem;
+}
+
 .native-mode .success-section {
   padding: 1rem;
-  border-radius: 12px;
+  border-radius: 14px;
+  background: var(--app-card);
+  border: 1px solid var(--app-card-border);
 }
 
 .native-mode .success-section h3 {
-  font-size: 1rem;
+  font-size: 0.95rem;
+  color: var(--app-text);
 }
 
-/* ─── Stats row on upload ─── */
+/* ─── Stats ─── */
 .native-mode .stats-row {
   gap: 6px;
   flex-wrap: wrap;
@@ -2840,26 +2999,22 @@ textarea {
 
 .native-mode .stat-card {
   padding: 10px;
-  border-radius: 10px;
-  font-size: 0.8125rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  background: var(--app-card);
+  border: 1px solid var(--app-card-border);
 }
 
-/* ─── Scrollbar hidden ─── */
-.native-mode ::-webkit-scrollbar {
-  display: none;
+/* ─── Loading ─── */
+.native-mode .loading {
+  padding: 2rem;
 }
 
-.native-mode {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+.native-mode .spinner {
+  border-color: var(--app-card-border);
+  border-top-color: var(--app-accent);
 }
 
-/* ─── Footer hidden ─── */
-.native-mode .footer {
-  display: none;
-}
-
-/* ─── Header hidden in native ─── */
-.native-mode .header {
-  display: none;
-}
+/* ─── Hide web elements ─── */
+.native-mode .footer { display: none; }
+.native-mode .header { display: none; }

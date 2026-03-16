@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
-import '@rainbow-me/rainbowkit/styles.css';
-import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
+import '@coinbase/onchainkit/styles.css';
+import { OnchainKitProvider } from '@coinbase/onchainkit';
 import { WagmiProvider, useAccount, useConnect } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { base } from 'wagmi/chains';
 import { config, farcasterConnectorId } from './config.ts';
 import { useMiniApp } from './hooks/useMiniApp.ts';
 import Header from './components/Header.tsx';
@@ -198,16 +199,25 @@ export default function App() {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider theme={darkTheme({
-          accentColor: '#0052FF',
-          accentColorForeground: 'white',
-          borderRadius: 'medium',
-        })}>
+        <OnchainKitProvider
+          chain={base}
+          config={{
+            appearance: {
+              name: 'BaseVault',
+              logo: '/icon.svg',
+              mode: 'dark',
+              theme: 'base',
+            },
+            wallet: {
+              display: 'modal',
+            },
+          }}
+        >
           <AppContent />
           <Toaster position="bottom-center" toastOptions={{
             style: { background: '#1a1a2e', color: '#fff', border: '1px solid #333' }
           }} />
-        </RainbowKitProvider>
+        </OnchainKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );

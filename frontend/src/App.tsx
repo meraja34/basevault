@@ -43,6 +43,7 @@ function AppContent() {
     import('@capacitor/status-bar').then(({ StatusBar, Style }) => {
       StatusBar.setStyle({ style: Style.Dark });
       StatusBar.setBackgroundColor({ color: '#0a0a1a' });
+      StatusBar.setOverlaysWebView({ overlay: false });
     }).catch(() => {});
 
     import('@capacitor/app').then(({ App: CapApp }) => {
