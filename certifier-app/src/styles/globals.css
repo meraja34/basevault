@@ -3027,6 +3027,35 @@ textarea { resize: vertical; min-height: 100px; }
   color: var(--text-muted);
 }
 
+.lp-built-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 40px 0 8px;
+}
+.lp-built-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-dim);
+}
+.lp-built-motion {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+.lp-built-wordmark {
+  height: 18px;
+  opacity: 0.9;
+}
+.lp-built-sub {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  padding-bottom: 32px;
+}
+
 /* ===== APP HOME DASHBOARD ===== */
 .app-home { max-width: 680px; margin: 0 auto; padding: 20px 16px 100px; }
 

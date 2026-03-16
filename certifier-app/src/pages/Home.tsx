@@ -458,6 +458,14 @@ function LandingPage() {
         </div>
         <p className="lp-cta-note">Free to use. You only pay Base network gas fees.</p>
       </section>
+
+      {/* Built on Base footer */}
+      <div className="lp-built-footer">
+        <span className="lp-built-text">Built on</span>
+        <video src="/base-square-motion.mp4" autoPlay loop muted playsInline className="lp-built-motion" />
+        <img src="/base-wordmark-white.svg" alt="Base" className="lp-built-wordmark" />
+      </div>
+      <p className="lp-built-sub">Your files. Your keys. Your proof.</p>
     </div>
   );
 }
