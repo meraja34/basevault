@@ -200,14 +200,14 @@ function LandingPage() {
               <div className="lp-tl-num">1</div>
               <div className="lp-tl-body">
                 <h3>Connect Wallet & Upload</h3>
-                <p>Connect MetaMask, Coinbase Smart Wallet, or any WalletConnect wallet. Drop a file. Choose public or private (encrypted).</p>
+                <p>On web, connect Coinbase Smart Wallet, MetaMask, or any WalletConnect wallet. On the Android app, create a wallet in seconds or import your existing key. Drop a file. Choose public or private (encrypted).</p>
               </div>
             </div>
             <div className="lp-tl-item">
               <div className="lp-tl-num">2</div>
               <div className="lp-tl-body">
                 <h3>File Goes On-Chain</h3>
-                <p>File splits into 24KB chunks. Each chunk is a smart contract transaction. Smart wallets batch all chunks into one approval. File gets a unique ID and SHA-256 hash.</p>
+                <p>File splits into 24KB chunks. Each chunk is a smart contract transaction stored directly on Base. On the Android app, transactions are signed locally on your device and sent straight to the blockchain. File gets a unique ID and SHA-256 hash.</p>
               </div>
             </div>
             <div className="lp-tl-item">
