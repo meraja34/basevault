@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useAccount, useReadContract, useReadContracts } from 'wagmi';
+import { useAccount, useReadContract, useReadContracts, useDisconnect } from 'wagmi';
 import { WalletCompact } from '../components/WalletButton.tsx';
 import { useMiniApp } from '../hooks/useMiniApp.ts';
 import { CONTRACT_ADDRESS, CERTIFIER_ADDRESS, CERTIFIER_LIVE, CERT_TYPE_LABELS, CERT_TYPE_ICONS } from '../constants.ts';
@@ -8,6 +8,7 @@ import { formatFileSize } from '../utils/ipfs.ts';
 
 export default function AppHome() {
   const { address, isConnected } = useAccount();
+  const { disconnect } = useDisconnect();
   const isMiniApp = useMiniApp();
 
   // File data
@@ -187,10 +188,18 @@ export default function AppHome() {
           <h1>Dashboard</h1>
           <p className="app-greeting-addr">{address?.slice(0, 6)}...{address?.slice(-4)}</p>
         </div>
-        {address && <Link to={`/profile/${address}`} className="app-profile-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          Profile
-        </Link>}
+        {address && (
+          <div className="app-greeting-actions">
+            <Link to={`/profile/${address}`} className="app-profile-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              Profile
+            </Link>
+            <button onClick={() => disconnect()} className="app-logout-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Logout
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Overview Cards */}

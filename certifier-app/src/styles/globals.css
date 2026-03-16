@@ -3112,6 +3112,19 @@ textarea { resize: vertical; min-height: 100px; }
 }
 .app-profile-btn:hover { background: var(--bg-card-hover); color: var(--text); border-color: var(--border-hover); }
 
+.app-greeting-actions { display: flex; gap: 8px; align-items: center; }
+
+.app-logout-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 14px; border-radius: var(--radius-sm);
+  background: transparent; border: 1px solid var(--danger);
+  color: var(--danger); cursor: pointer;
+  font-size: 0.78rem; font-weight: 500;
+  transition: var(--transition);
+  font-family: inherit;
+}
+.app-logout-btn:hover { background: rgba(255, 82, 82, 0.1); }
+
 /* Overview cards */
 .app-overview { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
 .app-ov-card {
