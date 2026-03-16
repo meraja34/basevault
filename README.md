@@ -439,8 +439,10 @@ npm run build     # Make sure frontend builds
 
 <p align="center">
   <strong>Built on</strong>
-  <br/>
-  <img src="https://img.shields.io/badge/Base-0052FF?style=for-the-badge&logo=coinbase&logoColor=white" alt="Base" />
+  <br/><br/>
+  <a href="https://base.org">
+    <img src="https://raw.githubusercontent.com/base/brand-kit/main/logo/Basemark/Digital/Base_basemark_blue.svg" alt="Base" height="40" />
+  </a>
 </p>
 
 <p align="center">
