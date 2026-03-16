@@ -1,12 +1,14 @@
 import { useEffect } from 'react';
 import '@coinbase/onchainkit/styles.css';
 import { OnchainKitProvider } from '@coinbase/onchainkit';
-import { WagmiProvider, useAccount, useConnect } from 'wagmi';
+import { WagmiProvider, useAccount, useConnect, useBalance, useDisconnect } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { base } from 'wagmi/chains';
 import { Capacitor } from '@capacitor/core';
+import { formatEther } from 'viem';
+import { clearUnlockedKey } from './wallet/localConnector.ts';
 import { config, farcasterConnectorId } from './config.ts';
 import { useMiniApp } from './hooks/useMiniApp.ts';
 import Header from './components/Header.tsx';
@@ -49,8 +51,11 @@ function PageWrapper({ title, children }: { title: string; children: React.React
 function AppContent() {
   const { address, isConnected } = useAccount();
   const { connect, connectors } = useConnect();
+  const { disconnect } = useDisconnect();
   const isMiniApp = useMiniApp();
   const isNative = Capacitor.isNativePlatform();
+  const { data: balanceData } = useBalance({ address, query: { enabled: !!address && isNative } });
+  const ethBal = balanceData ? parseFloat(formatEther(balanceData.value)).toFixed(4) : '0.00';
 
   // Apply saved theme
   useEffect(() => {
@@ -166,9 +171,15 @@ function AppContent() {
               <span className="logo-text">BaseVault</span>
             </Link>
             {address && (
-              <span className="native-header-address">
-                {address.slice(0, 6)}...{address.slice(-4)}
-              </span>
+              <div className="native-header-right">
+                <span className="native-header-bal">{ethBal} ETH</span>
+                <span className="native-header-address">
+                  {address.slice(0, 6)}...{address.slice(-4)}
+                </span>
+                <button className="native-header-logout" onClick={() => { clearUnlockedKey(); disconnect(); }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                </button>
+              </div>
             )}
           </div>
         )}

@@ -3488,14 +3488,43 @@ textarea { resize: vertical; min-height: 100px; }
   text-decoration: none;
 }
 .native-header-logo .logo-img { width: 30px; height: 30px; border-radius: 8px; }
+.native-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.native-header-bal {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--accent);
+  font-family: monospace;
+}
 .native-header-address {
-  font-size: 0.75rem;
-  color: var(--primary);
-  background: rgba(0, 82, 255, 0.1);
-  padding: 6px 14px;
-  border-radius: 20px;
-  border: 1px solid rgba(0, 82, 255, 0.2);
-  font-weight: 500;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 5px 10px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: monospace;
+}
+.native-header-logout {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 82, 82, 0.1);
+  border: 1px solid rgba(255, 82, 82, 0.2);
+  border-radius: 10px;
+  color: var(--danger);
+  cursor: pointer;
+  padding: 0;
+  min-height: auto;
+  -webkit-tap-highlight-color: transparent;
+}
+.native-header-logout:active {
+  background: rgba(255, 82, 82, 0.2);
 }
 
 /* Native mode overrides */
@@ -4035,6 +4064,29 @@ textarea { resize: vertical; min-height: 100px; }
   font-size: 0.8rem;
   margin-bottom: 16px;
 }
+.nw-btn-bio {
+  background: linear-gradient(135deg, rgba(0, 200, 83, 0.12) 0%, rgba(0, 200, 83, 0.06) 100%);
+  color: var(--accent);
+  border: 1px solid rgba(0, 200, 83, 0.25);
+  margin-bottom: 8px;
+}
+.nw-btn-bio:active { background: rgba(0, 200, 83, 0.2); }
+.nw-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0 12px;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+.nw-divider::before, .nw-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.nw-divider:empty { margin: 4px 0; }
+.nw-divider:empty::before, .nw-divider:empty::after { display: none; }
 .nw-back {
   background: none;
   border: none;
