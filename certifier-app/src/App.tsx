@@ -187,13 +187,18 @@ function AppContent() {
               </div>
             </div>
             <div className="footer-bottom">
-              <span className="footer-built">
-                <svg width="16" height="16" viewBox="0 0 111 111" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="55.5" cy="55.5" r="55.5" fill="#0052FF"/>
-                  <path d="M55.4 93.5c20.9 0 37.9-16.6 38.5-37.4H69.1c-.6 10.4-9.2 18.6-13.7 18.6-9.5 0-20.5-9.2-20.5-19.2s11-19.2 20.5-19.2c4.5 0 13.1 8.2 13.7 18.6h24.8C93.3 34.1 76.3 17.5 55.4 17.5 34 17.5 16.7 34.8 16.7 55.5S34 93.5 55.4 93.5z" fill="white"/>
-                </svg>
-                Built on Base
-              </span>
+              <div className="footer-built-on-base">
+                <span className="footer-built-text">Built on</span>
+                <video
+                  src="/base-square-motion.mp4"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="footer-base-motion"
+                />
+                <img src="/base-wordmark-white.svg" alt="Base" className="footer-base-wordmark" />
+              </div>
               <span className="footer-copy">BaseVault - Your files. Your keys. Your proof.</span>
             </div>
           </footer>

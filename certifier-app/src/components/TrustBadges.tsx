@@ -2,10 +2,7 @@ export default function TrustBadges() {
   const badges = [
     {
       icon: (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <rect x="2" y="2" width="20" height="20" rx="4" />
-          <path d="M12 6v12M6 12h12" />
-        </svg>
+        <img src="/base-square-blue.svg" alt="Base" width="24" height="24" style={{ borderRadius: 4 }} />
       ),
       label: 'Built on Base',
       color: '#0052FF',

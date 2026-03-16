@@ -218,7 +218,30 @@ code {
   font-size: 0.75rem;
   color: var(--text-muted);
 }
-.footer-built { display: flex; align-items: center; gap: 6px; }
+.footer-built-on-base {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.footer-built-text {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  letter-spacing: 0.3px;
+}
+.footer-base-motion {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+.footer-base-wordmark {
+  height: 16px;
+  opacity: 0.9;
+}
+[data-theme="light"] .footer-base-wordmark {
+  filter: invert(1);
+}
 .footer-copy { color: var(--text-muted); }
 
 /* ===== Page ===== */
