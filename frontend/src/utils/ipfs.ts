@@ -1,5 +1,5 @@
 import { sha256 } from 'js-sha256';
-import { CHUNK_SIZE, CHUNK_SIZES } from '../constants';
+import { CHUNK_SIZE } from '../constants';
 
 export async function computeFileHash(file: File): Promise<string> {
   const buffer = await file.arrayBuffer();

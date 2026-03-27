@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BaseVault - The First Fully On-Chain Document Storage & Certification Platform on Base</title>
+<meta name="description" content="Store, encrypt, certify and verify documents directly on Base blockchain. No servers. No IPFS. Your files live on-chain forever.">
+<meta property="og:title" content="BaseVault - Fully On-Chain Document Storage & Certification">
+<meta property="og:description" content="Store, encrypt, certify and verify documents directly on Base blockchain. No servers. No IPFS.">
+<meta property="og:image" content="https://basevault.store/og-image.png">
+<meta property="og:url" content="https://basevault.store/article">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="BaseVault - Fully On-Chain Document Storage & Certification">
+<meta name="twitter:description" content="Your files. Your keys. Your proof. Built on Base.">
+<meta name="twitter:image" content="https://basevault.store/og-image.png">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0f;--card:#12121a;--border:#1e1e2e;--blue:#3b82f6;--green:#22c55e;--text:#e2e8f0;--muted:#94a3b8;--accent:#2563eb}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;-webkit-font-smoothing:antialiased}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+
+.article{max-width:720px;margin:0 auto;padding:20px 24px 80px}
+
+/* Nav */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);margin-bottom:40px}
+.nav-logo{font-size:20px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px}
+.nav-logo img{width:28px;height:28px}
+.nav-links{display:flex;gap:16px;font-size:14px}
+.nav-links a{color:var(--muted)}
+.nav-links a:hover{color:#fff;text-decoration:none}
+
+/* Hero */
+.hero{text-align:center;padding:40px 0 50px;border-bottom:1px solid var(--border);margin-bottom:50px}
+.hero-badge{display:inline-block;background:#1a1a2e;color:var(--blue);font-size:12px;font-weight:600;padding:6px 16px;border-radius:20px;margin-bottom:20px;border:1px solid #2a2a4e;letter-spacing:0.5px}
+.hero h1{font-size:36px;font-weight:800;line-height:1.2;margin-bottom:16px;background:linear-gradient(135deg,#fff 0%,#94a3b8 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{color:var(--muted);font-size:18px;max-width:560px;margin:0 auto 24px}
+.hero-links{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.hero-links a{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:600;text-decoration:none;transition:.2s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#1d4ed8;text-decoration:none}
+.btn-secondary{background:var(--card);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{border-color:var(--blue);text-decoration:none}
+
+/* Content */
+h2{font-size:26px;font-weight:700;margin:50px 0 16px;color:#fff}
+h3{font-size:20px;font-weight:600;margin:32px 0 12px;color:#fff}
+p{margin-bottom:16px;color:var(--muted);font-size:16px}
+strong{color:var(--text)}
+ul,ol{margin:0 0 20px 24px;color:var(--muted)}
+li{margin-bottom:8px}
+
+/* Separator */
+hr{border:none;border-top:1px solid var(--border);margin:40px 0}
+
+/* Images */
+.img-wrap{margin:24px 0;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+.img-wrap img{width:100%;display:block}
+.img-caption{font-size:12px;color:var(--muted);text-align:center;padding:8px;background:var(--card)}
+
+/* Feature cards */
+.features{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:24px 0}
+.feature{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px}
+.feature-icon{font-size:24px;margin-bottom:8px}
+.feature h4{font-size:15px;font-weight:600;color:#fff;margin-bottom:6px}
+.feature p{font-size:13px;margin-bottom:0}
+
+/* Table */
+table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}
+th{text-align:left;padding:10px 12px;background:var(--card);color:#fff;font-weight:600;border:1px solid var(--border)}
+td{padding:10px 12px;border:1px solid var(--border);color:var(--muted)}
+tr:hover td{background:#0f0f1a}
+.yes{color:var(--green);font-weight:600}
+.no{color:#ef4444}
+.mid{color:#eab308}
+
+/* Stats bar */
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center}
+.stat-value{font-size:24px;font-weight:700;color:var(--blue)}
+.stat-label{font-size:12px;color:var(--muted);margin-top:4px}
+
+/* Quote */
+blockquote{border-left:3px solid var(--blue);padding:12px 20px;margin:24px 0;background:var(--card);border-radius:0 8px 8px 0;font-style:italic;color:var(--text)}
+
+/* Code */
+code{background:#1a1a2e;padding:2px 6px;border-radius:4px;font-size:13px;color:var(--blue)}
+
+/* CTA */
+.cta{text-align:center;padding:40px;background:var(--card);border:1px solid var(--border);border-radius:16px;margin:50px 0}
+.cta h2{margin-top:0}
+.cta p{max-width:480px;margin:0 auto 24px}
+
+/* Links section */
+.links-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0}
+.link-item{display:block;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;transition:.2s}
+.link-item:hover{border-color:var(--blue);text-decoration:none}
+.link-item span{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+
+/* Footer */
+.footer{text-align:center;padding:30px 0;border-top:1px solid var(--border);margin-top:50px;color:var(--muted);font-size:13px}
+
+/* Mobile */
+@media(max-width:640px){
+  .hero h1{font-size:26px}
+  .features{grid-template-columns:1fr}
+  .stats-bar{grid-template-columns:1fr 1fr}
+  .links-grid{grid-template-columns:1fr}
+  table{font-size:12px}
+  th,td{padding:6px 8px}
+}
+</style>
+</head>
+<body>
+<div class="article">
+
+<!-- Nav -->
+<nav class="nav">
+  <a href="https://basevault.store" class="nav-logo">
+    <img src="/icon.svg" alt="BaseVault">
+    BaseVault
+  </a>
+  <div class="nav-links">
+    <a href="https://app.basevault.store">App</a>
+    <a href="https://app.basevault.store/verify">Verify</a>
+    <a href="https://app.basevault.store/stats">Stats</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div style="text-align:center;margin-bottom:16px">
+  <button onclick="copyArticle()" id="copy-btn" style="background:var(--accent);color:#fff;padding:12px 28px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;border:none">Copy Article Text for Twitter</button>
+</div>
+
+<div class="hero">
+  <div class="hero-badge">BUILT ON BASE</div>
+  <h1>The First Fully On-Chain Document Storage & Certification Platform</h1>
+  <p>Store, encrypt, certify and verify documents directly on Base blockchain. No servers. No IPFS. Your files live on-chain forever.</p>
+  <div class="hero-links">
+    <a href="https://app.basevault.store" class="btn-primary">Open Web App</a>
+    <a href="https://app.basevault.store/verify" class="btn-secondary">Verify a Document</a>
+  </div>
+</div>
+
+<!-- Hero Image -->
+<div class="img-wrap">
+  <img src="/screenshots/landing_hero.png" alt="BaseVault Landing Page">
+  <div class="img-caption">basevault.store - Store, Encrypt, Certify & Verify Documents On-Chain</div>
+</div>
+
+<!-- Stats -->
+<div class="stats-bar">
+  <div class="stat"><div class="stat-value">50MB</div><div class="stat-label">Max File Size</div></div>
+  <div class="stat"><div class="stat-value">AES-256</div><div class="stat-label">Encryption</div></div>
+  <div class="stat"><div class="stat-value">13</div><div class="stat-label">Cert Types</div></div>
+  <div class="stat"><div class="stat-value">$0</div><div class="stat-label">Platform Fee</div></div>
+</div>
+
+<hr>
+
+<!-- The Problem -->
+<h2>The Problem</h2>
+<p>Right now, document verification is broken:</p>
+<ul>
+  <li>A university issues a degree on paper. It can be <strong>forged, lost, or damaged</strong>.</li>
+  <li>A hospital stores medical records on a server. That server can <strong>go down, get hacked, or refuse access</strong>.</li>
+  <li>An auditor signs off on a report. Years later, no one can prove the original <strong>wasn't tampered with</strong>.</li>
+  <li>Cloud storage companies can <strong>delete your files, change terms, or shut down</strong>.</li>
+</ul>
+<p><strong>BaseVault fixes all of this</strong> by putting documents where no one can touch them: on the blockchain.</p>
+
+<hr>
+
+<!-- How It Works -->
+<h2>How It Works</h2>
+
+<div class="features">
+  <div class="feature">
+    <div class="feature-icon">1</div>
+    <h4>Connect Wallet & Upload</h4>
+    <p>Use any wallet (Coinbase, MetaMask, Rainbow) or the Android app's built-in wallet. Drop your file, choose public or private.</p>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">2</div>
+    <h4>File Goes On-Chain</h4>
+    <p>Entire file is split into 24KB chunks and stored directly in the Base smart contract. Not IPFS. Not a hash. The actual bytes.</p>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">3</div>
+    <h4>Get It Certified</h4>
+    <p>Registered institutions (universities, hospitals, law firms) issue on-chain certificates. 13 types supported, batch up to 100.</p>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">4</div>
+    <h4>Anyone Can Verify</h4>
+    <p>Drop a file on the verify page. SHA-256 auto-computed. All certifications shown. No wallet needed. No account needed.</p>
+  </div>
+</div>
+
+<!-- App Dashboard Image -->
+<div class="img-wrap">
+  <img src="/screenshots/app_home.png" alt="BaseVault App Dashboard">
+  <div class="img-caption">App Dashboard - Live stats from smart contracts, quick actions</div>
+</div>
+
+<hr>
+
+<!-- On-Chain Storage -->
+<h2>Fully On-Chain File Storage</h2>
+<p>This is the core of BaseVault. When you upload a file, the <strong>entire file goes on-chain</strong>. Not a hash. Not a pointer. The actual bytes.</p>
+<p>When you upload a 5MB PDF, all 5MB goes into the Base smart contract. It stays there forever. No one can take it down. Not us, not Base, not anyone.</p>
+<!-- Upload Page Image -->
+<div class="img-wrap">
+  <img src="/screenshots/upload.png" alt="BaseVault Upload Page">
+  <div class="img-caption">Upload page - Files stored directly on Base chain, fully on-chain and permanent</div>
+</div>
+
+<ul>
+  <li><strong>Max file size:</strong> 50MB</li>
+  <li><strong>Chunk size:</strong> 24KB (safe transaction limit)</li>
+  <li><strong>Integrity:</strong> SHA-256 hash stored on-chain</li>
+  <li><strong>Visibility:</strong> Public or private per file</li>
+  <li><strong>Permanence:</strong> Once stored, cannot be deleted, modified, or censored by anyone. Ever.</li>
+</ul>
+
+<hr>
+
+<!-- Encryption -->
+<h2>AES-256-CTR Encryption</h2>
+<p>Private files get military-grade encryption before going on-chain. The encryption uses <strong>two-factor key derivation</strong>:</p>
+
+<blockquote>
+  Key = SHA-256(wallet_signature + your_password)<br><br>
+  Your wallet proves who you are. Your password adds a layer that even wallet theft can't break. Both are needed to decrypt. Neither is ever stored or transmitted.
+</blockquote>
+
+<p>Your encrypted files sit on a public blockchain, visible to everyone, but <strong>completely unreadable</strong> without both your wallet AND your password. Two things that only you have.</p>
+
+<hr>
+
+<!-- Certification -->
+<h2>Institutional Certification</h2>
+<p>This is where BaseVault becomes more than just storage. Institutions can register on-chain and issue <strong>verifiable certificates</strong>.</p>
+
+<h3>13 Certification Types</h3>
+<p>Degree, Transcript, Course Completion, Professional License, Badge, Contract, NDA, Audit Report, IP Proof, Medical Record, Lab Report, Research Paper, and Generic.</p>
+
+<!-- Register Page Image -->
+<div class="img-wrap">
+  <img src="/screenshots/register.png" alt="BaseVault Institution Registration">
+  <div class="img-caption">Register as a verified issuer - On-Chain Trust, Batch Certification, Delegate Access</div>
+</div>
+
+<h3>Key Features</h3>
+<ul>
+  <li><strong>Batch Certification:</strong> Certify up to 100 documents in a single transaction</li>
+  <li><strong>Delegate System:</strong> Team members can issue certs on behalf of your institution</li>
+  <li><strong>Revocation:</strong> Certificates can be revoked with an on-chain reason</li>
+  <li><strong>Certify by Hash:</strong> Don't need to upload the file. Just hash it and certify. The document stays with you, the proof lives on-chain</li>
+  <li><strong>Expiry Dates:</strong> Optional expiry for time-limited certifications</li>
+  <li><strong>QR Codes:</strong> Every certificate gets a shareable page with QR code</li>
+</ul>
+
+<hr>
+
+<!-- Comparison -->
+<h2>BaseVault vs Everything Else</h2>
+<table>
+  <tr>
+    <th>Feature</th>
+    <th>BaseVault</th>
+    <th>IPFS / Pinata</th>
+    <th>Arweave</th>
+    <th>Cloud Storage</th>
+  </tr>
+  <tr>
+    <td>Data Location</td>
+    <td class="yes">Base L2 Smart Contract</td>
+    <td class="mid">Peer-to-peer network</td>
+    <td>Arweave blockweave</td>
+    <td class="no">Company servers</td>
+  </tr>
+  <tr>
+    <td>File Permanence</td>
+    <td class="yes">Forever (on-chain)</td>
+    <td class="no">Needs pinning (can disappear)</td>
+    <td class="yes">Permanent</td>
+    <td class="no">Can be deleted</td>
+  </tr>
+  <tr>
+    <td>Encryption</td>
+    <td class="yes">AES-256 (wallet + password)</td>
+    <td class="no">None by default</td>
+    <td class="no">None by default</td>
+    <td class="mid">Server-side (provider has keys)</td>
+  </tr>
+  <tr>
+    <td>Verification</td>
+    <td class="yes">On-chain SHA-256</td>
+    <td class="mid">CID hash only</td>
+    <td class="mid">TX hash</td>
+    <td class="no">None</td>
+  </tr>
+  <tr>
+    <td>Institutional Certs</td>
+    <td class="yes">13 types, batch, delegate</td>
+    <td class="no">No</td>
+    <td class="no">No</td>
+    <td class="no">No</td>
+  </tr>
+  <tr>
+    <td>Server Dependency</td>
+    <td class="yes">None</td>
+    <td class="mid">Pinning service</td>
+    <td class="mid">Gateway needed</td>
+    <td class="no">Full</td>
+  </tr>
+</table>
+
+<hr>
+
+<!-- Zero Server -->
+<h2>Zero Server Dependency</h2>
+<p>This is the part that makes BaseVault fundamentally different from every other platform.</p>
+
+<blockquote>If basevault.store goes down tomorrow, your data is still safe.</blockquote>
+
+<div class="features">
+  <div class="feature">
+    <div class="feature-icon">&#128241;</div>
+    <h4>Standalone Android App</h4>
+    <p>Built-in wallet, fingerprint unlock, talks directly to Base blockchain. No backend server. Works even if our website doesn't exist.</p>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">&#128190;</div>
+    <h4>Offline Recovery Tool</h4>
+    <p>A single 37KB HTML file. Save it now, open in any browser (even offline), enter your wallet address, recover all files from the blockchain.</p>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">&#128275;</div>
+    <h4>Open Source & Verified</h4>
+    <p>Smart contracts verified on BaseScan. Code on GitHub. Anyone can build their own frontend or read the contracts directly.</p>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">&#9939;</div>
+    <h4>Public Smart Contracts</h4>
+    <p>Anyone can read your files directly from Base blockchain using any RPC endpoint. No permission needed from anyone.</p>
+  </div>
+</div>
+
+<hr>
+
+<!-- Android App -->
+<h2>The Android App</h2>
+<p>BaseVault has a standalone Android app (5.7 MB) that takes zero-server-dependency to the next level:</p>
+<ul>
+  <li><strong>Built-in Local Wallet:</strong> Private key generated on your device, encrypted, never leaves your phone</li>
+  <li><strong>Fingerprint Unlock:</strong> Biometric authentication for instant access</li>
+  <li><strong>5 RPC Failover:</strong> If one Base endpoint is down, app automatically tries 4 others</li>
+  <li><strong>All Features:</strong> Upload, encrypt, certify, verify, browse, view certificates</li>
+  <li><strong>No Backend:</strong> The app talks directly to the Base blockchain. Zero servers between you and your data</li>
+</ul>
+
+<hr>
+
+<!-- Use Cases -->
+<h2>Use Cases</h2>
+
+<div class="features">
+  <div class="feature">
+    <div class="feature-icon">&#127891;</div>
+    <h4>Universities & Schools</h4>
+    <p>Issue tamper-proof degree certificates. Students share a link or QR code. Employers verify instantly.</p>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">&#9878;</div>
+    <h4>Law Firms & Notaries</h4>
+    <p>Store contracts and NDAs on-chain. Timestamp proves when it existed. Hash proves it hasn't been altered.</p>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">&#127973;</div>
+    <h4>Hospitals & Labs</h4>
+    <p>Medical records encrypted on-chain. Only the patient can decrypt. Institutions certify results are genuine.</p>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">&#128202;</div>
+    <h4>Auditors & Compliance</h4>
+    <p>Audit reports certified with timestamps. Regulators verify the original hasn't been modified since audit date.</p>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">&#128161;</div>
+    <h4>Creators & Inventors</h4>
+    <p>Upload your work. On-chain timestamp serves as proof of creation. No patent office needed for initial proof.</p>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">&#128100;</div>
+    <h4>Anyone</h4>
+    <p>Important documents, family photos, personal records. Anything you want to keep forever, encrypted, on a blockchain no one controls.</p>
+  </div>
+</div>
+
+<hr>
+
+<!-- Tech -->
+<h2>The Tech Stack</h2>
+<table>
+  <tr><th>Layer</th><th>Technology</th></tr>
+  <tr><td>Blockchain</td><td>Base L2 (Ethereum)</td></tr>
+  <tr><td>Smart Contracts</td><td>Solidity 0.8.24, Foundry</td></tr>
+  <tr><td>Frontend</td><td>React 19 + TypeScript + Vite</td></tr>
+  <tr><td>Web3</td><td>wagmi v2 + viem + OnchainKit</td></tr>
+  <tr><td>Encryption</td><td>aes-js (AES-256-CTR) + SHA-256</td></tr>
+  <tr><td>Android</td><td>Capacitor 8 (same codebase)</td></tr>
+  <tr><td>Farcaster</td><td>MiniApp SDK integration</td></tr>
+  <tr><td>Security</td><td>60 Foundry tests on contracts</td></tr>
+</table>
+
+<hr>
+
+<!-- Smart Contracts -->
+<h2>Smart Contracts</h2>
+<p>Both contracts are verified on BaseScan and Sourcify. Currently <strong>zero platform fees</strong> - users only pay Base gas (typically less than $0.01).</p>
+
+<div class="links-grid">
+  <a href="https://basescan.org/address/0x4B46B971f1fBDF6f6D45b703b2f2D042D06CFed3" class="link-item" target="_blank">
+    BaseVault Storage (V6)
+    <span>0x4B46...Fed3</span>
+  </a>
+  <a href="https://basescan.org/address/0x2FDbfc75B8844Af376Be20b41c6C1ed70aA1c2E3" class="link-item" target="_blank">
+    BaseVault Certifier (V7)
+    <span>0x2FDb...c2E3</span>
+  </a>
+</div>
+
+<hr>
+
+<!-- CTA -->
+<div class="cta">
+  <h2>Try It Now</h2>
+  <p>Your files. Your keys. Your proof. Built on Base.</p>
+  <div class="hero-links">
+    <a href="https://app.basevault.store" class="btn-primary">Open Web App</a>
+    <a href="https://app.basevault.store/verify" class="btn-secondary">Verify Document</a>
+  </div>
+</div>
+
+<!-- Open Source -->
+<h2>Open Source & Transparent</h2>
+<p>Everything is open. Smart contracts verified. Source code public. Anyone can audit, fork, or build on top of BaseVault.</p>
+
+<div class="links-grid">
+  <a href="https://github.com/meraja34/basevault" class="link-item" target="_blank">
+    GitHub Repository
+    <span>Full source code - contracts, frontend, Android app</span>
+  </a>
+  <a href="https://basescan.org/address/0x4B46B971f1fBDF6f6D45b703b2f2D042D06CFed3" class="link-item" target="_blank">
+    Storage Contract (V6)
+    <span>Verified on BaseScan - 0x4B46...Fed3</span>
+  </a>
+  <a href="https://basescan.org/address/0x2FDbfc75B8844Af376Be20b41c6C1ed70aA1c2E3" class="link-item" target="_blank">
+    Certifier Contract (V7)
+    <span>Verified on BaseScan - 0x2FDb...c2E3</span>
+  </a>
+  <a href="https://github.com/meraja34/basevault/releases/download/v3.0.0/basevault-v3.0.0-final.apk" class="link-item" target="_blank">
+    Android APK (v3.0.0)
+    <span>5.7 MB - Direct download from GitHub</span>
+  </a>
+</div>
+
+<hr>
+
+<!-- Contact -->
+<h2>Got Questions? Found a Bug? Want to Collaborate?</h2>
+<p>BaseVault is being actively developed. If you find any issues, have feature requests, or want to build something on top of BaseVault, reach out directly to the dev:</p>
+
+<div class="features" style="grid-template-columns:1fr 1fr 1fr">
+  <div class="feature" style="text-align:center">
+    <div class="feature-icon">&#128172;</div>
+    <h4>Farcaster</h4>
+    <p><a href="https://warpcast.com/meraja34" target="_blank">@meraja34</a></p>
+    <p style="font-size:12px">Fastest way to reach the dev. DM open.</p>
+  </div>
+  <div class="feature" style="text-align:center">
+    <div class="feature-icon">&#128736;</div>
+    <h4>GitHub Issues</h4>
+    <p><a href="https://github.com/meraja34/basevault/issues" target="_blank">Report bugs</a></p>
+    <p style="font-size:12px">Bug reports, feature requests, PRs welcome.</p>
+  </div>
+  <div class="feature" style="text-align:center">
+    <div class="feature-icon">&#127760;</div>
+    <h4>Farcaster MiniApp</h4>
+    <p><a href="https://app.basevault.store" target="_blank">Open in Warpcast</a></p>
+    <p style="font-size:12px">Auto-connects wallet. Full app in Warpcast.</p>
+  </div>
+</div>
+
+<hr>
+
+<!-- All Links -->
+<h2>All Links</h2>
+<div class="links-grid">
+  <a href="https://app.basevault.store" class="link-item">Web App<span>app.basevault.store</span></a>
+  <a href="https://basevault.store" class="link-item">Landing Page<span>basevault.store</span></a>
+  <a href="https://app.basevault.store/verify" class="link-item">Verify Document<span>No wallet needed</span></a>
+  <a href="https://app.basevault.store/stats" class="link-item">Network Stats<span>Live from chain</span></a>
+  <a href="https://basevault.store/recover.html" class="link-item">Recovery Tool<span>Save offline, recover anytime</span></a>
+  <a href="https://app.basevault.store/register" class="link-item">Register Institution<span>Start issuing certificates</span></a>
+  <a href="https://github.com/meraja34/basevault" class="link-item">GitHub<span>Full source code</span></a>
+  <a href="https://warpcast.com/meraja34" class="link-item">Farcaster<span>DM the dev directly</span></a>
+  <a href="https://github.com/meraja34/basevault/releases/download/v3.0.0/basevault-v3.0.0-final.apk" class="link-item">Android APK<span>v3.0.0 - 5.7MB</span></a>
+  <a href="https://github.com/meraja34/basevault/issues" class="link-item">Report Issues<span>Bugs, features, feedback</span></a>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <p>BaseVault - Fully On-Chain Document Storage & Certification</p>
+  <p style="margin-top:8px">Built on Base. Open Source. Zero Server Dependency.</p>
+  <p style="margin-top:8px"><a href="https://warpcast.com/meraja34">Farcaster</a> &middot; <a href="https://github.com/meraja34/basevault">GitHub</a> &middot; <a href="https://basescan.org/address/0x4B46B971f1fBDF6f6D45b703b2f2D042D06CFed3">BaseScan</a></p>
+</div>
+
+</div>
+
+<script>
+async function copyArticle() {
+  const btn = document.getElementById('copy-btn');
+  try {
+    const res = await fetch('/twitter-article.txt');
+    const text = await res.text();
+    await navigator.clipboard.writeText(text);
+    btn.textContent = 'Copied!';
+    btn.style.background = '#22c55e';
+    setTimeout(() => { btn.textContent = 'Copy Article Text for Twitter'; btn.style.background = 'var(--accent)'; }, 3000);
+  } catch(e) {
+    // Fallback
+    const el = document.createElement('textarea');
+    el.value = document.querySelector('.article').innerText;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    btn.textContent = 'Copied!';
+    btn.style.background = '#22c55e';
+    setTimeout(() => { btn.textContent = 'Copy Article Text for Twitter'; btn.style.background = 'var(--accent)'; }, 3000);
+  }
+}
+</script>
+</body>
+</html>
