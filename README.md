@@ -357,7 +357,7 @@ The recovery tool is a separate static HTML file with inline CSS/JS. Zero build 
 | `verifyCertifications()` | Get all certs for a file hash |
 | `getHashCertIds()` | Get cert IDs for a file hash |
 
-> Minimal protocol fees apply. Users also pay Base network gas (~$0.001 per tx).
+> **Fee Structure:** Protocol fees are currently set to **zero**. Users only pay Base network gas (~$0.001 per tx). The smart contract includes configurable fee parameters (`feePerChunk`, `certificationFee`, `perCertFee`) that the contract owner can adjust in the future. All fee logic is transparent and verified on-chain.
 
 ---
 
@@ -523,7 +523,7 @@ Manifest: `/.well-known/farcaster.json` | FID: **16795**
 | **Client-side encryption** | All AES-256-CTR encryption/decryption happens in the browser. Keys, passwords, and plaintext never leave the device. |
 | **Contract verification** | Both contracts verified on BaseScan. Source code publicly auditable. |
 | **Test coverage** | 60 comprehensive security tests covering access control, edge cases, and attack vectors. |
-| **No admin file access** | Contract owner can adjust fees and withdraw collected fees. No backdoor to read, modify, or delete user files. |
+| **No admin file access** | Contract owner can adjust protocol fees (currently zero) and withdraw collected fees. No backdoor to read, modify, or delete user files. |
 | **Two-factor decryption** | Wallet signature + password both required. Single-factor compromise is insufficient. |
 | **On-chain permanence** | Once stored, data cannot be deleted, modified, or censored by anyone, including the contract owner. |
 
