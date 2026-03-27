@@ -1,5 +1,5 @@
 import { sha256 } from 'js-sha256';
-import { CHUNK_SIZE } from '../constants';
+import { CHUNK_SIZE, CHUNK_SIZES } from '../constants';
 
 export async function computeFileHash(file: File): Promise<string> {
   const buffer = await file.arrayBuffer();
@@ -7,11 +7,11 @@ export async function computeFileHash(file: File): Promise<string> {
   return '0x' + hash;
 }
 
-export function fileToChunks(buffer: ArrayBuffer): `0x${string}`[] {
+export function fileToChunks(buffer: ArrayBuffer, chunkSize: number = CHUNK_SIZE): `0x${string}`[] {
   const bytes = new Uint8Array(buffer);
   const chunks: `0x${string}`[] = [];
-  for (let i = 0; i < bytes.length; i += CHUNK_SIZE) {
-    const chunk = bytes.slice(i, i + CHUNK_SIZE);
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    const chunk = bytes.slice(i, i + chunkSize);
     const hex = '0x' + Array.from(chunk).map(b => b.toString(16).padStart(2, '0')).join('');
     chunks.push(hex as `0x${string}`);
   }

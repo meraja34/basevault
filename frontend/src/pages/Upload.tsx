@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import FileDropzone from '../components/FileDropzone';
 import { computeFileHash, fileToChunks, formatFileSize } from '../utils/ipfs';
 import { deriveKeyFromSignature, encryptFile, copyText, friendlyError } from '../utils/crypto';
-import { CONTRACT_ADDRESS, CHUNK_SIZE } from '../constants';
+import { CONTRACT_ADDRESS, CHUNK_SIZES, type ChunkMode } from '../constants';
 import abi from '../abi/BaseVault.json';
 
 const SIGN_MESSAGE = 'BaseVault: Authorize encryption key for private files';
@@ -26,6 +26,7 @@ export default function Upload() {
   const [fileHash, setFileHash] = useState('');
   const [txHash, setTxHash] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [chunkMode, setChunkMode] = useState<ChunkMode>('fast');
 
   const { writeContractAsync } = useWriteContract();
   const { signMessageAsync } = useSignMessage();
@@ -148,7 +149,7 @@ export default function Upload() {
         buffer = encryptFile(buffer, key);
       }
 
-      const chunks = fileToChunks(buffer);
+      const chunks = fileToChunks(buffer, CHUNK_SIZES[chunkMode]);
       const chunkFee = feePerChunk as bigint;
       const totalFee = chunkFee * BigInt(chunks.length);
 
@@ -251,7 +252,7 @@ export default function Upload() {
 
   const estimateCost = (size: number) => {
     const dataSize = isPublic ? size : size + 16;
-    const numChunks = Math.ceil(dataSize / CHUNK_SIZE);
+    const numChunks = Math.ceil(dataSize / CHUNK_SIZES[chunkMode]);
     const fee = feePerChunk ? Number(feePerChunk) * numChunks : 0;
     return { chunks: numChunks, feeEth: fee / 1e18 };
   };
@@ -310,6 +311,33 @@ export default function Upload() {
                     >
                       <span className="toggle-icon">&#x1f512;</span>
                       Private
+                    </button>
+                  </div>
+
+                  <div className="visibility-toggle" style={{ marginTop: '12px' }}>
+                    <button
+                      className={`toggle-btn ${chunkMode === 'fast' ? 'toggle-active' : ''}`}
+                      onClick={() => setChunkMode('fast')}
+                      title="24 KB per tx - safest, cheapest"
+                    >
+                      <span className="toggle-icon">&#x1f422;</span>
+                      Fast (24KB)
+                    </button>
+                    <button
+                      className={`toggle-btn ${chunkMode === 'balanced' ? 'toggle-active' : ''}`}
+                      onClick={() => setChunkMode('balanced')}
+                      title="48 KB per tx - 2x faster, reliable"
+                    >
+                      <span className="toggle-icon">&#x26a1;</span>
+                      Balanced (48KB)
+                    </button>
+                    <button
+                      className={`toggle-btn ${chunkMode === 'max' ? 'toggle-active' : ''}`}
+                      onClick={() => setChunkMode('max')}
+                      title="64 KB per tx - fastest, some tx may fail"
+                    >
+                      <span className="toggle-icon">&#x1f680;</span>
+                      Max (64KB)
                     </button>
                   </div>
 
