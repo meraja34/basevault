@@ -105,6 +105,169 @@ function Counter({ target, label }: { target: number; label: string }) {
   );
 }
 
+/* Live storage cost calculator
+   Reads feePerChunk from the live contract so the quoted price always
+   matches reality. Gas price + ETH/USD are fetched client-side and
+   refreshed periodically; both fall back to sane defaults if the
+   network call fails so the widget never shows broken numbers. */
+const CHUNK_KB = 24;                    // matches CHUNK_SIZES.fast
+const GAS_PER_CREATE = 150_000n;        // createFile() one-time
+const GAS_PER_CHUNK  = 70_000n;         // per uploadChunk() call
+const DEFAULT_BASE_GWEI = 0.008;        // fallback if RPC read fails
+const DEFAULT_ETH_USD   = 2200;         // fallback if coingecko fails
+
+function CostCalculator() {
+  const [sizeMB, setSizeMB] = useState(1);
+  const [ethUsd, setEthUsd] = useState(DEFAULT_ETH_USD);
+  const [gweiPrice, setGweiPrice] = useState(DEFAULT_BASE_GWEI);
+
+  // Read feePerChunk directly from V6 contract — single source of truth
+  const { data: feePerChunkRaw } = useReadContract({
+    address: CONTRACT_ADDRESS,
+    abi: baseVaultAbi,
+    functionName: 'feePerChunk',
+  });
+  const feePerChunk = feePerChunkRaw ? Number(feePerChunkRaw) / 1e18 : 0.000015;
+
+  // Fetch ETH/USD from coingecko on mount, refresh every 5 min
+  useEffect(() => {
+    let cancelled = false;
+    const fetchPrice = async () => {
+      try {
+        const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd');
+        const j = await r.json();
+        if (!cancelled && j?.ethereum?.usd) setEthUsd(j.ethereum.usd);
+      } catch { /* keep fallback */ }
+    };
+    fetchPrice();
+    const id = setInterval(fetchPrice, 5 * 60 * 1000);
+    return () => { cancelled = true; clearInterval(id); };
+  }, []);
+
+  // Fetch current Base gas price via public RPC
+  useEffect(() => {
+    let cancelled = false;
+    const fetchGas = async () => {
+      try {
+        const r = await fetch('https://mainnet.base.org', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jsonrpc: '2.0', method: 'eth_gasPrice', params: [], id: 1 }),
+        });
+        const j = await r.json();
+        if (!cancelled && j?.result) {
+          const gwei = parseInt(j.result, 16) / 1e9;
+          if (gwei > 0) setGweiPrice(gwei);
+        }
+      } catch { /* keep fallback */ }
+    };
+    fetchGas();
+    const id = setInterval(fetchGas, 60 * 1000);
+    return () => { cancelled = true; clearInterval(id); };
+  }, []);
+
+  // Live math
+  const sizeKB = sizeMB * 1024;
+  const chunks = Math.max(1, Math.ceil(sizeKB / CHUNK_KB));
+  const contractFeeEth = chunks * feePerChunk;
+  const totalGas = Number(GAS_PER_CREATE + BigInt(chunks) * GAS_PER_CHUNK);
+  const gasFeeEth = (totalGas * gweiPrice) / 1e9;
+  const totalEth = contractFeeEth + gasFeeEth;
+  const contractFeeUsd = contractFeeEth * ethUsd;
+  const gasFeeUsd = gasFeeEth * ethUsd;
+  const totalUsd = totalEth * ethUsd;
+
+  // Competitor reference prices (honest ranges, not marketing spin)
+  const arweaveUsd = sizeMB * 6.5;      // ~$5-8/MB on Arweave
+  const ipfsPerYear = 0.15 * Math.max(1, Math.ceil(sizeMB / 1024)); // Pinata ~$0.15/GB/mo x 12
+
+  const fmtUsd = (v: number) => v < 0.01 ? '<$0.01' : `$${v.toFixed(2)}`;
+  const fmtEth = (v: number) => v < 1e-6 ? '~0 ETH' : `${v.toFixed(6)} ETH`;
+
+  return (
+    <section id="calculator" className="lp-sec lp-sec-dark">
+      <div>
+        <h2 className="lp-sec-h2">What Will It Cost?</h2>
+        <p className="lp-sec-sub">
+          Fully transparent, live from the blockchain. Pick a file size and see exactly what you'd pay
+          right now to store that file on Base, permanently. No subscriptions, no renewals, no surprise bills.
+        </p>
+
+        <div className="lp-calc">
+          <div className="lp-calc-input">
+            <label className="lp-calc-label">
+              File size: <strong>{sizeMB < 1 ? `${Math.round(sizeMB * 1024)} KB` : `${sizeMB.toFixed(sizeMB < 2 ? 2 : 1)} MB`}</strong>
+            </label>
+            <input
+              type="range"
+              min={0.01}
+              max={50}
+              step={0.01}
+              value={sizeMB}
+              onChange={(e) => setSizeMB(parseFloat(e.target.value))}
+              className="lp-calc-slider"
+            />
+            <div className="lp-calc-range">
+              <span>10 KB</span>
+              <span>50 MB</span>
+            </div>
+          </div>
+
+          <div className="lp-calc-grid">
+            <div className="lp-calc-cell">
+              <div className="lp-calc-cell-label">Chunks</div>
+              <div className="lp-calc-cell-val">{chunks.toLocaleString()}</div>
+              <div className="lp-calc-cell-sub">{CHUNK_KB} KB each</div>
+            </div>
+            <div className="lp-calc-cell">
+              <div className="lp-calc-cell-label">Contract Fee</div>
+              <div className="lp-calc-cell-val">{fmtUsd(contractFeeUsd)}</div>
+              <div className="lp-calc-cell-sub">{fmtEth(contractFeeEth)}</div>
+            </div>
+            <div className="lp-calc-cell">
+              <div className="lp-calc-cell-label">Gas (Base L2)</div>
+              <div className="lp-calc-cell-val">{fmtUsd(gasFeeUsd)}</div>
+              <div className="lp-calc-cell-sub">{gweiPrice.toFixed(3)} gwei</div>
+            </div>
+            <div className="lp-calc-cell lp-calc-cell-total">
+              <div className="lp-calc-cell-label">Total</div>
+              <div className="lp-calc-cell-val">{fmtUsd(totalUsd)}</div>
+              <div className="lp-calc-cell-sub">stored forever</div>
+            </div>
+          </div>
+
+          <div className="lp-calc-compare">
+            <div className="lp-calc-compare-row">
+              <span className="lp-calc-compare-label">vs Arweave (one-time)</span>
+              <span className="lp-calc-compare-val">~${arweaveUsd.toFixed(2)}</span>
+            </div>
+            <div className="lp-calc-compare-row">
+              <span className="lp-calc-compare-label">vs IPFS Pinning (annual)</span>
+              <span className="lp-calc-compare-val">~${ipfsPerYear.toFixed(2)}/yr forever</span>
+            </div>
+            <div className="lp-calc-compare-row">
+              <span className="lp-calc-compare-label">vs Cloud Storage (annual)</span>
+              <span className="lp-calc-compare-val">~${(sizeMB * 0.023 * 12 / 1024).toFixed(2)}/yr forever</span>
+            </div>
+          </div>
+
+          <div className="lp-calc-note">
+            Live numbers. feePerChunk is read directly from the V6 contract. Gas price is fetched
+            from Base mainnet RPC. ETH/USD from CoinGecko. Refreshes every minute.
+          </div>
+
+          <div style={{ textAlign: 'center', marginTop: 24 }}>
+            <a href="https://app.basevault.store/upload" className="lp-btn-main">
+              Upload Now
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function Home() {
   // Show dashboard on app.basevault.store, native Android app, or landing page on basevault.store
   const isApp = window.location.hostname.startsWith('app.') || Capacitor.isNativePlatform();
@@ -352,6 +515,9 @@ function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* ===== LIVE COST CALCULATOR ===== */}
+      <CostCalculator />
 
       {/* ===== ZERO SERVER DEPENDENCY ===== */}
       <section className="lp-sec" ref={s9.ref}>

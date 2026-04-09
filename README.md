@@ -91,6 +91,38 @@ BaseVault writes your file bytes into Ethereum's security model via Base L2. As 
 
 ---
 
+## Transparent Pricing
+
+BaseVault is radically cheaper than every "permanent storage" alternative, and the landing page has a **live cost calculator** that reads the current `feePerChunk` from the smart contract, the latest gas price from a Base RPC, and live ETH/USD from CoinGecko so the quoted number always matches what you'd actually pay right now.
+
+**[Try the calculator →](https://basevault.store/#calculator)**
+
+### Current fees (V6 contract, live)
+
+| Parameter | Value | Notes |
+|---|---|---|
+| `feePerChunk` | 0.000015 ETH | Paid on `createFile`, scales with chunk count |
+| `certificationFee` | 0.0001 ETH | One-time, per institutional certificate |
+| Chunk size | 24 KB | Fast mode default (48 KB / 64 KB also supported) |
+| Base gas price | ~0.006 gwei | Typical L2 gas, effectively free per tx |
+
+### Example: what storing a file actually costs
+
+Prices below are computed at the current `feePerChunk`, ~0.006 gwei Base gas, and ~$2200/ETH. They update automatically on the landing page calculator.
+
+| File size | Chunks | Contract fee | Gas | Total USD |
+|---|---|---|---|---|
+| 100 KB | 5 | 0.000075 ETH | ~$0.004 | **~$0.17** |
+| 1 MB | 43 | 0.000645 ETH | ~$0.03 | **~$1.46** |
+| 10 MB | 427 | 0.006405 ETH | ~$0.30 | **~$14.47** |
+| 50 MB | 2134 | 0.03201 ETH | ~$1.50 | **~$71.90** |
+
+**Stored forever. No subscriptions. No renewals. No surprise bills.**
+
+For context, storing 1 MB on Arweave is roughly $5-8 one-time, and IPFS pinning via Pinata costs about $0.15/GB/month (i.e. recurring forever). Cloud storage is cheaper per byte but you lose access the moment you stop paying, and the provider can delete your data at will.
+
+---
+
 ## Features
 
 ### On-Chain File Storage
@@ -357,7 +389,7 @@ The recovery tool is a separate static HTML file with inline CSS/JS. Zero build 
 | `verifyCertifications()` | Get all certs for a file hash |
 | `getHashCertIds()` | Get cert IDs for a file hash |
 
-> **Fee Structure:** Protocol fees are currently set to **zero**. Users only pay Base network gas (~$0.001 per tx). The smart contract includes configurable fee parameters (`feePerChunk`, `certificationFee`, `perCertFee`) that the contract owner can adjust in the future. All fee logic is transparent and verified on-chain.
+> **Fee Structure:** Protocol fees are minimal and read live by the frontend so the quoted price always matches what's on-chain. Current values on V6: `feePerChunk` = 0.000015 ETH (paid on `createFile`, scales with chunk count) and `certificationFee` = 0.0001 ETH (one-time per certificate). Base L2 gas is typically around 0.006 gwei, so a 1 MB upload costs about $1.45 total at current prices. See the landing-page [cost calculator](https://basevault.store/#calculator) for live numbers. All fee logic is transparent and verified on-chain; fees are adjustable by the contract owner via `setFeePerChunk` and `setCertificationFee`.
 
 ---
 
